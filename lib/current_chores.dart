@@ -48,21 +48,31 @@ class _CurrentPageState extends State<CurrentPage> {
 
   @override
   Widget build(BuildContext context) {
-      return Align(
-        alignment: Alignment.center,
-        child: GridView.count(
-          primary: false,
-          padding: const EdgeInsets.all(12),
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          crossAxisCount: 2,
-          children: <Widget>[
-            _createCard('David'),
-            _createCard('Jeremy'),
-            _createCard('Simon'),
-            _createCard('Noah')
-          ],
-        ),
+      return ListView(
+        padding: const EdgeInsets.all(0),
+        physics: const NeverScrollableScrollPhysics(),
+        children:<Widget>[
+          Container(
+            height: 16,
+            child: const Text('Current Chores'),
+          ),
+          Container(
+            height: 400,
+            child: GridView.count(
+              primary: false,
+              padding: const EdgeInsets.all(12),
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              crossAxisCount: 2,
+              children: <Widget>[
+                _createCard('David'),
+                _createCard('Jeremy'),
+                _createCard('Simon'),
+                _createCard('Noah')
+              ],
+            ),
+          )
+        ],
       );
       /*floatingActionButton: FloatingActionButton(
         onPressed: () {

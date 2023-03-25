@@ -11,20 +11,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
   List<DataColumn2> _generateColumns() {
     List<DataColumn2> columns = [];
-    columns.add(const DataColumn2(label: Text('David')));
-    columns.add(const DataColumn2(label: Text('Jeremy')));
-    columns.add(const DataColumn2(label: Text('Simon')));
-    columns.add(const DataColumn2(label: Text('Noah')));
+    columns.add(const DataColumn2(label: Center(child: Text('David', textAlign: TextAlign.center)), size: ColumnSize.S));
+    columns.add(const DataColumn2(label: Center(child: Text('Jeremy', textAlign: TextAlign.center)), size: ColumnSize.M));
+    columns.add(const DataColumn2(label: Center(child: Text('Simon', textAlign: TextAlign.center)), size: ColumnSize.M));
+    columns.add(const DataColumn2(label: Center(child: Text('Noah', textAlign: TextAlign.center)), size: ColumnSize.S));
     return columns;
   }
 
@@ -32,10 +25,10 @@ class _HomePageState extends State<HomePage> {
     List<DataRow2> rows = [];
     for (int i = 0; i < 50; i++) {
       rows.add(const DataRow2(cells: [
-        DataCell(Text('Müllmeister')),
-        DataCell(Text('Küchenchef')),
-        DataCell(Text('Bademeister')),
-        DataCell(Text('Saubstauger'))
+        DataCell(Center(child: Icon(Icons.delete_outlined))),
+        DataCell(Center(child: Icon(Icons.kitchen_outlined))),
+        DataCell(Center(child: Icon(Icons.bathtub_outlined))),
+        DataCell(Center(child: Icon(Icons.cleaning_services_outlined))),
       ]));
     }
     return rows;
@@ -46,7 +39,7 @@ class _HomePageState extends State<HomePage> {
     return DataTable2(
       fixedTopRows: 1,
       columns: _generateColumns(),
-      rows: _generateRows()
+      rows: _generateRows(),
     );
   }
 }
