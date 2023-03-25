@@ -38,8 +38,8 @@ class _CurrentPageState extends State<CurrentPage> {
           debugPrint('Card tapped.');
         },
         child: SizedBox(
-          width: 150,
-          height: 300,
+          width: 0.1,
+          height: 0.1,
           child: Center(child: Text(name)),
         ),
       ),
@@ -49,24 +49,35 @@ class _CurrentPageState extends State<CurrentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-          centerTitle: true,
+      appBar: AppBar(
+        title: Text(widget.title),
+        centerTitle: true,
+      ),
+      body: Align(
+        alignment: Alignment.center,
+        child: GridView.count(
+          primary: false,
+          padding: const EdgeInsets.all(12),
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          crossAxisCount: 2,
+          children: <Widget>[
+            _createCard('David'),
+            _createCard('Jeremy'),
+            _createCard('Simon'),
+            _createCard('Noah')
+          ],
         ),
-        body: Center(
-          child: GridView.count(
-            primary: false,
-            padding: const EdgeInsets.all(12),
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            crossAxisCount: 2,
-            children: <Widget>[
-              _createCard('David'),
-              _createCard('Jeremy'),
-              _createCard('Simon'),
-              _createCard('Noah')
-            ],
-          ),
-        ));
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          debugPrint('Card tapped.');
+        },
+        foregroundColor: Colors.green,
+        backgroundColor: Colors.green,
+        hoverColor: Colors.grey,
+        hoverElevation: 10,
+      ),
+    );
   }
 }
