@@ -48,12 +48,7 @@ class _CurrentPageState extends State<CurrentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        centerTitle: true,
-      ),
-      body: Align(
+      return Align(
         alignment: Alignment.center,
         child: GridView.count(
           primary: false,
@@ -68,8 +63,8 @@ class _CurrentPageState extends State<CurrentPage> {
             _createCard('Noah')
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
+      );
+      /*floatingActionButton: FloatingActionButton(
         onPressed: () {
           debugPrint('Card tapped.');
         },
@@ -78,6 +73,6 @@ class _CurrentPageState extends State<CurrentPage> {
         hoverColor: Colors.grey,
         hoverElevation: 10,
       ),
-    );
+    );*/
   }
 }
