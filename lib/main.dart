@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'login.dart';
 import 'current_chores.dart';
+import 'navigationbar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const CurrentPage(title: 'All Chores'),
+      home: const NavBar(),
     );
   }
 }
