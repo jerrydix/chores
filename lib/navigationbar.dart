@@ -1,5 +1,7 @@
+import 'package:chores/home.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'current_chores.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({Key? key}) : super(key: key);
@@ -11,8 +13,8 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> {
   int _currentIndex = 0;
   List<Widget> pages = [
-    Text('Overview', style: GoogleFonts.openSans(fontStyle: FontStyle.normal)),
-    Text('Current', style: GoogleFonts.openSans(fontStyle: FontStyle.normal)),
+    const HomePage(title: 'All Chores'),
+    const CurrentPage(title: 'Current Chores'),
     Text('Settings', style: GoogleFonts.openSans(fontStyle: FontStyle.normal)),
   ];
 
