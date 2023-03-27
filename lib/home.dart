@@ -25,14 +25,45 @@ class _HomePageState extends State<HomePage> {
 
   List<DataRow2> _generateRows() {
     List<DataRow2> rows = [];
+    int variant = 0;
     for (int i = 0; i < 50; i++) {
-      rows.add(DataRow2(cells: [
-        DataCell(Container(decoration: const BoxDecoration(border: Border(right: BorderSide(width: 1, color: Colors.black26))), child: Center(child: Text((i+1).toString(), style: const TextStyle(fontWeight: FontWeight.bold)))), onTap: () { debugPrint('Cell tapped.');}),
-        DataCell(const Center(child: Icon(Icons.delete_outlined)), onTap: () { debugPrint('Cell tapped.');}),
-        DataCell(const Center(child: Icon(Icons.kitchen_outlined)), onTap: () { debugPrint('Cell tapped.');}),
-        DataCell(const Center(child: Icon(Icons.bathtub_outlined)), onTap: () { debugPrint('Cell tapped.');}),
-        DataCell(const Center(child: Icon(Icons.cleaning_services_outlined)), onTap: () { debugPrint('Cell tapped.');}),
-      ]));
+      if (variant == 0) {
+        rows.add(DataRow2(cells: [
+          DataCell(Container(decoration: const BoxDecoration(border: Border(right: BorderSide(width: 1, color: Colors.black26))), child: Center(child: Text((i+1).toString(), style: const TextStyle(fontWeight: FontWeight.bold)))), onTap: () { debugPrint('Cell tapped.');}),
+          DataCell(const Center(child: Icon(Icons.delete_outlined)), onTap: () { debugPrint('Cell tapped.');}),
+          DataCell(const Center(child: Icon(Icons.kitchen_outlined)), onTap: () { debugPrint('Cell tapped.');}),
+          DataCell(const Center(child: Icon(Icons.bathtub_outlined)), onTap: () { debugPrint('Cell tapped.');}),
+          DataCell(const Center(child: Icon(Icons.cleaning_services_outlined)), onTap: () { debugPrint('Cell tapped.');}),
+        ]));
+        variant++;
+      } else if (variant == 1) {
+        rows.add(DataRow2(cells: [
+          DataCell(Container(decoration: const BoxDecoration(border: Border(right: BorderSide(width: 1, color: Colors.black26))), child: Center(child: Text((i+1).toString(), style: const TextStyle(fontWeight: FontWeight.bold)))), onTap: () { debugPrint('Cell tapped.');}),
+          DataCell(const Center(child: Icon(Icons.cleaning_services_outlined)), onTap: () { debugPrint('Cell tapped.');}),
+          DataCell(const Center(child: Icon(Icons.delete_outlined)), onTap: () { debugPrint('Cell tapped.');}),
+          DataCell(const Center(child: Icon(Icons.kitchen_outlined)), onTap: () { debugPrint('Cell tapped.');}),
+          DataCell(const Center(child: Icon(Icons.bathtub_outlined)), onTap: () { debugPrint('Cell tapped.');}),
+        ]));
+        variant++;
+      } else if (variant == 2) {
+        rows.add(DataRow2(cells: [
+          DataCell(Container(decoration: const BoxDecoration(border: Border(right: BorderSide(width: 1, color: Colors.black26))), child: Center(child: Text((i+1).toString(), style: const TextStyle(fontWeight: FontWeight.bold)))), onTap: () { debugPrint('Cell tapped.');}),
+          DataCell(const Center(child: Icon(Icons.bathtub_outlined)), onTap: () { debugPrint('Cell tapped.');}),
+          DataCell(const Center(child: Icon(Icons.cleaning_services_outlined)), onTap: () { debugPrint('Cell tapped.');}),
+          DataCell(const Center(child: Icon(Icons.delete_outlined)), onTap: () { debugPrint('Cell tapped.');}),
+          DataCell(const Center(child: Icon(Icons.kitchen_outlined)), onTap: () { debugPrint('Cell tapped.');}),
+        ]));
+        variant++;
+      } else if (variant == 3) {
+        rows.add(DataRow2(cells: [
+          DataCell(Container(decoration: const BoxDecoration(border: Border(right: BorderSide(width: 1, color: Colors.black26))), child: Center(child: Text((i+1).toString(), style: const TextStyle(fontWeight: FontWeight.bold)))), onTap: () { debugPrint('Cell tapped.');}),
+          DataCell(const Center(child: Icon(Icons.kitchen_outlined)), onTap: () { debugPrint('Cell tapped.');}),
+          DataCell(const Center(child: Icon(Icons.bathtub_outlined)), onTap: () { debugPrint('Cell tapped.');}),
+          DataCell(const Center(child: Icon(Icons.cleaning_services_outlined)), onTap: () { debugPrint('Cell tapped.');}),
+          DataCell(const Center(child: Icon(Icons.delete_outlined)), onTap: () { debugPrint('Cell tapped.');}),
+        ]));
+        variant = 0;
+      }
     }
     return rows;
   }
