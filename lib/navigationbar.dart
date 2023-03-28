@@ -2,6 +2,7 @@ import 'package:chores/home.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'current_chores.dart';
+import 'settings.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({Key? key}) : super(key: key);
@@ -13,15 +14,42 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> {
   int _currentIndex = 0;
   List<Widget> pages = [
-    const HomePage(title: 'All Chores'),
     const CurrentPage(title: 'Current Chores'),
-    Text('Settings', style: GoogleFonts.openSans(fontStyle: FontStyle.normal)),
+    const HomePage(title: 'All Chores'),
   ];
 
   @override
   Widget build(BuildContext context) {
+
+    void openSettings(String value) {
+      switch (value) {
+        case 'Settings':
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => SettingsPage(),
+            ),
+          );
+          break;
+        case 'About':
+          break;
+      }
+    }
+
     return Scaffold(appBar: AppBar(
       title: const Text('Chores'),
+      actions: <Widget>[
+        PopupMenuButton<String>(
+          onSelected: openSettings,
+          itemBuilder: (BuildContext context) {
+            return {'Settings', 'About'}.map((String choice) {
+              return PopupMenuItem<String>(
+                value: choice,
+                child: Text(choice),
+              );
+            }).toList();
+          },
+        ),
+      ],
       ),
       body: Center(
         child: pages[_currentIndex],
@@ -32,17 +60,16 @@ class _NavBarState extends State<NavBar> {
         ),
         child: NavigationBar(
           selectedIndex: _currentIndex,
+          animationDuration: Duration.zero,
           labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-          height: 75,
           onDestinationSelected: (int newIndex) {
             setState(() {
               _currentIndex = newIndex;
             });
           },
           destinations: const [
-            NavigationDestination(selectedIcon: Icon(Icons.calendar_month),icon: Icon(Icons.calendar_month_outlined), label: 'Overview'),
             NavigationDestination(selectedIcon: Icon(Icons.dashboard),icon: Icon(Icons.dashboard_outlined), label: 'Dashboard'),
-            NavigationDestination(selectedIcon: Icon(Icons.settings),icon: Icon(Icons.settings_outlined), label: 'Settings'),
+            NavigationDestination(selectedIcon: Icon(Icons.calendar_month),icon: Icon(Icons.calendar_month_outlined), label: 'Overview'),
           ],
         ),
       )
