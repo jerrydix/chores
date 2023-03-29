@@ -13,9 +13,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Chores',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
         useMaterial3: true,
+        brightness: Brightness.light,
       ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+      ),
+      themeMode: ThemeMode.system,
       home: const NavBar(),
     );
   }
