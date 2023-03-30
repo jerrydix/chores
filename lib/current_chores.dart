@@ -26,12 +26,9 @@ class _CurrentPageState extends State<CurrentPage> {
       elevation: 0,
       clipBehavior: Clip.hardEdge,
       shape: const RoundedRectangleBorder(
-        side: BorderSide(
-          color: Color.fromARGB(255, 143, 143, 143),
-        ),
         borderRadius: BorderRadius.all(Radius.circular(25)),
       ),
-      color: buttonColor,
+      color: Colors.teal,
       child: InkWell(
         splashColor: Colors.grey.withAlpha(30),
         onTap: () {
@@ -58,20 +55,8 @@ class _CurrentPageState extends State<CurrentPage> {
           ),
           Container(
             height: 400,
-            child: GridView.count(
-              primary: false,
-              padding: const EdgeInsets.all(12),
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              crossAxisCount: 2,
-              children: <Widget>[
-                _createCard('David'),
-                _createCard('Jeremy'),
-                _createCard('Simon'),
-                _createCard('Noah')
-              ],
-            ),
-          )
+            child: _createCard('Sample'),
+          ),
         ],
       );
       /*floatingActionButton: FloatingActionButton(

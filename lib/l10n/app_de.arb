@@ -1,0 +1,17 @@
+{
+  "settings": "Einstellungen",
+  "dashboard": "Dashboard",
+  "overview": "Überblick",
+  "about": "Über",
+  "theme": "Thema",
+  "language": "Sprache",
+  "notEnable": "Benachrictigungen aktivieren",
+  "notInterval": "Benachrichtigungsintervall",
+  "sys": "System",
+  "dark": "Dunkel",
+  "light": "Hell",
+  "monday": "Einmal pro Woche (Montag)",
+  "sunday": "Einmal pro Woche (Sonntag)",
+  "twice": "Zweimal pro Woche",
+  "every": "Jeden Tag"
+}
