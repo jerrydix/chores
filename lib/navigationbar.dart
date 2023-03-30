@@ -25,7 +25,7 @@ class _NavBarState extends State<NavBar> {
         case 'Settings':
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => SettingsPage(),
+              builder: (context) => const SettingsPage(),
             ),
           );
           break;
@@ -38,7 +38,15 @@ class _NavBarState extends State<NavBar> {
         appBar: AppBar(
           title: const Text('Chores'),
           actions: <Widget>[
-            PopupMenuButton<String>(
+            TextButton.icon(
+                onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const SettingsPage(),
+                      ),
+                    ),
+                icon: const Icon(Icons.settings),
+                label: const Text('')),
+            /*PopupMenuButton<String>(
               onSelected: openSettings,
               itemBuilder: (BuildContext context) {
                 return {'Settings', 'About'}.map((String choice) {
@@ -48,7 +56,7 @@ class _NavBarState extends State<NavBar> {
                   );
                 }).toList();
               },
-            ),
+            ),*/
           ],
         ),
         body: IndexedStack(

@@ -1,6 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -16,11 +18,11 @@ class _SettingsPageState extends State<SettingsPage> {
   late Future<bool> _notificationOn;
 
   bool currentValue = false;
-  Icon currentNotificationStatus = Icon(Icons.notifications_off);
+  Icon currentNotificationStatus = const Icon(Icons.notifications_off);
   String currentLanguage = 'English';
   String currentTheme = 'System';
-  Text currentInterval = Text('Once a week (Monday)');
-  Text currentIntervalValue = Text('Once a week (Monday)');
+  Text currentInterval = const Text('Once a week (Monday)');
+  Text currentIntervalValue = const Text('Once a week (Monday)');
 
   Intervals? _character = Intervals.onceBegin;
 
@@ -39,7 +41,7 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
-  Future openDialog() => showDialog(
+  Future openIntervalDialog() => showDialog(
         context: context,
         builder: (context) {
           return StatefulBuilder(
@@ -56,7 +58,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       groupValue: _character,
                       onChanged: (value) {
                         setState(() {
-                          currentInterval = Text('Once a week (Monday)');
+                          currentInterval = const Text('Once a week (Monday)');
                           _character = value;
                         });
                       }),
@@ -66,7 +68,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       groupValue: _character,
                       onChanged: (value) {
                         setState(() {
-                          currentInterval = Text('Once a week (Sunday)');
+                          currentInterval = const Text('Once a week (Sunday)');
                           _character = value;
                         });
                       }),
@@ -76,7 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       groupValue: _character,
                       onChanged: (value) {
                         setState(() {
-                          currentInterval = Text('Twice a week');
+                          currentInterval = const Text('Twice a week');
                           _character = value;
                         });
                       }),
@@ -86,7 +88,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       groupValue: _character,
                       onChanged: (value) {
                         setState(() {
-                          currentInterval = Text('Every day');
+                          currentInterval = const Text('Every day');
                           _character = value;
                         });
                       }),
@@ -105,33 +107,67 @@ class _SettingsPageState extends State<SettingsPage> {
         },
       );
 
+  final Uri _GHurl = Uri.parse('https://github.com/jerrydix');
+  final Uri _Itchurl = Uri.parse('https://chernogop.itch.io/');
+  final Uri _Linkedinurl =
+      Uri.parse('https://www.linkedin.com/in/jeremy-dix-805215235/');
+
+  TextSpan makeLink(String name, Uri uri) {
+    return TextSpan(
+      text: '$name\n',
+      style: const TextStyle(
+          color: Colors.blue, decoration: TextDecoration.underline),
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          launchUrl(uri);
+        },
+    );
+  }
+
+  Future openAboutDialog() => showDialog(
+      context: context,
+      builder: (context) {
+        return AboutDialog(
+          applicationIcon: const Icon(Icons.info_outline),
+          applicationName: 'Chores',
+          applicationVersion: '1.0',
+          children: <Widget>[
+            RichText(
+              text: TextSpan(
+                children: [
+                  const TextSpan(
+                    text: 'Developed by Jeremy Dix\n\n',
+                  ),
+                  makeLink('GitHub', _GHurl),
+                  makeLink('Itch.io', _Itchurl),
+                  makeLink('LinkedIn', _Linkedinurl),
+                ],
+              ),
+            ),
+          ],
+        );
+      });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.arrow_circle_down),
-            onPressed: () {
-              print(currentInterval);
-            },
-          )
-        ],
       ),
       body: SettingsList(
         sections: [
           SettingsSection(
+            title: Title(color: Colors.grey, child: const Text('Options')),
             tiles: <SettingsTile>[
               SettingsTile.navigation(
-                leading: Icon(Icons.light_mode),
-                title: Text('Theme'),
+                leading: const Icon(Icons.light_mode),
+                title: const Text('Theme'),
                 value: Text(currentTheme),
                 onPressed: (context) {},
               ),
               SettingsTile.navigation(
-                leading: Icon(Icons.language),
-                title: Text('Language'),
+                leading: const Icon(Icons.language),
+                title: const Text('Language'),
                 value: Text(currentLanguage),
                 onPressed: (context) {},
               ),
@@ -141,26 +177,38 @@ class _SettingsPageState extends State<SettingsPage> {
                     currentValue = value;
                     if (value) {
                       currentNotificationStatus =
-                          Icon(Icons.notifications_active);
+                          const Icon(Icons.notifications_active);
                     } else {
-                      currentNotificationStatus = Icon(Icons.notifications_off);
+                      currentNotificationStatus =
+                          const Icon(Icons.notifications_off);
                     }
                   });
                 },
                 initialValue: currentValue,
                 leading: currentNotificationStatus,
-                title: Text('Enable notifications'),
+                title: const Text('Enable notifications'),
               ),
               SettingsTile.navigation(
-                title: Text('Notification Interval'),
-                leading: Icon(Icons.notifications),
+                title: const Text('Notification Interval'),
+                leading: const Icon(Icons.notifications),
                 value: currentIntervalValue,
                 onPressed: (context) {
-                  openDialog();
+                  openIntervalDialog();
                 },
-              )
+              ),
             ],
           ),
+          SettingsSection(
+              title: Title(color: Colors.grey, child: const Text('Info')),
+              tiles: <SettingsTile>[
+                SettingsTile.navigation(
+                  leading: const Icon(Icons.info_outline),
+                  title: const Text('About'),
+                  onPressed: (context) {
+                    openAboutDialog();
+                  },
+                )
+              ]),
         ],
       ),
     );
