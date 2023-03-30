@@ -20,7 +20,6 @@ class _NavBarState extends State<NavBar> {
 
   @override
   Widget build(BuildContext context) {
-
     void openSettings(String value) {
       switch (value) {
         case 'Settings':
@@ -35,45 +34,52 @@ class _NavBarState extends State<NavBar> {
       }
     }
 
-    return Scaffold(appBar: AppBar(
-      title: const Text('Chores'),
-      actions: <Widget>[
-        PopupMenuButton<String>(
-          onSelected: openSettings,
-          itemBuilder: (BuildContext context) {
-            return {'Settings', 'About'}.map((String choice) {
-              return PopupMenuItem<String>(
-                value: choice,
-                child: Text(choice),
-              );
-            }).toList();
-          },
-        ),
-      ],
-      ),
-      body: Center(
-        child: pages[_currentIndex],
-      ),
-      bottomNavigationBar: NavigationBarTheme(
-        data: NavigationBarThemeData(
-          labelTextStyle: MaterialStateTextStyle.resolveWith((states) => GoogleFonts.openSans(fontStyle: FontStyle.normal, fontSize: 13)),
-        ),
-        child: NavigationBar(
-          selectedIndex: _currentIndex,
-          animationDuration: Duration.zero,
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-          onDestinationSelected: (int newIndex) {
-            setState(() {
-              _currentIndex = newIndex;
-            });
-          },
-          destinations: const [
-            NavigationDestination(selectedIcon: Icon(Icons.dashboard),icon: Icon(Icons.dashboard_outlined), label: 'Dashboard'),
-            NavigationDestination(selectedIcon: Icon(Icons.calendar_month),icon: Icon(Icons.calendar_month_outlined), label: 'Overview'),
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Chores'),
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              onSelected: openSettings,
+              itemBuilder: (BuildContext context) {
+                return {'Settings', 'About'}.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            ),
           ],
         ),
-      )
-    );
+        body: IndexedStack(
+          index: _currentIndex,
+          children: pages,
+        ),
+        bottomNavigationBar: NavigationBarTheme(
+          data: NavigationBarThemeData(
+            labelTextStyle: MaterialStateTextStyle.resolveWith((states) =>
+                GoogleFonts.openSans(
+                    fontStyle: FontStyle.normal, fontSize: 13)),
+          ),
+          child: NavigationBar(
+            selectedIndex: _currentIndex,
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+            onDestinationSelected: (int newIndex) {
+              setState(() {
+                _currentIndex = newIndex;
+              });
+            },
+            destinations: const [
+              NavigationDestination(
+                  selectedIcon: Icon(Icons.dashboard),
+                  icon: Icon(Icons.dashboard_outlined),
+                  label: 'Dashboard'),
+              NavigationDestination(
+                  selectedIcon: Icon(Icons.calendar_month),
+                  icon: Icon(Icons.calendar_month_outlined),
+                  label: 'Overview'),
+            ],
+          ),
+        ));
   }
-
 }
