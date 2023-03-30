@@ -39,6 +39,9 @@ dependencies:
   google_fonts: ^4.0.3
   settings_ui: 2.0.2
   shared_preferences: ^2.0.20
+  flutter_localizations:
+    sdk: flutter
+  intl: any
 
 dev_dependencies:
   flutter_test:
@@ -61,6 +64,7 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  generate: true
 
   # To add assets to your application, add an assets section, like this:
   # assets:

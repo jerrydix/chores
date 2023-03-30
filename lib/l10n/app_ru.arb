@@ -1,0 +1,17 @@
+{
+  "settings": "Settings",
+  "dashboard": "Dashboard",
+  "overview": "Overview",
+  "about": "About",
+  "theme": "Theme",
+  "language": "Language",
+  "notEnable": "Enable notifications",
+  "notInterval": "Notification Interval",
+  "sys": "System",
+  "dark": "Dark",
+  "light": "light",
+  "monday": "Once a week (Monday)",
+  "sunday": "Once a week (Sunday)",
+  "twice": "Twice a week",
+  "every": "Every day"
+}
