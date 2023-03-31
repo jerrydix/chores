@@ -1,11 +1,11 @@
 {
-    "name": "chores",
-    "short_name": "chores",
+    "name": "Chores",
+    "short_name": "Chores",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "A small web app for managing household chores",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

@@ -128,7 +128,7 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (context) {
         return AboutDialog(
-          applicationIcon: const Icon(Icons.info_outline),
+          applicationIcon: const Image(image: AssetImage('assets/logo.png'), width: 55, height: 55,),
           applicationName: 'Chores',
           applicationVersion: '1.0',
           children: <Widget>[
@@ -137,6 +137,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   const TextSpan(
                     text: 'Developed by Jeremy Dix\n\n',
+                    style: TextStyle(color: Colors.white,)
                   ),
                   makeLink('GitHub', _GHurl),
                   makeLink('Itch.io', _Itchurl),
