@@ -2,7 +2,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'main.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -12,6 +14,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 enum Intervals { onceBegin, onceEnd, twice, every }
+enum Themes { system, light, dark }
 
 class _SettingsPageState extends State<SettingsPage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -20,11 +23,17 @@ class _SettingsPageState extends State<SettingsPage> {
   bool currentValue = false;
   Icon currentNotificationStatus = const Icon(Icons.notifications_off);
   String currentLanguage = 'English';
-  String currentTheme = 'System';
   Text currentInterval = const Text('Once a week (Monday)');
   Text currentIntervalValue = const Text('Once a week (Monday)');
 
+  Text currentTheme = const Text('System Default');
+  Text currentThemeValue = const Text('System Default');
+  ThemeMode currentThemeMode = ThemeMode.system;
+
   Intervals? _character = Intervals.onceBegin;
+  Themes? _theme = Themes.system;
+
+  final ValueNotifier<ThemeMode> _notifier = ValueNotifier(ThemeMode.light);
 
   @override
   void initState() {
@@ -41,7 +50,9 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
-  Future openIntervalDialog() => showDialog(
+  Future openIntervalDialog() => showAnimatedDialog(
+    animationType: DialogTransitionType.fade,
+    duration: Duration(milliseconds: 300),
         context: context,
         builder: (context) {
           return StatefulBuilder(
@@ -53,6 +64,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 actions: [
                   RadioListTile<Intervals>(
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                        BorderRadius
+                            .circular(20),
+                      ),
                       title: const Text('Once a week (Monday)'),
                       value: Intervals.onceBegin,
                       groupValue: _character,
@@ -63,6 +79,11 @@ class _SettingsPageState extends State<SettingsPage> {
                         });
                       }),
                   RadioListTile<Intervals>(
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                        BorderRadius
+                            .circular(20),
+                      ),
                       title: const Text('Once a week (Sunday)'),
                       value: Intervals.onceEnd,
                       groupValue: _character,
@@ -73,6 +94,11 @@ class _SettingsPageState extends State<SettingsPage> {
                         });
                       }),
                   RadioListTile<Intervals>(
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                        BorderRadius
+                            .circular(20),
+                      ),
                       title: const Text('Twice a week'),
                       value: Intervals.twice,
                       groupValue: _character,
@@ -83,6 +109,11 @@ class _SettingsPageState extends State<SettingsPage> {
                         });
                       }),
                   RadioListTile<Intervals>(
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                        BorderRadius
+                            .circular(20),
+                      ),
                       title: const Text('Every day'),
                       value: Intervals.every,
                       groupValue: _character,
@@ -149,6 +180,84 @@ class _SettingsPageState extends State<SettingsPage> {
         );
       });
 
+  Future openThemeDialog() => showAnimatedDialog(
+    animationType: DialogTransitionType.fade,
+    duration: Duration(milliseconds: 300),
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: const Text(
+              'Theme',
+              style: TextStyle(fontSize: 20),
+            ),
+            actions: [
+              RadioListTile<Themes>(
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                    BorderRadius
+                        .circular(20),
+                  ),
+                  title: const Text('System Default'),
+                    value: Themes.system,
+                  groupValue: _theme,
+                  onChanged: (value) {
+                    setState(() {
+                      currentThemeMode = ThemeMode.system;
+                      currentThemeValue = const Text('System Default');
+                      _theme = value;
+                    });
+                  }),
+              RadioListTile<Themes>(
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                    BorderRadius
+                        .circular(20),
+                  ),
+                  title: const Text('Light'),
+                  value: Themes.light,
+                  groupValue: _theme,
+                  onChanged: (value) {
+                    setState(() {
+                      currentThemeMode = ThemeMode.light;
+                      currentThemeValue = const Text('Light');
+                      _theme = value;
+                    });
+                  }),
+              RadioListTile<Themes>(
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                    BorderRadius
+                        .circular(20),
+                  ),
+                  title: const Text('Dark'),
+                  value: Themes.dark,
+                  groupValue: _theme,
+                  onChanged: (value) {
+                    setState(() {
+                      currentThemeMode = ThemeMode.dark;
+                      currentThemeValue = const Text('Dark');
+                      _theme = value;
+                    });
+                  }),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    this.setState(() {
+                      currentThemeValue = currentTheme;
+                    });
+                    MyApp.of(context).changeTheme(currentThemeMode);
+                  },
+                  child: const Text('Confirm')),
+            ],
+          );
+        },
+      );
+    },
+  );
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -163,8 +272,10 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingsTile.navigation(
                 leading: const Icon(Icons.light_mode),
                 title: const Text('Theme'),
-                value: Text(currentTheme),
-                onPressed: (context) {},
+                value: currentThemeValue,
+                onPressed: (context) {
+                  openThemeDialog();
+                },
               ),
               SettingsTile.navigation(
                 leading: const Icon(Icons.language),
