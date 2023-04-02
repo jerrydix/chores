@@ -44,6 +44,7 @@ dependencies:
   intl: any
   url_launcher: ^6.1.10
   flutter_launcher_icons: ^0.12.0
+  flutter_animated_dialog: ^2.0.1
 
 dev_dependencies:
   flutter_test:
