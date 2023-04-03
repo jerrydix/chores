@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "173688729888",
+    "project_id": "chores-4725c",
+    "storage_bucket": "chores-4725c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:173688729888:android:5b0273ab6579a100dee745",
+        "android_client_info": {
+          "package_name": "com.example.chores"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "173688729888-5tv8aafq2eoi8c6m299l9ntedc4jkker.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeDBONwvtYihRxDP1Rjv0YGm5aDoLTLsE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "173688729888-5tv8aafq2eoi8c6m299l9ntedc4jkker.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
