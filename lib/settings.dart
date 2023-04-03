@@ -13,7 +13,7 @@ class SettingsPage extends StatefulWidget {
   State<StatefulWidget> createState() => _SettingsPageState();
 }
 
-enum Intervals { onceBegin, onceEnd, twice, every }
+enum Intervals { onceBegin, onceMiddle, onceEnd, twice, every }
 enum Themes { system, light, dark }
 
 class _SettingsPageState extends State<SettingsPage> {
@@ -29,6 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Text currentTheme = const Text('System Default');
   Text currentThemeValue = const Text('System Default');
   ThemeMode currentThemeMode = ThemeMode.system;
+  Icon currentThemeIcon = const Icon(Icons.light_mode);
 
   Intervals? _character = Intervals.onceBegin;
   Themes? _theme = Themes.system;
@@ -51,8 +52,9 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future openIntervalDialog() => showAnimatedDialog(
+    barrierDismissible: true,
     animationType: DialogTransitionType.fade,
-    duration: Duration(milliseconds: 300),
+    duration: const Duration(milliseconds: 300),
         context: context,
         builder: (context) {
           return StatefulBuilder(
@@ -75,6 +77,21 @@ class _SettingsPageState extends State<SettingsPage> {
                       onChanged: (value) {
                         setState(() {
                           currentInterval = const Text('Once a week (Monday)');
+                          _character = value;
+                        });
+                      }),
+                  RadioListTile<Intervals>(
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                        BorderRadius
+                            .circular(20),
+                      ),
+                      title: const Text('Once a week (Friday)'),
+                      value: Intervals.onceMiddle,
+                      groupValue: _character,
+                      onChanged: (value) {
+                        setState(() {
+                          currentInterval = const Text('Once a week (Friday)');
                           _character = value;
                         });
                       }),
@@ -114,23 +131,33 @@ class _SettingsPageState extends State<SettingsPage> {
                         BorderRadius
                             .circular(20),
                       ),
-                      title: const Text('Every day'),
+                      title: const Text('Every day (lmao)'),
                       value: Intervals.every,
                       groupValue: _character,
                       onChanged: (value) {
                         setState(() {
-                          currentInterval = const Text('Every day');
+                          currentInterval = const Text('Every day (lmao)');
                           _character = value;
                         });
                       }),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        this.setState(() {
-                          currentIntervalValue = currentInterval;
-                        });
-                      },
-                      child: const Text('Confirm')),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget> [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Cancel')),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          this.setState(() {
+                            currentIntervalValue = currentInterval;
+                          });
+                        },
+                        child: const Text('Confirm')),
+                    ],
+                  ),
                 ],
               );
             },
@@ -138,9 +165,9 @@ class _SettingsPageState extends State<SettingsPage> {
         },
       );
 
-  final Uri _GHurl = Uri.parse('https://github.com/jerrydix');
-  final Uri _Itchurl = Uri.parse('https://chernogop.itch.io/');
-  final Uri _Linkedinurl =
+  final Uri _ghurl = Uri.parse('https://github.com/jerrydix');
+  final Uri _itchurl = Uri.parse('https://chernogop.itch.io/');
+  final Uri _linkedinurl =
       Uri.parse('https://www.linkedin.com/in/jeremy-dix-805215235/');
 
   TextSpan makeLink(String name, Uri uri) {
@@ -170,9 +197,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     text: 'Developed by Jeremy Dix\n\n',
                     style: TextStyle(color: Colors.white,)
                   ),
-                  makeLink('GitHub', _GHurl),
-                  makeLink('Itch.io', _Itchurl),
-                  makeLink('LinkedIn', _Linkedinurl),
+                  makeLink('GitHub', _ghurl),
+                  makeLink('Itch.io', _itchurl),
+                  makeLink('LinkedIn', _linkedinurl),
                 ],
               ),
             ),
@@ -181,8 +208,9 @@ class _SettingsPageState extends State<SettingsPage> {
       });
 
   Future openThemeDialog() => showAnimatedDialog(
+    barrierDismissible: true,
     animationType: DialogTransitionType.fade,
-    duration: Duration(milliseconds: 300),
+    duration: const Duration(milliseconds: 300),
     context: context,
     builder: (context) {
       return StatefulBuilder(
@@ -205,7 +233,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   onChanged: (value) {
                     setState(() {
                       currentThemeMode = ThemeMode.system;
-                      currentThemeValue = const Text('System Default');
+                      currentTheme = const Text('System Default');
                       _theme = value;
                     });
                   }),
@@ -221,7 +249,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   onChanged: (value) {
                     setState(() {
                       currentThemeMode = ThemeMode.light;
-                      currentThemeValue = const Text('Light');
+                      currentTheme = const Text('Light');
                       _theme = value;
                     });
                   }),
@@ -237,7 +265,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   onChanged: (value) {
                     setState(() {
                       currentThemeMode = ThemeMode.dark;
-                      currentThemeValue = const Text('Dark');
+                      currentTheme = const Text('Dark');
                       _theme = value;
                     });
                   }),
@@ -246,6 +274,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     Navigator.pop(context);
                     this.setState(() {
                       currentThemeValue = currentTheme;
+                      if (MediaQuery.of(context).platformBrightness == Brightness.dark && currentThemeMode == ThemeMode.system || currentThemeMode == ThemeMode.dark) {
+                        currentThemeIcon = const Icon(Icons.dark_mode);
+                      } else {
+                        currentThemeIcon = const Icon(Icons.light_mode);
+                      }
                     });
                     MyApp.of(context).changeTheme(currentThemeMode);
                   },
@@ -256,7 +289,6 @@ class _SettingsPageState extends State<SettingsPage> {
       );
     },
   );
-
 
   @override
   Widget build(BuildContext context) {
@@ -270,7 +302,7 @@ class _SettingsPageState extends State<SettingsPage> {
             title: Title(color: Colors.grey, child: const Text('Options')),
             tiles: <SettingsTile>[
               SettingsTile.navigation(
-                leading: const Icon(Icons.light_mode),
+                leading: currentThemeIcon,
                 title: const Text('Theme'),
                 value: currentThemeValue,
                 onPressed: (context) {
