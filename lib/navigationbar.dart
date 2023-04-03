@@ -1,6 +1,7 @@
 import 'package:chores/home.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'current_chores.dart';
 import 'settings.dart';
 
@@ -21,7 +22,7 @@ class _NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     void openSettings(String value) {
-      switch (value) {
+      /*switch (value) {
         case 'Settings':
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -31,7 +32,12 @@ class _NavBarState extends State<NavBar> {
           break;
         case 'About':
           break;
-      }
+      }*/
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const SettingsPage(),
+        ),
+      );
     }
 
     return Scaffold(
@@ -41,7 +47,7 @@ class _NavBarState extends State<NavBar> {
               PopupMenuButton<String>(
                 onSelected: openSettings,
                 itemBuilder: (BuildContext context) {
-                  return {'Settings'}.map((String choice) {
+                  return {AppLocalizations.of(context)!.settings}.map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
                       child: Text(choice),
@@ -69,15 +75,15 @@ class _NavBarState extends State<NavBar> {
                 _currentIndex = newIndex;
               });
             },
-            destinations: const [
+            destinations: [
               NavigationDestination(
-                  selectedIcon: Icon(Icons.dashboard),
-                  icon: Icon(Icons.dashboard_outlined),
-                  label: 'Dashboard'),
+                  selectedIcon: const Icon(Icons.dashboard),
+                  icon: const Icon(Icons.dashboard_outlined),
+                  label: AppLocalizations.of(context)!.dashboard),
               NavigationDestination(
-                  selectedIcon: Icon(Icons.calendar_month),
-                  icon: Icon(Icons.calendar_month_outlined),
-                  label: 'Overview'),
+                  selectedIcon: const Icon(Icons.calendar_month),
+                  icon: const Icon(Icons.calendar_month_outlined),
+                  label: AppLocalizations.of(context)!.overview),
             ],
           ),
         ));

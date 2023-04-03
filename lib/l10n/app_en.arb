@@ -13,5 +13,13 @@
   "monday": "Once a week (Monday)",
   "sunday": "Once a week (Sunday)",
   "twice": "Twice a week",
-  "every": "Every day"
+  "every": "Every day (lmao)",
+  "info": "Info",
+  "options": "Options",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "friday": "Once a week (Friday)",
+  "en": "English",
+  "de": "German",
+  "ru": "Russian"
 }

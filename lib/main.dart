@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -27,6 +29,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 
   ThemeMode _themeMode = ThemeMode.system;
+  Locale _locale = PlatformDispatcher.instance.locale;
 
   void changeTheme(ThemeMode themeMode) {
     setState(() {
@@ -49,6 +52,12 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  void setLocale(Locale value) {
+    setState(() {
+      _locale = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
@@ -59,7 +68,7 @@ class _MyAppState extends State<MyApp> {
           darkTheme: setThemeData(darkDynamic, Brightness.dark),
           themeMode: _themeMode,
           localizationsDelegates: const [
-            AppLocalizations.delegate, // Add this line
+            AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
@@ -69,6 +78,7 @@ class _MyAppState extends State<MyApp> {
             Locale('de'),
             Locale('ru'),
           ],
+          locale: _locale,
           home: const NavBar(),
         );
       }
