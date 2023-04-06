@@ -21,36 +21,113 @@ enum Languages { en, de, ru }
 
 class _SettingsPageState extends State<SettingsPage> {
 
+  bool first = true;
+
   bool? currentValue;
   Icon? currentNotificationStatus;
 
-  Text currentInterval = const Text('Once a week (Monday)');
-  Text currentIntervalValue = const Text('Once a week (Monday)');
+  Text? currentInterval;
+  Text? currentIntervalValue;
 
-  Text currentTheme = const Text('System Default');
-  Text currentThemeValue = const Text('System Default');
-  ThemeMode currentThemeMode = ThemeMode.system;
-  Icon currentThemeIcon = const Icon(Icons.light_mode);
+  Text? currentTheme;
+  Text? currentThemeValue;
+  ThemeMode? currentThemeMode;
+  Icon? currentThemeIcon;
 
-  Text currentLanguage = const Text('English');
-  Text currentLanguageValue = const Text('English');
-  Locale currentLocale = const Locale('en');
+  Text? currentLanguage;
+  Text? currentLanguageValue;
+  Locale? currentLocale;
 
-  Intervals? _character = Intervals.onceBegin;
-  Themes? _theme = Themes.system;
-  Languages? _language = Languages.en;
+  Intervals? _character;
+  Themes? _theme;
+  Languages? _language;
 
-  @override
-  void initState() {
-    super.initState();
+
+  void init() {
 
     currentValue = UserPreferences.getNotificationsBool();
     if (currentValue == true) {
-      currentNotificationStatus = const Icon(Icons.notifications_off);
-    } else {
       currentNotificationStatus = const Icon(Icons.notifications_on);
+    } else {
+      currentNotificationStatus = const Icon(Icons.notifications_off);
     }
 
+    switch (UserPreferences.getNotificationInterval()) {
+      case 0: {
+        currentInterval = currentIntervalValue = Text(AppLocalizations.of(context)!.monday);
+        _character = Intervals.onceBegin;
+        break;
+      }
+      case 1: {
+        currentInterval = currentIntervalValue = Text(AppLocalizations.of(context)!.friday);
+        _character = Intervals.onceMiddle;
+        break;
+      }
+      case 2: {
+        currentInterval = currentIntervalValue = Text(AppLocalizations.of(context)!.sunday);
+        _character = Intervals.onceEnd;
+        break;
+      }
+      case 3: {
+        currentInterval = currentIntervalValue = Text(AppLocalizations.of(context)!.twice);
+        _character = Intervals.twice;
+        break;
+      }
+      case 4: {
+        currentInterval = currentIntervalValue = Text(AppLocalizations.of(context)!.every);
+        _character = Intervals.every;
+        break;
+      }
+    }
+
+    switch (UserPreferences.getTheme()) {
+      case 0: {
+        currentThemeMode = ThemeMode.system;
+        currentTheme = currentThemeValue = Text(AppLocalizations.of(context)!.sys);
+        if (MediaQuery.of(context).platformBrightness == Brightness.dark) {
+          currentThemeIcon = const Icon(Icons.dark_mode);
+        } else {
+          currentThemeIcon = const Icon(Icons.light_mode);
+        }
+        _theme = Themes.system;
+        break;
+      }
+      case 1: {
+        currentThemeMode = ThemeMode.light;
+        currentTheme = currentThemeValue = Text(AppLocalizations.of(context)!.light);
+        currentThemeIcon = const Icon(Icons.light_mode);
+        _theme = Themes.light;
+        break;
+      }
+      case 2: {
+        currentThemeMode = ThemeMode.dark;
+        currentTheme = currentThemeValue = Text(AppLocalizations.of(context)!.dark);
+        currentThemeIcon = const Icon(Icons.dark_mode);
+        _theme = Themes.dark;
+        break;
+      }
+    }
+
+    switch (UserPreferences.getLanguage()) {
+      case 0: {
+        currentLanguage = currentLanguageValue = const Text('English');
+        currentLocale = const Locale('en');
+        _language = Languages.en;
+        break;
+      }
+      case 1: {
+        currentLanguage = currentLanguageValue = const Text('Deutsch');
+        currentLocale = const Locale('de');
+        _language = Languages.de;
+        break;
+      }
+      case 2: {
+        currentLanguage = currentLanguageValue = const Text('Русский');
+        currentLocale = const Locale('ru');
+        _language = Languages.ru;
+        break;
+      }
+    }
   }
 
 
@@ -81,6 +158,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           currentInterval = Text(AppLocalizations.of(context)!.monday);
                           _character = value;
                         });
+                        UserPreferences.setNotificationInterval(0);
                       }),
                   RadioListTile<Intervals>(
                       shape: RoundedRectangleBorder(
@@ -96,6 +174,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           currentInterval = Text(AppLocalizations.of(context)!.friday);
                           _character = value;
                         });
+                        UserPreferences.setNotificationInterval(1);
                       }),
                   RadioListTile<Intervals>(
                       shape: RoundedRectangleBorder(
@@ -111,6 +190,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           currentInterval = Text(AppLocalizations.of(context)!.sunday);
                           _character = value;
                         });
+                        UserPreferences.setNotificationInterval(2);
                       }),
                   RadioListTile<Intervals>(
                       shape: RoundedRectangleBorder(
@@ -126,6 +206,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           currentInterval = Text(AppLocalizations.of(context)!.twice);
                           _character = value;
                         });
+                        UserPreferences.setNotificationInterval(3);
                       }),
                   RadioListTile<Intervals>(
                       shape: RoundedRectangleBorder(
@@ -141,6 +222,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           currentInterval = Text(AppLocalizations.of(context)!.every);
                           _character = value;
                         });
+                        UserPreferences.setNotificationInterval(4);
                       }),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -237,6 +319,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       currentTheme = Text(AppLocalizations.of(context)!.sys);
                       _theme = value;
                     });
+                    UserPreferences.setTheme(0);
                   }),
               RadioListTile<Themes>(
                   shape: RoundedRectangleBorder(
@@ -253,6 +336,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       currentTheme = Text(AppLocalizations.of(context)!.light);
                       _theme = value;
                     });
+                    UserPreferences.setTheme(1);
                   }),
               RadioListTile<Themes>(
                   shape: RoundedRectangleBorder(
@@ -269,6 +353,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       currentTheme = Text(AppLocalizations.of(context)!.dark);
                       _theme = value;
                     });
+                    UserPreferences.setTheme(2);
                   }),
               TextButton(
                   onPressed: () {
@@ -281,7 +366,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         currentThemeIcon = const Icon(Icons.light_mode);
                       }
                     });
-                    MyApp.of(context).changeTheme(currentThemeMode);
+                    MyApp.of(context).setTheme(currentThemeMode);
                   },
                   child: Text(AppLocalizations.of(context)!.confirm)),
             ],
@@ -319,6 +404,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       currentLanguage = const Text("English");
                       _language = value;
                     });
+                    UserPreferences.setLanguage(0);
                   }),
               RadioListTile<Languages>(
                   shape: RoundedRectangleBorder(
@@ -335,6 +421,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       currentLanguage = const Text("Deutsch");
                       _language = value;
                     });
+                    UserPreferences.setLanguage(1);
                   }),
               RadioListTile<Languages>(
                   shape: RoundedRectangleBorder(
@@ -351,6 +438,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       currentLanguage = const Text("Русский");
                       _language = value;
                     });
+                    UserPreferences.setLanguage(2);
                   }),
               TextButton(
                   onPressed: () {
@@ -370,6 +458,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (first) {
+      init();
+      first = false;
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settings),
