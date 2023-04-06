@@ -1,3 +1,4 @@
+import 'package:chores/utils/userprefs.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -19,11 +20,10 @@ enum Themes { system, light, dark }
 enum Languages { en, de, ru }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  late Future<bool> _notificationOn;
 
-  bool currentValue = false;
-  Icon currentNotificationStatus = const Icon(Icons.notifications_off);
+  bool? currentValue;
+  Icon? currentNotificationStatus;
+
   Text currentInterval = const Text('Once a week (Monday)');
   Text currentIntervalValue = const Text('Once a week (Monday)');
 
@@ -40,22 +40,19 @@ class _SettingsPageState extends State<SettingsPage> {
   Themes? _theme = Themes.system;
   Languages? _language = Languages.en;
 
-  final ValueNotifier<ThemeMode> _notifier = ValueNotifier(ThemeMode.light);
-
   @override
   void initState() {
     super.initState();
-    _notificationOn = _prefs.then((SharedPreferences prefs) {
-      return prefs.getBool('notificationOn') ?? false;
-    });
+
+    currentValue = UserPreferences.getNotificationsBool();
+    if (currentValue == true) {
+      currentNotificationStatus = const Icon(Icons.notifications_off);
+    } else {
+      currentNotificationStatus = const Icon(Icons.notifications_on);
+    }
+
   }
 
-  Future<void> _setNotificationOn(bool value) async {
-    final SharedPreferences prefs = await _prefs;
-    setState(() {
-      _notificationOn = prefs.setBool('notificationOn', value);
-    });
-  }
 
   Future openIntervalDialog() => showAnimatedDialog(
     barrierDismissible: true,
@@ -313,13 +310,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     BorderRadius
                         .circular(20),
                   ),
-                  title: Text(AppLocalizations.of(context)!.en),
+                  title: const Text("English"),
                   value: Languages.en,
                   groupValue: _language,
                   onChanged: (value) {
                     setState(() {
                       currentLocale = const Locale('en');
-                      currentLanguage = Text(AppLocalizations.of(context)!.en);
+                      currentLanguage = const Text("English");
                       _language = value;
                     });
                   }),
@@ -329,13 +326,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     BorderRadius
                         .circular(20),
                   ),
-                  title: Text(AppLocalizations.of(context)!.de),
+                  title: const Text("Deutsch"),
                   value: Languages.de,
                   groupValue: _language,
                   onChanged: (value) {
                     setState(() {
                       currentLocale = const Locale('de');
-                      currentLanguage = Text(AppLocalizations.of(context)!.de);
+                      currentLanguage = const Text("Deutsch");
                       _language = value;
                     });
                   }),
@@ -345,13 +342,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     BorderRadius
                         .circular(20),
                   ),
-                  title: Text(AppLocalizations.of(context)!.ru),
+                  title: const Text("Русский"),
                   value: Languages.ru,
                   groupValue: _language,
                   onChanged: (value) {
                     setState(() {
                       currentLocale = const Locale('ru');
-                      currentLanguage = Text(AppLocalizations.of(context)!.ru);
+                      currentLanguage = const Text("Русский");
                       _language = value;
                     });
                   }),
@@ -400,6 +397,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
               SettingsTile.switchTile(
+                initialValue: currentValue,
+                leading: currentNotificationStatus,
+                title: Text(AppLocalizations.of(context)!.notEnable),
                 onToggle: (bool value) {
                   setState(() {
                     currentValue = value;
@@ -411,10 +411,8 @@ class _SettingsPageState extends State<SettingsPage> {
                           const Icon(Icons.notifications_off);
                     }
                   });
+                  UserPreferences.setNotificationsBool(value);
                 },
-                initialValue: currentValue,
-                leading: currentNotificationStatus,
-                title: Text(AppLocalizations.of(context)!.notEnable),
               ),
               SettingsTile.navigation(
                 title: Text(AppLocalizations.of(context)!.notInterval),

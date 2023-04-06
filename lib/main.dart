@@ -7,12 +7,14 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'navigationbar.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'utils/userprefs.dart';
 
 void main() async {
   runApp(const MyApp());
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
 }
 
 class MyApp extends StatefulWidget {
