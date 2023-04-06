@@ -30,10 +30,10 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
-  ThemeMode _themeMode = ThemeMode.system;
-  Locale _locale = PlatformDispatcher.instance.locale;
+  ThemeMode? _themeMode;
+  Locale? _locale;
 
-  void changeTheme(ThemeMode themeMode) {
+  void setTheme(ThemeMode? themeMode) {
     setState(() {
       _themeMode = themeMode;
     });
@@ -54,14 +54,48 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void setLocale(Locale value) {
+  void setLocale(Locale? value) {
     setState(() {
       _locale = value;
     });
   }
 
+  void init() async {
+    await UserPreferences.init();
+    switch (UserPreferences.getLanguage()) {
+      case 0: {
+        _locale = const Locale('en');
+        break;
+      }
+      case 1: {
+        _locale = const Locale('de');
+        break;
+      }
+      case 2: {
+        _locale = const Locale('ru');
+        break;
+      }
+    }
+
+    switch (UserPreferences.getTheme()) {
+      case 0: {
+        _themeMode = ThemeMode.system;
+        break;
+      }
+      case 1: {
+        _themeMode = ThemeMode.light;
+        break;
+      }
+      case 2: {
+        _themeMode = ThemeMode.dark;
+        break;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    init();
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
         return MaterialApp(
