@@ -50,7 +50,7 @@ class _MyAppState extends State<MyApp> {
     return ThemeData(
       useMaterial3: true,
       brightness: brightness,
-      colorSchemeSeed: Colors.teal,
+      colorSchemeSeed: Colors.white,
     );
   }
 

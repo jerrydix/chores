@@ -1,8 +1,8 @@
-import 'package:chores/home.dart';
+import 'package:chores/overview.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'current_chores.dart';
+import 'dashboard.dart';
 import 'settings.dart';
 
 class NavBar extends StatefulWidget {
@@ -22,17 +22,6 @@ class _NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     void openSettings(String value) {
-      /*switch (value) {
-        case 'Settings':
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const SettingsPage(),
-            ),
-          );
-          break;
-        case 'About':
-          break;
-      }*/
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => const SettingsPage(),
