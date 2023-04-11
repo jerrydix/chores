@@ -47,6 +47,7 @@ dependencies:
   flutter_animated_dialog: ^2.0.1
   dynamic_color: ^1.6.2
   firebase_core: ^2.9.0
+  animations: ^2.0.7
   #flutter_local_notifications: ^8.2.0
 
 dev_dependencies:
