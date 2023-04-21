@@ -15,8 +15,16 @@ class CurrentPage extends StatefulWidget {
 
 class _CurrentPageState extends State<CurrentPage> {
   Color buttonColor = Colors.greenAccent.withOpacity(0.75);
+  int tasksAmount = 5;
 
   BoolList checked = BoolList(5);
+
+  List<TextDecoration> decorations = [TextDecoration.none,TextDecoration.none,TextDecoration.none,TextDecoration.none,TextDecoration.none];
+  void fillStyles() {
+    for (int i = 0; i < tasksAmount; i++) {
+      decorations.add(TextDecoration.none);
+    }
+  }
 
   CheckboxListTile createCheckboxTile(Icon icon, Text text, bool? checked) {
     return CheckboxListTile(
@@ -34,8 +42,13 @@ class _CurrentPageState extends State<CurrentPage> {
       secondary: icon);
   }
 
+  void init() {
+    fillStyles();
+  }
+
   @override
   Widget build(BuildContext context) {
+    //init();
     return Center(
       child: Column(
         children: <Widget>[
@@ -49,11 +62,62 @@ class _CurrentPageState extends State<CurrentPage> {
                 padding: const EdgeInsets.all(10),
                 child: Column(
                   children: [
-                    createCheckboxTile(const Icon(Icons.delete_outlined), const Text('Take out the trash'), checked.elementAt(0)),
-                    createCheckboxTile(const Icon(Icons.delete_outlined), const Text('Take out the trash'), checked.elementAt(1)),
-                    createCheckboxTile(const Icon(Icons.delete_outlined), const Text('Take out the trash'), checked.elementAt(2)),
-                    createCheckboxTile(const Icon(Icons.delete_outlined), const Text('Take out the trash'), checked.elementAt(3)),
-                    //createCheckboxTile(const Icon(Icons.delete_outlined), const Text('Take out the trash'), checked[4]),
+                    CheckboxListTile(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                        title: const Text('Take out the trash.'),
+                        value: checked[0],
+                        onChanged: (value) {
+                          setState(() {
+                            checked[0] = value!;
+                          });
+                        },
+                        secondary: const Icon(Icons.delete)),
+                    CheckboxListTile(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                        title: const Text('Take out the trash.'),
+                        value: checked[1],
+                        onChanged: (value) {
+                          setState(() {
+                            checked[1] = value!;
+                            TextDecoration current = decorations.elementAt(1);
+                            if (current == TextDecoration.none) {
+                              current = TextDecoration.lineThrough;
+                            }
+                          });
+                        },
+                        secondary: const Icon(Icons.delete)),
+                    CheckboxListTile(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                        title: const Text('Take out the trash.'),
+                        value: checked[2],
+                        onChanged: (value) {
+                          setState(() {
+                            checked[2] = value!;
+                          });
+                        },
+                        secondary: const Icon(Icons.delete)),
+                    CheckboxListTile(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                        title: const Text('Take out the trash.'),
+                        value: checked[3],
+                        onChanged: (value) {
+                          setState(() {
+                            checked[3] = value!;
+                          });
+                        },
+                        secondary: const Icon(Icons.delete)),
                   ],
                 )
               ),
