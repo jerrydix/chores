@@ -1,8 +1,12 @@
 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:animations/animations.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'dart:convert';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 
 import 'checklist.dart';
@@ -17,6 +21,8 @@ class CurrentPage extends StatefulWidget {
 }
 
 class _CurrentPageState extends State<CurrentPage> {
+  Map<String, dynamic>? file;
+
   Color buttonColor = Colors.greenAccent.withOpacity(0.75);
   int tasksAmount = 5;
 
@@ -45,20 +51,21 @@ class _CurrentPageState extends State<CurrentPage> {
       secondary: icon);
   }
 
-  void init() {
+  Future<void> init() async {
     fillStyles();
+    file = jsonDecode(await _localFile);
   }
 
   void styleSwitcher(int i, bool value) {
     if (value) {
-      print('inIf');
       styles[i] = TextStyle(decoration: TextDecoration.lineThrough, color: styles[i].color?.withOpacity(0.75));
-      print(styles[i]);
     } else {
-      print('inElse');
       styles[i] = TextStyle(decoration: TextDecoration.none, color: styles[i].color?.withOpacity(1));
-      print(styles[i]);
     }
+  }
+
+  Future<String> get _localFile async {
+    return rootBundle.loadString('assets/config.json');
   }
 
   @override
@@ -81,7 +88,7 @@ class _CurrentPageState extends State<CurrentPage> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        CheckboxListTile(
+                        /*CheckboxListTile(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -178,7 +185,7 @@ class _CurrentPageState extends State<CurrentPage> {
                             },
                             secondary: const Icon(Icons.delete)),
 
-
+*/
                         CheckboxListTile(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
