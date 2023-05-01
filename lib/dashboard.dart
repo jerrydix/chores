@@ -88,146 +88,11 @@ class _CurrentPageState extends State<CurrentPage> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        /*CheckboxListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                            title: Text('Take out the trash.', style: styles.elementAt(0)),
-                            value: checked[0],
-                            onChanged: (value) {
-                              setState(() {
-                                checked[0] = value!;
-                                styleSwitcher(0, value);
-                              });
-                            },
-                            secondary: const Icon(Icons.delete)),
-                        CheckboxListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                            title: Text('Take out the trash.', style: styles.elementAt(0)),
-                            value: checked[0],
-                            onChanged: (value) {
-                              setState(() {
-                                checked[0] = value!;
-                                styleSwitcher(0, value);
-                              });
-                            },
-                            secondary: const Icon(Icons.delete)),
-                        CheckboxListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                            title: Text('Take out the trash.', style: styles.elementAt(0)),
-                            value: checked[0],
-                            onChanged: (value) {
-                              setState(() {
-                                checked[0] = value!;
-                                styleSwitcher(0, value);
-                              });
-                            },
-                            secondary: const Icon(Icons.delete)),
-                        CheckboxListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                            title: Text('Take out the trash.', style: styles.elementAt(0)),
-                            value: checked[0],
-                            onChanged: (value) {
-                              setState(() {
-                                checked[0] = value!;
-                                styleSwitcher(0, value);
-                              });
-                            },
-                            secondary: const Icon(Icons.delete)),CheckboxListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                            title: Text('Take out the trash.', style: styles.elementAt(0)),
-                            value: checked[0],
-                            onChanged: (value) {
-                              setState(() {
-                                checked[0] = value!;
-                                styleSwitcher(0, value);
-                              });
-                            },
-                            secondary: const Icon(Icons.delete)),
-                        CheckboxListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                            title: Text('Take out the trash.', style: styles.elementAt(0)),
-                            value: checked[0],
-                            onChanged: (value) {
-                              setState(() {
-                                checked[0] = value!;
-                                styleSwitcher(0, value);
-                              });
-                            },
-                            secondary: const Icon(Icons.delete)),CheckboxListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                            title: Text('Take out the trash.', style: styles.elementAt(0)),
-                            value: checked[0],
-                            onChanged: (value) {
-                              setState(() {
-                                checked[0] = value!;
-                                styleSwitcher(0, value);
-                              });
-                            },
-                            secondary: const Icon(Icons.delete)),
+                        CheckboxTile(title: "test", style: styles.elementAt(0), checked: checked[0], icon: const Icon(Icons.abc)),
+                        CheckboxTile(title: "test", style: styles.elementAt(1), checked: checked[1], icon: const Icon(Icons.delete)),
+                        CheckboxTile(title: "test", style: styles.elementAt(2), checked: checked[2], icon: const Icon(Icons.airplane_ticket)),
+                        CheckboxTile(title: "test", style: styles.elementAt(3), checked: checked[3], icon: const Icon(Icons.traffic_sharp)),
 
-*/
-                        CheckboxListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                            title: Text('Take out the trash.', style: styles.elementAt(1)),
-                            value: checked[1],
-                            onChanged: (value) {
-                              setState(() {
-                                checked[1] = value!;
-                                styleSwitcher(1, value);
-                              });
-                            },
-                            secondary: const Icon(Icons.delete)),
-                        CheckboxListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                            title: Text('Take out the trash.', style: styles.elementAt(2)),
-                            value: checked[2],
-                            onChanged: (value) {
-                              setState(() {
-                                checked[2] = value!;
-                                styleSwitcher(2, value);
-                              });
-                            },
-                            secondary: const Icon(Icons.delete)),
-                        CheckboxListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                            title: Text('Take out the trash.', style: styles.elementAt(3)),
-                            value: checked[3],
-                            onChanged: (value) {
-                              setState(() {
-                                checked[3] = value!;
-                                styleSwitcher(3, value);
-                              });
-                            },
-                            secondary: const Icon(Icons.delete)),
                       ],
                     )
                   ),
@@ -246,7 +111,7 @@ class _CurrentPageState extends State<CurrentPage> {
                   closedColor: Theme.of(context).colorScheme.surfaceVariant,
                   middleColor: Theme.of(context).colorScheme.background,
                   openColor:  Theme.of(context).colorScheme.background,
-                  transitionDuration: Duration(milliseconds: 350),
+                  transitionDuration: const Duration(milliseconds: 350),
                   closedShape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -269,7 +134,7 @@ class _CurrentPageState extends State<CurrentPage> {
                     closedColor: Theme.of(context).colorScheme.surfaceVariant,
                     middleColor: Theme.of(context).colorScheme.background,
                     openColor:  Theme.of(context).colorScheme.background,
-                    transitionDuration: Duration(milliseconds: 350),
+                    transitionDuration: const Duration(milliseconds: 350),
                     closedShape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -292,7 +157,7 @@ class _CurrentPageState extends State<CurrentPage> {
                     closedColor: Theme.of(context).colorScheme.surfaceVariant,
                     middleColor: Theme.of(context).colorScheme.background,
                     openColor:  Theme.of(context).colorScheme.background,
-                    transitionDuration: Duration(milliseconds: 350),
+                    transitionDuration: const Duration(milliseconds: 350),
                     closedShape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -312,5 +177,58 @@ class _CurrentPageState extends State<CurrentPage> {
         ],
       ),
     );
+  }
+}
+
+
+
+class CheckboxTile extends StatefulWidget {
+  CheckboxTile({super.key, required this.title, required this.style, required this.checked, required this.icon});
+
+  String title = "";
+  TextStyle style = const TextStyle(decoration: TextDecoration.none,);
+  bool checked = false;
+  Icon icon = const Icon(Icons.delete);
+
+  @override
+  State<CheckboxTile> createState() => _CheckboxTileState(title, style, checked, icon);
+
+
+}
+
+class _CheckboxTileState extends State<CheckboxTile> {
+  _CheckboxTileState(this.title, this.style, this.checked, this.icon);
+
+  String title = "";
+  TextStyle style = const TextStyle(decoration: TextDecoration.none,);
+  bool checked = false;
+  Icon icon = const Icon(Icons.delete);
+
+
+  void styleSwitcher(bool value) {
+    if (value) {
+      style = TextStyle(decoration: TextDecoration.lineThrough, color: style.color?.withOpacity(0.75));
+    } else {
+      style = TextStyle(decoration: TextDecoration.none, color: style.color?.withOpacity(1));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return CheckboxListTile(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        title: Text(title, style: style),
+        value: checked,
+        onChanged: (value) {
+          setState(() {
+            checked = value!;
+            styleSwitcher(value);
+          });
+        },
+        secondary: icon);
   }
 }

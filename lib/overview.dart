@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
   List<DataRow2> _generateRows() {
     List<DataRow2> rows = [];
     int variant = 0;
-    for (int i = 0; i < 50; i++) {
+    for (int i = 0; i < 52; i++) {
       if (variant == 0) {
         rows.add(DataRow2(cells: [
           DataCell(Container(decoration: const BoxDecoration(border: Border(right: BorderSide(width: 1, color: Colors.black26))), child: Center(child: Text((i+1).toString(), style: const TextStyle(fontWeight: FontWeight.bold)))), onTap: () { debugPrint('Cell tapped.');}),
