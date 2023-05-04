@@ -1,12 +1,11 @@
-import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:convert';
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter/scheduler.dart' show timeDilation;
+import 'navigationbar.dart' as navBar;
 
 import 'checklist.dart';
 
@@ -22,7 +21,6 @@ class CurrentPage extends StatefulWidget {
 class _CurrentPageState extends State<CurrentPage> {
   Map<String, dynamic>? file;
 
-  Color buttonColor = Colors.greenAccent.withOpacity(0.75);
   int tasksAmount = 5;
 
   BoolList checked = BoolList(5);
@@ -84,8 +82,17 @@ class _CurrentPageState extends State<CurrentPage> {
             elevation: 0,
             color: Theme.of(context).colorScheme.surfaceVariant,
             child: SizedBox(
-              width: 348,
-              height: 400,
+              width:
+                  clampDouble(MediaQuery.of(context).size.width - 14, 0, 500),
+              height: clampDouble(
+                  MediaQuery.of(context).size.height -
+                      navBar.getAppBarHeight() -
+                      MediaQuery.of(context).padding.top -
+                      clampDouble(
+                          MediaQuery.of(context).size.width / 3 - 10, 0, 161) -
+                      14,
+                  0,
+                  500),
               child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: Scrollbar(
@@ -136,9 +143,11 @@ class _CurrentPageState extends State<CurrentPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     closedBuilder: (context, action) {
-                      return const SizedBox(
-                        width: 111,
-                        height: 111,
+                      return SizedBox(
+                        width: clampDouble(
+                            MediaQuery.of(context).size.width / 3 - 10, 0, 161),
+                        height: clampDouble(
+                            MediaQuery.of(context).size.width / 3 - 10, 0, 161),
                         child: Center(child: Text('Test')),
                       );
                     },
@@ -160,9 +169,11 @@ class _CurrentPageState extends State<CurrentPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     closedBuilder: (context, action) {
-                      return const SizedBox(
-                        width: 111,
-                        height: 111,
+                      return SizedBox(
+                        width: clampDouble(
+                            MediaQuery.of(context).size.width / 3 - 10, 0, 161),
+                        height: clampDouble(
+                            MediaQuery.of(context).size.width / 3 - 10, 0, 161),
                         child: Center(child: Text('Test')),
                       );
                     },
@@ -184,9 +195,11 @@ class _CurrentPageState extends State<CurrentPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     closedBuilder: (context, action) {
-                      return const SizedBox(
-                        width: 111,
-                        height: 111,
+                      return SizedBox(
+                        width: clampDouble(
+                            MediaQuery.of(context).size.width / 3 - 10, 0, 161),
+                        height: clampDouble(
+                            MediaQuery.of(context).size.width / 3 - 10, 0, 161),
                         child: Center(child: Text('Test')),
                       );
                     },
