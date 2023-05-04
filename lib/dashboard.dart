@@ -84,15 +84,13 @@ class _CurrentPageState extends State<CurrentPage> {
             child: SizedBox(
               width:
                   clampDouble(MediaQuery.of(context).size.width - 14, 0, 500),
-              height: clampDouble(
+              height:
                   MediaQuery.of(context).size.height -
-                      navBar.getAppBarHeight() -
+                      navBar.getPaddings() -
                       MediaQuery.of(context).padding.top -
                       clampDouble(
                           MediaQuery.of(context).size.width / 3 - 10, 0, 161) -
-                      14,
-                  0,
-                  500),
+                      55,
               child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: Scrollbar(
