@@ -5,6 +5,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dashboard.dart';
 import 'settings.dart';
 
+late Scaffold scaffold;
+
 class NavBar extends StatefulWidget {
   const NavBar({Key? key}) : super(key: key);
 
@@ -29,7 +31,7 @@ class _NavBarState extends State<NavBar> {
       );
     }
 
-    return Scaffold(
+    scaffold = Scaffold(
         appBar: AppBar(
           title: const Text('Chores'),
           actions: <Widget>[
@@ -77,5 +79,11 @@ class _NavBarState extends State<NavBar> {
             ],
           ),
         ));
+    return scaffold;
   }
+}
+
+double getAppBarHeight() {
+  print(scaffold.appBar!.preferredSize.height);
+  return scaffold.appBar!.preferredSize.height;
 }

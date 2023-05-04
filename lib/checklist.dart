@@ -18,7 +18,7 @@ class _ChecklistState extends State<ChecklistPage> {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settings),
       ),
-      body: Center(
+      body: const Center(
         child: Text('lmao'),
       ),
     );
