@@ -6,6 +6,7 @@ import 'dashboard.dart';
 import 'settings.dart';
 
 late Scaffold scaffold;
+late NavigationBarThemeData navBarTheme;
 
 class NavBar extends StatefulWidget {
   const NavBar({Key? key}) : super(key: key);
@@ -31,6 +32,13 @@ class _NavBarState extends State<NavBar> {
       );
     }
 
+    navBarTheme = NavigationBarThemeData(
+      labelTextStyle: MaterialStateTextStyle.resolveWith((states) =>
+          GoogleFonts.openSans(
+              fontStyle: FontStyle.normal, fontSize: 13)),
+      height: 80,
+    );
+
     scaffold = Scaffold(
         appBar: AppBar(
           title: const Text('Chores'),
@@ -54,11 +62,7 @@ class _NavBarState extends State<NavBar> {
           children: pages,
         ),
         bottomNavigationBar: NavigationBarTheme(
-          data: NavigationBarThemeData(
-            labelTextStyle: MaterialStateTextStyle.resolveWith((states) =>
-                GoogleFonts.openSans(
-                    fontStyle: FontStyle.normal, fontSize: 13)),
-          ),
+          data: navBarTheme,
           child: NavigationBar(
             selectedIndex: _currentIndex,
             labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
@@ -83,7 +87,6 @@ class _NavBarState extends State<NavBar> {
   }
 }
 
-double getAppBarHeight() {
-  print(scaffold.appBar!.preferredSize.height);
-  return scaffold.appBar!.preferredSize.height;
+double getPaddings() {
+  return scaffold.appBar!.preferredSize.height + navBarTheme.height!;
 }
