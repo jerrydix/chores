@@ -33,17 +33,18 @@ class _NavBarState extends State<NavBar> {
         appBar: AppBar(
           title: const Text('Chores'),
           actions: <Widget>[
-              PopupMenuButton<String>(
-                onSelected: openSettings,
-                itemBuilder: (BuildContext context) {
-                  return {AppLocalizations.of(context)!.settings}.map((String choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(choice),
-                    );
-                  }).toList();
-                },
-              ),
+            PopupMenuButton<String>(
+              onSelected: openSettings,
+              itemBuilder: (BuildContext context) {
+                return {AppLocalizations.of(context)!.settings}
+                    .map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            ),
           ],
         ),
         body: IndexedStack(
