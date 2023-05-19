@@ -16,10 +16,32 @@ class _ChecklistState extends State<ChecklistPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settings),
+        title: Text(AppLocalizations.of(context)!.bathroom),
       ),
-      body: const Center(
-        child: Text('lmao'),
+      body: ListView(
+        children: const [
+          ListTile(
+            leading: Icon(
+              Icons.icecream_outlined,
+            ),
+            title: Text("test"),
+            trailing: Icon(Icons.check_box_outline_blank_rounded),
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.icecream_outlined,
+            ),
+            title: Text("test"),
+            trailing: Icon(Icons.check_box),
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.icecream_outlined,
+            ),
+            title: Text("test"),
+            trailing: Icon(Icons.check_box),
+          ),
+        ],
       ),
     );
   }
