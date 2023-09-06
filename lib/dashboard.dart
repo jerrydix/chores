@@ -146,7 +146,7 @@ class _CurrentPageState extends State<CurrentPage> {
                             MediaQuery.of(context).size.width / 3 - 10, 0, 161),
                         height: clampDouble(
                             MediaQuery.of(context).size.width / 3 - 10, 0, 161),
-                        child: Center(child: Text('Test')),
+                        child: Center(child: Text('Simon')),
                       );
                     },
                     openBuilder: (context, action) {
@@ -172,7 +172,7 @@ class _CurrentPageState extends State<CurrentPage> {
                             MediaQuery.of(context).size.width / 3 - 10, 0, 161),
                         height: clampDouble(
                             MediaQuery.of(context).size.width / 3 - 10, 0, 161),
-                        child: Center(child: Text('Test')),
+                        child: Center(child: Text('Noah')),
                       );
                     },
                     openBuilder: (context, action) {
@@ -198,7 +198,7 @@ class _CurrentPageState extends State<CurrentPage> {
                             MediaQuery.of(context).size.width / 3 - 10, 0, 161),
                         height: clampDouble(
                             MediaQuery.of(context).size.width / 3 - 10, 0, 161),
-                        child: Center(child: Text('Test')),
+                        child: Center(child: Text('David')),
                       );
                     },
                     openBuilder: (context, action) {

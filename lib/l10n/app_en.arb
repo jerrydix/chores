@@ -25,13 +25,16 @@
   "garbage": "Garbage Master",
   "plastic": "Plastic waste",
   "residual": "Residual waste",
+  "organic": "Organic waste",
   "paper": "Paper waste",
   "glass": "Glass waste",
+  "returnable": "Return bottles",
   "bathroom": "Bathroom master",
   "mirrors": "Clean mirrors",
   "sink": "Clean sink",
   "bath": "Clean bath",
-  "dust": "Wipe dust",
+  "dust": "Wipe dust on shelf and surfaces",
+  "carpet": "Change carpet",
   "b_waste": "Take out bathroom waste",
   "kitchen": "Kitchen Chef",
   "surfaces": "Clean surfaces, including table",
@@ -39,5 +42,9 @@
   "g_surfaces": "Clean glass surfaces (oven, microwave)",
   "fridge": "Empty fridge",
   "cloths": "Wash cloths and towel",
-  "vacuum": "Vacuumator"
+  "vacuum": "Vacuumator",
+  "v_kitchen": "Vacuum kitchen",
+  "v_bath": "Vacuum bathroom",
+  "v_living": "Vacuum living room",
+  "v_stairs": "Vacuum stairs"
 }
