@@ -32,14 +32,14 @@ class _ChecklistState extends State<ChecklistPage> {
               Icons.icecream_outlined,
             ),
             title: Text("test"),
-            trailing: Icon(Icons.check_box),
+            trailing: Icon(Icons.check_box_rounded),
           ),
           ListTile(
             leading: Icon(
               Icons.icecream_outlined,
             ),
             title: Text("test"),
-            trailing: Icon(Icons.check_box),
+            trailing: Icon(Icons.check_box_rounded),
           ),
         ],
       ),
