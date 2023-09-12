@@ -8,10 +8,10 @@ import 'firebase_options.dart';
 import 'utils/userprefs.dart';
 
 void main() async {
-  runApp(const MyApp());
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
