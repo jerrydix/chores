@@ -1,11 +1,8 @@
-import 'dart:ui';
-
 import 'package:chores/user_auth/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-import 'widgets/navigationbar.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'utils/userprefs.dart';
@@ -15,7 +12,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
 }
 
 class MyApp extends StatefulWidget {
@@ -24,13 +20,11 @@ class MyApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MyAppState();
 
-
   static _MyAppState of(BuildContext context) =>
       context.findAncestorStateOfType<_MyAppState>()!;
 }
 
 class _MyAppState extends State<MyApp> {
-
   ThemeMode? _themeMode;
   Locale? _locale;
 
@@ -64,33 +58,39 @@ class _MyAppState extends State<MyApp> {
   void init() async {
     await UserPreferences.init();
     switch (UserPreferences.getLanguage()) {
-      case 0: {
-        _locale = const Locale('en');
-        break;
-      }
-      case 1: {
-        _locale = const Locale('de');
-        break;
-      }
-      case 2: {
-        _locale = const Locale('ru');
-        break;
-      }
+      case 0:
+        {
+          _locale = const Locale('en');
+          break;
+        }
+      case 1:
+        {
+          _locale = const Locale('de');
+          break;
+        }
+      case 2:
+        {
+          _locale = const Locale('ru');
+          break;
+        }
     }
 
     switch (UserPreferences.getTheme()) {
-      case 0: {
-        _themeMode = ThemeMode.system;
-        break;
-      }
-      case 1: {
-        _themeMode = ThemeMode.light;
-        break;
-      }
-      case 2: {
-        _themeMode = ThemeMode.dark;
-        break;
-      }
+      case 0:
+        {
+          _themeMode = ThemeMode.system;
+          break;
+        }
+      case 1:
+        {
+          _themeMode = ThemeMode.light;
+          break;
+        }
+      case 2:
+        {
+          _themeMode = ThemeMode.dark;
+          break;
+        }
     }
   }
 
@@ -98,32 +98,27 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     init();
     return DynamicColorBuilder(
-      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-        return MaterialApp(
-          title: 'Chores',
-          theme: setThemeData(lightDynamic, Brightness.light),
-          darkTheme: setThemeData(darkDynamic, Brightness.dark),
-          themeMode: _themeMode,
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('en'),
-            Locale('de'),
-            Locale('ru'),
-          ],
-          locale: _locale,
-          home: const LoginPage(), //check if persisted login, then go to home page, if not go to register / login page
-        );
-      }
-    );
+        builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+      return MaterialApp(
+        title: 'Chores',
+        theme: setThemeData(lightDynamic, Brightness.light),
+        darkTheme: setThemeData(darkDynamic, Brightness.dark),
+        themeMode: _themeMode,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'),
+          Locale('de'),
+          Locale('ru'),
+        ],
+        locale: _locale,
+        home:
+            const LoginPage(), //check if persisted login, then go to home page, if not go to register / login page
+      );
+    });
   }
 }
-
-
-
-
-

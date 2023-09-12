@@ -67,7 +67,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '173688729888',
     projectId: 'chores-4725c',
     storageBucket: 'chores-4725c.appspot.com',
-    iosClientId: '173688729888-p0kiaemtugiu7smd9ouodcoqbvuvnbeh.apps.googleusercontent.com',
+    iosClientId:
+        '173688729888-p0kiaemtugiu7smd9ouodcoqbvuvnbeh.apps.googleusercontent.com',
     iosBundleId: 'com.example.chores',
   );
 
@@ -77,7 +78,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '173688729888',
     projectId: 'chores-4725c',
     storageBucket: 'chores-4725c.appspot.com',
-    iosClientId: '173688729888-p0kiaemtugiu7smd9ouodcoqbvuvnbeh.apps.googleusercontent.com',
+    iosClientId:
+        '173688729888-p0kiaemtugiu7smd9ouodcoqbvuvnbeh.apps.googleusercontent.com',
     iosBundleId: 'com.example.chores',
   );
 }
