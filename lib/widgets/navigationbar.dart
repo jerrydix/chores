@@ -5,6 +5,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../dashboard.dart';
 import '../settings.dart';
 
+late Scaffold scaffold;
+late NavigationBarThemeData navBarTheme;
+
 class NavBar extends StatefulWidget {
   const NavBar({Key? key}) : super(key: key);
 
@@ -29,21 +32,29 @@ class _NavBarState extends State<NavBar> {
       );
     }
 
-    return Scaffold(
+    navBarTheme = NavigationBarThemeData(
+      labelTextStyle: MaterialStateTextStyle.resolveWith((states) =>
+          GoogleFonts.openSans(
+              fontStyle: FontStyle.normal, fontSize: 13)),
+      height: 80,
+    );
+
+    scaffold = Scaffold(
         appBar: AppBar(
           title: const Text('Chores'),
           actions: <Widget>[
-              PopupMenuButton<String>(
-                onSelected: openSettings,
-                itemBuilder: (BuildContext context) {
-                  return {AppLocalizations.of(context)!.settings}.map((String choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(choice),
-                    );
-                  }).toList();
-                },
-              ),
+            PopupMenuButton<String>(
+              onSelected: openSettings,
+              itemBuilder: (BuildContext context) {
+                return {AppLocalizations.of(context)!.settings}
+                    .map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            ),
           ],
         ),
         body: IndexedStack(
@@ -51,11 +62,7 @@ class _NavBarState extends State<NavBar> {
           children: pages,
         ),
         bottomNavigationBar: NavigationBarTheme(
-          data: NavigationBarThemeData(
-            labelTextStyle: MaterialStateTextStyle.resolveWith((states) =>
-                GoogleFonts.openSans(
-                    fontStyle: FontStyle.normal, fontSize: 13)),
-          ),
+          data: navBarTheme,
           child: NavigationBar(
             selectedIndex: _currentIndex,
             labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
@@ -76,5 +83,10 @@ class _NavBarState extends State<NavBar> {
             ],
           ),
         ));
+    return scaffold;
   }
+}
+
+double getPaddings() {
+  return scaffold.appBar!.preferredSize.height + navBarTheme.height!;
 }
