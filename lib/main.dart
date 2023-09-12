@@ -1,10 +1,11 @@
 import 'dart:ui';
 
+import 'package:chores/user_auth/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-import 'navigationbar.dart';
+import 'widgets/navigationbar.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'utils/userprefs.dart';
@@ -115,7 +116,7 @@ class _MyAppState extends State<MyApp> {
             Locale('ru'),
           ],
           locale: _locale,
-          home: const NavBar(),
+          home: const LoginPage(), //check if persisted login, then go to home page, if not go to register / login page
         );
       }
     );

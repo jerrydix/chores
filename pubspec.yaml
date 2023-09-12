@@ -43,11 +43,14 @@ dependencies:
     sdk: flutter
   intl: any
   url_launcher: ^6.1.10
-  flutter_launcher_icons: ^0.12.0
   flutter_animated_dialog: ^2.0.1
   dynamic_color: ^1.6.2
   firebase_core: ^2.9.0
   animations: ^2.0.7
+  firebase_auth: ^4.9.0
+  flutter_launcher_icons: ^0.13.1
+  cloud_firestore: ^4.9.1
+  firebase_storage: ^11.2.6
   #flutter_local_notifications: ^8.2.0
 
 dev_dependencies:
@@ -60,7 +63,6 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-  flutter_launcher_icons: ^0.12.0
 
 flutter_icons:
   android: true
