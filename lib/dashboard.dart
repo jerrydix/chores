@@ -5,7 +5,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:convert';
-import 'navigationbar.dart' as navBar;
+import 'widgets/navigationbar.dart' as navBar;
 
 import 'checklist.dart';
 
