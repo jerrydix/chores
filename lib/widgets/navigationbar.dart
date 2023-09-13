@@ -83,7 +83,7 @@ class _NavBarState extends State<NavBar> {
             ],
           ),
         ));
-    return scaffold;
+    return SelectionArea(child: scaffold);
   }
 }
 

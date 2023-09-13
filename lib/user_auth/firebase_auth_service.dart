@@ -9,7 +9,7 @@ class FirebaseAuthService {
       UserCredential credential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       return credential.user;
     } catch (e) {
-      print("An error occured");
+      print("An error occurred");
     }
     return null;
 

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
 import 'package:chores/user_auth/pages/signup.dart';
 import 'package:chores/user_auth/firebase_auth_service.dart';
+import 'package:chores/widgets/navigationbar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -29,10 +31,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Login"),
-      ),
+    return SelectionArea(child: Scaffold(
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -58,16 +57,24 @@ class _LoginPageState extends State<LoginPage> {
                 isPasswordField: true,
               ),
               const SizedBox(height: 30,),
-              GestureDetector(
-                onTap: _signIn,
-                child: Container(
-                  width: double.infinity,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(10),
+              Material(
+                color: Theme.of(context).colorScheme.secondary,
+                borderRadius: BorderRadius.circular(30),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(30),
+                  splashColor: Theme.of(context).colorScheme.surfaceTint.withOpacity(0.75),
+                  enableFeedback: true,
+                  onTap: _signIn,
+                  child: Container(
+                    constraints: const BoxConstraints(maxWidth: 400),
+                    width: double.infinity,
+                    height: 45,
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Center(child: Text("Login", style: TextStyle(color: Theme.of(context).colorScheme.surface, fontWeight: FontWeight.bold, fontSize: 17),)),
                   ),
-                  child: const Center(child:Text("Login",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)),
                 ),
               ),
               const SizedBox(height: 20,),
@@ -75,33 +82,49 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   const Text("Don't have an account?"),
                   const SizedBox(width: 5,),
-                  GestureDetector(
+                  InkWell(
                       onTap: (){
                         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignUpPage()), (route) => false);
                       },
-                      child: const Text("Sign Up",style: TextStyle(color: Colors.blue,fontWeight: FontWeight.bold),))
+                      borderRadius: BorderRadius.circular(5),
+                      child: Text("Sign Up", style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),))
                 ],
               )
             ],
           ),
         ),
       ),
-    );
+    ),);
   }
 
-  void _signIn() async {
+  Future<Future<bool?>?> _signIn() async {
 
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    User? user = await _auth.signInWithEmailAndPassword(email, password);
+    //User? user = await _auth.signInWithEmailAndPassword(email, password);
 
-    if (user!= null){
-      print("Successfully signed in");
-      Navigator.pushNamed(context, "/home");
-    } else{
-      print("Error signing in");
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const NavBar(),
+          ),
+              (route) => false
+      );
+    } on FirebaseAuthException catch  (e) {
+      print('Failed with error code: ${e.code}');
+      print(e.message);
+      return Fluttertoast.showToast(
+        msg: e.message.toString(),
+        textColor: Theme.of(context).colorScheme.error,
+        gravity: ToastGravity.CENTER,
+        toastLength: Toast.LENGTH_SHORT,
+      );
     }
-
+    return null;
   }
 }

@@ -7,7 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:convert';
 import 'widgets/navigationbar.dart' as navBar;
 
-import 'checklist.dart';
+import 'widgets/checklist.dart';
 
 class CurrentPage extends StatefulWidget {
   const CurrentPage({super.key, required this.title});
@@ -146,59 +146,66 @@ class _CurrentPageState extends State<CurrentPage> {
                             MediaQuery.of(context).size.width / 3 - 10, 0, 161),
                         height: clampDouble(
                             MediaQuery.of(context).size.width / 3 - 10, 0, 161),
+                        child: const InkWell(
+                          child: Center(child: Text('Simon')),
+                        ),
+                      );
+                    },
+                    openBuilder: (context, action) {
+                      return const ChecklistPage(
+                          title: 'Garbage Man', list: <String>[]);
+                    }),
+              ),
+              Card(
+                elevation: 0,
+                color: Theme.of(context).colorScheme.surfaceVariant,
+                child: OpenContainer(
+                    transitionType: ContainerTransitionType.fadeThrough,
+                    closedColor: Theme.of(context).colorScheme.surfaceVariant,
+                    middleColor: Theme.of(context).colorScheme.background,
+                    openColor: Theme.of(context).colorScheme.background,
+                    transitionDuration: const Duration(milliseconds: 350),
+                    closedShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    closedBuilder: (context, action) {
+                      return SizedBox(
+                        width: clampDouble(
+                            MediaQuery.of(context).size.width / 3 - 10, 0, 161),
+                        height: clampDouble(
+                            MediaQuery.of(context).size.width / 3 - 10, 0, 161),
+                        child: const InkWell(
+                          child: Center(child: Text('Simon')),
+                        ),
+                      );
+                    },
+                    openBuilder: (context, action) {
+                      return const ChecklistPage(
+                          title: 'Garbage Man', list: <String>[]);
+                    }),
+              ),
+              Card(
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                color: Theme.of(context).colorScheme.surfaceVariant,
+                child: OpenContainer(
+                    transitionType: ContainerTransitionType.fadeThrough,
+                    closedColor: Theme.of(context).colorScheme.surfaceVariant,
+                    middleColor: Theme.of(context).colorScheme.background,
+                    openColor: Theme.of(context).colorScheme.background,
+                    transitionDuration: const Duration(milliseconds: 350),
+                    closedShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    closedBuilder: (context, action) {
+                      return SizedBox(
+                        width: clampDouble(
+                        MediaQuery.of(context).size.width / 3 - 10, 0, 161),
+                        height: clampDouble(
+                        MediaQuery.of(context).size.width / 3 - 10, 0, 161),
                         child: Center(child: Text('Simon')),
-                      );
-                    },
-                    openBuilder: (context, action) {
-                      return const ChecklistPage(
-                          title: 'Garbage Man', list: <String>[]);
-                    }),
-              ),
-              Card(
-                elevation: 0,
-                color: Theme.of(context).colorScheme.surfaceVariant,
-                child: OpenContainer(
-                    transitionType: ContainerTransitionType.fadeThrough,
-                    closedColor: Theme.of(context).colorScheme.surfaceVariant,
-                    middleColor: Theme.of(context).colorScheme.background,
-                    openColor: Theme.of(context).colorScheme.background,
-                    transitionDuration: const Duration(milliseconds: 350),
-                    closedShape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    closedBuilder: (context, action) {
-                      return SizedBox(
-                        width: clampDouble(
-                            MediaQuery.of(context).size.width / 3 - 10, 0, 161),
-                        height: clampDouble(
-                            MediaQuery.of(context).size.width / 3 - 10, 0, 161),
-                        child: Center(child: Text('Noah')),
-                      );
-                    },
-                    openBuilder: (context, action) {
-                      return const ChecklistPage(
-                          title: 'Garbage Man', list: <String>[]);
-                    }),
-              ),
-              Card(
-                elevation: 0,
-                color: Theme.of(context).colorScheme.surfaceVariant,
-                child: OpenContainer(
-                    transitionType: ContainerTransitionType.fadeThrough,
-                    closedColor: Theme.of(context).colorScheme.surfaceVariant,
-                    middleColor: Theme.of(context).colorScheme.background,
-                    openColor: Theme.of(context).colorScheme.background,
-                    transitionDuration: const Duration(milliseconds: 350),
-                    closedShape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    closedBuilder: (context, action) {
-                      return SizedBox(
-                        width: clampDouble(
-                            MediaQuery.of(context).size.width / 3 - 10, 0, 161),
-                        height: clampDouble(
-                            MediaQuery.of(context).size.width / 3 - 10, 0, 161),
-                        child: Center(child: Text('David')),
                       );
                     },
                     openBuilder: (context, action) {
