@@ -1,9 +1,11 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/user_auth/firebase_auth_service.dart';
 import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
+import 'package:chores/widgets/navigationbar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 
 
 class SignUpPage extends StatefulWidget {
@@ -32,10 +34,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Chores Sign Up"),
-      ),
+    return SelectionArea(child: Scaffold(
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -73,20 +72,24 @@ class _SignUpPageState extends State<SignUpPage> {
               const SizedBox(
                 height: 30,
               ),
-              GestureDetector(
-                onTap: _signUp,
-                child: Container(
-                  width: double.infinity,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(10),
+              Material(
+                color: Theme.of(context).colorScheme.secondary,
+                borderRadius: BorderRadius.circular(30),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(30),
+                  splashColor: Theme.of(context).colorScheme.surfaceTint.withOpacity(0.75),
+                  enableFeedback: true,
+                  onTap: _signUp,
+                  child: Container(
+                    constraints: const BoxConstraints(maxWidth: 400),
+                    width: double.infinity,
+                    height: 45,
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Center(child: Text("Sign Up", style: TextStyle(color: Theme.of(context).colorScheme.surface, fontWeight: FontWeight.bold, fontSize: 17),)),
                   ),
-                  child: const Center(
-                      child: Text(
-                        "Sign Up",
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                      )),
                 ),
               ),
               const SizedBox(height: 20,),
@@ -94,33 +97,50 @@ class _SignUpPageState extends State<SignUpPage> {
                 children: [
                   const Text("Already have an account?"),
                   const SizedBox(width: 5,),
-                  GestureDetector(
+                  InkWell(
                       onTap: () {
                         Navigator.pushAndRemoveUntil(
                             context, MaterialPageRoute(builder: (context) => LoginPage()), (route) => false);
                       },
-                      child: const Text("Login", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),))
+                      borderRadius: BorderRadius.circular(5),
+                      child: Text("Login", style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),))
                 ],
               )
             ],
           ),
         ),
       ),
-    );
+    ),);
   }
 
-  void _signUp() async {
+  Future<Future<bool?>?> _signUp() async {
     String username = _usernameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    User? user = await _auth.signUpWithEmailAndPassword(email, password);
+    //User? user = await _auth.signUpWithEmailAndPassword(email, password);
 
-    if (user!= null) {
-      print("User is successfully created");
-      Navigator.pushNamed(context, "/home");
-    } else {
-      print("An error creating the user occurred");
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+      );
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const NavBar(),
+          ),
+              (route) => false
+      );
+    } on FirebaseAuthException catch  (e) {
+      print('Failed with error code: ${e.code}');
+      print(e.message);
+      return Fluttertoast.showToast(
+        msg: e.message.toString(),
+        textColor: Theme.of(context).colorScheme.error,
+        gravity: ToastGravity.CENTER,
+        toastLength: Toast.LENGTH_SHORT,
+      );
     }
+    return null;
   }
 }

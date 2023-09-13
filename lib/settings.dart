@@ -476,7 +476,7 @@ class _SettingsPageState extends State<SettingsPage> {
       init();
       first = false;
     }
-    return Scaffold(
+    return SelectionArea(child: Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settings),
       ),
@@ -546,6 +546,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ]),
         ],
       ),
-    );
+    ),);
   }
 }
