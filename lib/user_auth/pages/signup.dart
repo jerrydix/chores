@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:chores/user_auth/firebase_auth_service.dart';
+import 'package:chores/user_auth/authentication_provider.dart';
 import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
 import 'package:chores/widgets/navigationbar.dart';
@@ -16,8 +16,6 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-
-  final FirebaseAuthService _auth = FirebaseAuthService();
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -118,24 +116,15 @@ class _SignUpPageState extends State<SignUpPage> {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    //User? user = await _auth.signUpWithEmailAndPassword(email, password);
-
-    try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-      );
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) => const NavBar(),
-          ),
-              (route) => false
-      );
-    } on FirebaseAuthException catch  (e) {
-      print('Failed with error code: ${e.code}');
-      print(e.message);
+    String? message = await AuthenticationProvider(FirebaseAuth.instance).signUp(email: email, password: password);
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => const NavBar(),
+        ), (route) => false
+    );
+    if (message != null) {
       return Fluttertoast.showToast(
-        msg: e.message.toString(),
+        msg: message,
         textColor: Theme.of(context).colorScheme.error,
         gravity: ToastGravity.CENTER,
         toastLength: Toast.LENGTH_SHORT,

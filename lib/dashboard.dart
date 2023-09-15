@@ -10,9 +10,7 @@ import 'widgets/navigationbar.dart' as navBar;
 import 'widgets/checklist.dart';
 
 class CurrentPage extends StatefulWidget {
-  const CurrentPage({super.key, required this.title});
-
-  final String title;
+  const CurrentPage({super.key});
 
   @override
   State<CurrentPage> createState() => _CurrentPageState();
