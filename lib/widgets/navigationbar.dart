@@ -18,8 +18,8 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> {
   int _currentIndex = 0;
   List<Widget> pages = [
-    const CurrentPage(title: 'Current Chores'),
-    const HomePage(title: 'All Chores'),
+    const CurrentPage(),
+    const HomePage(),
   ];
 
   @override

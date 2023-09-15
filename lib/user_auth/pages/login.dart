@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
 import 'package:chores/user_auth/pages/signup.dart';
-import 'package:chores/user_auth/firebase_auth_service.dart';
+import 'package:chores/user_auth/authentication_provider.dart';
 import 'package:chores/widgets/navigationbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -15,8 +15,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
-  final FirebaseAuthService _auth = FirebaseAuthService();
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -38,6 +36,17 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset(
+                  "assets/logo.png",
+                  width: 125,
+                  height: 125,
+                  fit: BoxFit.cover,),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
               const Text(
                 "Login",
                 style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
@@ -104,22 +113,15 @@ class _LoginPageState extends State<LoginPage> {
 
     //User? user = await _auth.signInWithEmailAndPassword(email, password);
 
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) => const NavBar(),
-          ),
-              (route) => false
-      );
-    } on FirebaseAuthException catch  (e) {
-      print('Failed with error code: ${e.code}');
-      print(e.message);
+    String? message = await AuthenticationProvider(FirebaseAuth.instance).signIn(email: email, password: password);
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => const NavBar(),
+        ), (route) => false
+    );
+    if (message != null) {
       return Fluttertoast.showToast(
-        msg: e.message.toString(),
+        msg: message,
         textColor: Theme.of(context).colorScheme.error,
         gravity: ToastGravity.CENTER,
         toastLength: Toast.LENGTH_SHORT,

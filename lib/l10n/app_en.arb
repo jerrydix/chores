@@ -46,5 +46,7 @@
   "v_kitchen": "Vacuum kitchen",
   "v_bath": "Vacuum bathroom",
   "v_living": "Vacuum living room",
-  "v_stairs": "Vacuum stairs"
+  "v_stairs": "Vacuum stairs",
+  "logout": "Logout",
+  "logout_t": "Logout from Chores?"
 }

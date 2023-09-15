@@ -1,4 +1,7 @@
+import 'package:chores/user_auth/authentication_provider.dart';
+import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/utils/userprefs.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -309,6 +312,34 @@ class _SettingsPageState extends State<SettingsPage> {
         );
       });
 
+  Future openLogoutDialog() => showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            AppLocalizations.of(context)!.logout_t,
+            style: const TextStyle(fontSize: 20),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(AppLocalizations.of(context)!.cancel)),
+            TextButton(
+                onPressed: () {
+                  AuthenticationProvider(FirebaseAuth.instance).signOut();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const LoginPage(),
+                    ),
+                  );
+                },
+                child: Text(AppLocalizations.of(context)!.confirm)),
+          ],
+        );
+      });
+
   Future openThemeDialog() => showAnimatedDialog(
         barrierDismissible: true,
         animationType: DialogTransitionType.fade,
@@ -479,6 +510,14 @@ class _SettingsPageState extends State<SettingsPage> {
     return SelectionArea(child: Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settings),
+        actions: <Widget>[
+          Container(
+            padding: EdgeInsets.only(right: 10),
+            child: ElevatedButton(onPressed: () {
+              openLogoutDialog();
+            }, child: Text(AppLocalizations.of(context)!.logout)),
+          ),
+        ],
       ),
       body: SettingsList(
         sections: [

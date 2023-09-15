@@ -21,5 +21,7 @@
   "friday": "Einmal pro Woche (Freitag)",
   "en": "Englisch",
   "de": "Deutsch",
-  "ru": "Russisch"
+  "ru": "Russisch",
+  "logout": "Ausloggen",
+  "logout_t": "Aus Chores ausloggen?"
 }
