@@ -329,10 +329,10 @@ class _SettingsPageState extends State<SettingsPage> {
             TextButton(
                 onPressed: () {
                   AuthenticationProvider(FirebaseAuth.instance).signOut();
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const LoginPage(),
-                    ),
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) => const LoginPage(),
+                      ), (route) => false
                   );
                 },
                 child: Text(AppLocalizations.of(context)!.confirm)),

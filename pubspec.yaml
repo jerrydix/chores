@@ -53,6 +53,7 @@ dependencies:
   firebase_storage: ^11.2.6
   flutter_native_splash: ^2.2.19
   fluttertoast: ^8.2.2
+  percent_indicator: ^4.2.3
   #flutter_local_notifications: ^8.2.0
 
 dev_dependencies:

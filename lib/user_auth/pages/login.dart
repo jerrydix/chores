@@ -6,6 +6,8 @@ import 'package:chores/user_auth/authentication_provider.dart';
 import 'package:chores/widgets/navigationbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../../wg_selection.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -111,12 +113,10 @@ class _LoginPageState extends State<LoginPage> {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    //User? user = await _auth.signInWithEmailAndPassword(email, password);
-
     String? message = await AuthenticationProvider(FirebaseAuth.instance).signIn(email: email, password: password);
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
-          builder: (context) => const NavBar(),
+          builder: (context) => const WGSelection(), //TODO change back to NavBar()
         ), (route) => false
     );
     if (message != null) {
