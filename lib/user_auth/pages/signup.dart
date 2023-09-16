@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/user_auth/authentication_provider.dart';
@@ -5,6 +6,8 @@ import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
 import 'package:chores/widgets/navigationbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import '../../wg_selection.dart';
 
 
 
@@ -116,12 +119,11 @@ class _SignUpPageState extends State<SignUpPage> {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    String? message = await AuthenticationProvider(FirebaseAuth.instance).signUp(email: email, password: password);
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (context) => const NavBar(),
-        ), (route) => false
-    );
+    FirebaseAuth auth = FirebaseAuth.instance;
+
+    String? message = await AuthenticationProvider(auth).signUp(email: email, password: password);
+    User? user = auth.currentUser;
+
     if (message != null) {
       return Fluttertoast.showToast(
         msg: message,
@@ -130,6 +132,26 @@ class _SignUpPageState extends State<SignUpPage> {
         toastLength: Toast.LENGTH_SHORT,
       );
     }
+
+    if (user != null) {
+      await user.updateDisplayName(username);
+      await saveUserToDatabase(user: user, username: username);
+    }
+
+
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => const WGSelection(),
+        ), (route) => false
+    );
+
     return null;
+  }
+
+  Future saveUserToDatabase({required User user, required String username}) async {
+    await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+      'username': username,
+      'email': user.email,
+    });
   }
 }
