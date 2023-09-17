@@ -126,6 +126,11 @@ class _SettingsPageState extends State<SettingsPage> {
         }
     }
 
+    switchCurrentLanguageValue();
+
+  }
+
+  void switchCurrentLanguageValue() {
     switch (UserPreferences.getLanguage()) {
       case 0:
         {
@@ -491,6 +496,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         MyApp.of(context).setLocale(currentLocale);
                         this.setState(() {
                           currentLanguageValue = currentLanguage;
+                          switchCurrentLanguageValue();
                         });
                       },
                       child: Text(AppLocalizations.of(context)!.confirm)),

@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: 30,
               ),
               const Text(
-                "Login",
+                "Login to Chores",
                 style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
@@ -113,12 +113,10 @@ class _LoginPageState extends State<LoginPage> {
     String email = _emailController.text;
     String password = _passwordController.text;
 
+    const CircularProgressIndicator();
+
     String? message = await AuthenticationProvider(FirebaseAuth.instance).signIn(email: email, password: password);
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (context) => const WGSelection(), //TODO change back to NavBar()
-        ), (route) => false
-    );
+
     if (message != null) {
       return Fluttertoast.showToast(
         msg: message,
@@ -127,6 +125,13 @@ class _LoginPageState extends State<LoginPage> {
         toastLength: Toast.LENGTH_SHORT,
       );
     }
+
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => const NavBar(),
+        ), (route) => false
+    );
+
     return null;
   }
 }
