@@ -54,6 +54,7 @@ dependencies:
   flutter_native_splash: ^2.2.19
   fluttertoast: ^8.2.2
   percent_indicator: ^4.2.3
+  week_of_year: ^2.2.0
   #flutter_local_notifications: ^8.2.0
 
 dev_dependencies:

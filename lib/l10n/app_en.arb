@@ -48,5 +48,6 @@
   "v_living": "Vacuum living room",
   "v_stairs": "Vacuum stairs",
   "logout": "Logout",
-  "logout_t": "Logout from Chores?"
+  "logout_t": "Logout from Chores?",
+  "cw": "CW"
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:week_of_year/date_week_extensions.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -32,12 +33,25 @@ class _HomePageState extends State<HomePage> {
     return columns;
   }
 
+  //TODO wtf is this
   List<DataRow2> _generateRows() {
+
     List<DataRow2> rows = [];
     int variant = 0;
+    bool current = false;
+
     for (int i = 0; i < 52; i++) {
+
+      if (DateTime.now().weekOfYear == i + 1) {
+        current = true;
+      } else {
+        current = false;
+      }
+
       if (variant == 0) {
-        rows.add(DataRow2(cells: [
+        rows.add(DataRow2(
+          color: MaterialStateProperty.all(current ? Theme.of(context).colorScheme.primary.withOpacity(0.15) : Theme.of(context).colorScheme.surface,),
+            cells: [
           DataCell(
               Container(
                   decoration: const BoxDecoration(
@@ -68,7 +82,9 @@ class _HomePageState extends State<HomePage> {
         ]));
         variant++;
       } else if (variant == 1) {
-        rows.add(DataRow2(cells: [
+        rows.add(DataRow2(
+            color: MaterialStateProperty.all(current ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.surface,),
+            cells: [
           DataCell(
               Container(
                   decoration: const BoxDecoration(
@@ -99,7 +115,9 @@ class _HomePageState extends State<HomePage> {
         ]));
         variant++;
       } else if (variant == 2) {
-        rows.add(DataRow2(cells: [
+        rows.add(DataRow2(
+            color: MaterialStateProperty.all(current ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.surface,),
+            cells: [
           DataCell(
               Container(
                   decoration: const BoxDecoration(
@@ -130,7 +148,9 @@ class _HomePageState extends State<HomePage> {
         ]));
         variant++;
       } else if (variant == 3) {
-        rows.add(DataRow2(cells: [
+        rows.add(DataRow2(
+            color: MaterialStateProperty.all(current ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.surface,),
+            cells: [
           DataCell(
               Container(
                   decoration: const BoxDecoration(
