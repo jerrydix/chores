@@ -42,8 +42,19 @@ class _SignUpPageState extends State<SignUpPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset(
+                  "assets/logo.png",
+                  width: 125,
+                  height: 125,
+                  fit: BoxFit.cover,),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
               const Text(
-                "Sign Up",
+                "Sign Up to Chores",
                 style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
@@ -120,7 +131,7 @@ class _SignUpPageState extends State<SignUpPage> {
     String password = _passwordController.text;
 
     FirebaseAuth auth = FirebaseAuth.instance;
-
+    const CircularProgressIndicator();
     String? message = await AuthenticationProvider(auth).signUp(email: email, password: password);
     User? user = auth.currentUser;
 
