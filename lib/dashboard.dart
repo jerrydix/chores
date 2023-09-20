@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:animations/animations.dart';
@@ -6,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:convert';
 import 'widgets/navigationbar.dart' as navBar;
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 
 import 'widgets/checklist.dart';
 
@@ -17,7 +21,9 @@ class CurrentPage extends StatefulWidget {
 }
 
 class _CurrentPageState extends State<CurrentPage> {
-  Map<String, dynamic>? file;
+
+  late int memberCount;
+  FirebaseFirestore db = FirebaseFirestore.instance;
 
   int tasksAmount = 5;
 
@@ -51,7 +57,6 @@ class _CurrentPageState extends State<CurrentPage> {
 
   Future<void> init() async {
     fillStyles();
-    file = jsonDecode(await _localFile);
   }
 
   void styleSwitcher(int i, bool value) {
@@ -66,29 +71,21 @@ class _CurrentPageState extends State<CurrentPage> {
     }
   }
 
-  Future<String> get _localFile async {
-    return rootBundle.loadString('assets/config.json');
-  }
-
   @override
   Widget build(BuildContext context) {
     init();
+    double actualHeight = kIsWeb ? MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom - navBar.getPaddings() : navBar.bodyHeight;
     return Center(
       child: Column(
         children: <Widget>[
           Card(
+            margin: EdgeInsets.all(10),
             elevation: 0,
             color: Theme.of(context).colorScheme.surfaceVariant,
             child: SizedBox(
               width:
-                  clampDouble(MediaQuery.of(context).size.width - 14, 0, 500),
-              height:
-                  MediaQuery.of(context).size.height -
-                      navBar.getPaddings() -
-                      MediaQuery.of(context).padding.top -
-                      clampDouble(
-                          MediaQuery.of(context).size.width / 3 - 10, 0, 161) -
-                      55,
+                  clampDouble(MediaQuery.of(context).size.width, 0, 500),
+              height: (actualHeight - 20) * (8/10),
               child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: Scrollbar(
@@ -128,6 +125,7 @@ class _CurrentPageState extends State<CurrentPage> {
             children: [
               Card(
                 elevation: 0,
+                margin: const EdgeInsets.only(left: 10, right: 5, bottom: 10),
                 color: Theme.of(context).colorScheme.surfaceVariant,
                 child: OpenContainer(
                     transitionType: ContainerTransitionType.fadeThrough,
@@ -141,9 +139,8 @@ class _CurrentPageState extends State<CurrentPage> {
                     closedBuilder: (context, action) {
                       return SizedBox(
                         width: clampDouble(
-                            MediaQuery.of(context).size.width / 3 - 10, 0, 161),
-                        height: clampDouble(
-                            MediaQuery.of(context).size.width / 3 - 10, 0, 161),
+                            MediaQuery.of(context).size.width / 3 - (13 + 1/3), 0, 161),
+                        height: (actualHeight - 20) * (2/10) - 10,
                         child: const InkWell(
                           child: Center(child: Text('Simon')),
                         ),
@@ -156,6 +153,7 @@ class _CurrentPageState extends State<CurrentPage> {
               ),
               Card(
                 elevation: 0,
+                margin: const EdgeInsets.only(right: 5, left: 5, bottom: 10),
                 color: Theme.of(context).colorScheme.surfaceVariant,
                 child: OpenContainer(
                     transitionType: ContainerTransitionType.fadeThrough,
@@ -169,9 +167,8 @@ class _CurrentPageState extends State<CurrentPage> {
                     closedBuilder: (context, action) {
                       return SizedBox(
                         width: clampDouble(
-                            MediaQuery.of(context).size.width / 3 - 10, 0, 161),
-                        height: clampDouble(
-                            MediaQuery.of(context).size.width / 3 - 10, 0, 161),
+                            MediaQuery.of(context).size.width / 3 - (13 + 1/3), 0, 161),
+                        height: (actualHeight - 20) * (2/10) - 10,
                         child: const InkWell(
                           child: Center(child: Text('Simon')),
                         ),
@@ -184,9 +181,7 @@ class _CurrentPageState extends State<CurrentPage> {
               ),
               Card(
                 elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                margin: const EdgeInsets.only(left: 5, right: 10, bottom: 10),
                 color: Theme.of(context).colorScheme.surfaceVariant,
                 child: OpenContainer(
                     transitionType: ContainerTransitionType.fadeThrough,
@@ -200,10 +195,11 @@ class _CurrentPageState extends State<CurrentPage> {
                     closedBuilder: (context, action) {
                       return SizedBox(
                         width: clampDouble(
-                        MediaQuery.of(context).size.width / 3 - 10, 0, 161),
-                        height: clampDouble(
-                        MediaQuery.of(context).size.width / 3 - 10, 0, 161),
-                        child: Center(child: Text('Simon')),
+                            MediaQuery.of(context).size.width / 3 - (13 + 1/3), 0, 161),
+                        height: (actualHeight - 20) * (2/10) - 10,
+                        child: const InkWell(
+                          child: Center(child: Text('Simon')),
+                        ),
                       );
                     },
                     openBuilder: (context, action) {
