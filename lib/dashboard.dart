@@ -1,17 +1,10 @@
-import 'dart:io';
 import 'dart:ui';
+import 'package:chores/widgets/dashboard_1.dart';
+import 'package:chores/widgets/dashboard_2.dart';
+import 'package:chores/widgets/dashboard_3.dart';
+import 'package:chores/widgets/dashboard_4.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:collection/collection.dart';
-import 'package:animations/animations.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'dart:convert';
-import 'widgets/navigationbar.dart' as navBar;
-import 'package:flutter/foundation.dart' show kIsWeb;
-
-
-import 'widgets/checklist.dart';
 
 class CurrentPage extends StatefulWidget {
   const CurrentPage({super.key});
@@ -22,21 +15,8 @@ class CurrentPage extends StatefulWidget {
 
 class _CurrentPageState extends State<CurrentPage> {
 
-  late int memberCount;
+  int memberCount = 3;
   FirebaseFirestore db = FirebaseFirestore.instance;
-
-  int tasksAmount = 5;
-
-  BoolList checked = BoolList(5);
-
-  List<TextStyle> styles = <TextStyle>[];
-  void fillStyles() {
-    for (int i = 0; i < tasksAmount; i++) {
-      styles.add(const TextStyle(
-        decoration: TextDecoration.none,
-      ));
-    }
-  }
 
   CheckboxListTile createCheckboxTile(Icon icon, Text text, bool? checked) {
     return CheckboxListTile(
@@ -55,163 +35,16 @@ class _CurrentPageState extends State<CurrentPage> {
         secondary: icon);
   }
 
-  Future<void> init() async {
-    fillStyles();
-  }
-
-  void styleSwitcher(int i, bool value) {
-    if (value) {
-      styles[i] = TextStyle(
-          decoration: TextDecoration.lineThrough,
-          color: styles[i].color?.withOpacity(0.75));
-    } else {
-      styles[i] = TextStyle(
-          decoration: TextDecoration.none,
-          color: styles[i].color?.withOpacity(1));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    init();
-    double actualHeight = kIsWeb ? MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom - navBar.getPaddings() : navBar.bodyHeight;
-    return Center(
-      child: Column(
-        children: <Widget>[
-          Card(
-            margin: EdgeInsets.all(10),
-            elevation: 0,
-            color: Theme.of(context).colorScheme.surfaceVariant,
-            child: SizedBox(
-              width:
-                  clampDouble(MediaQuery.of(context).size.width, 0, 500),
-              height: (actualHeight - 20) * (8/10),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Scrollbar(
-                  radius: const Radius.circular(10),
-                  thickness: 3,
-                  child: SingleChildScrollView(
-                      child: Column(
-                    children: [
-                      CheckboxTile(
-                          title: "test",
-                          style: styles.elementAt(0),
-                          checked: checked[0],
-                          icon: const Icon(Icons.abc)),
-                      CheckboxTile(
-                          title: "test",
-                          style: styles.elementAt(1),
-                          checked: checked[1],
-                          icon: const Icon(Icons.delete)),
-                      CheckboxTile(
-                          title: "test",
-                          style: styles.elementAt(2),
-                          checked: checked[2],
-                          icon: const Icon(Icons.airplane_ticket)),
-                      CheckboxTile(
-                          title: "test",
-                          style: styles.elementAt(3),
-                          checked: checked[3],
-                          icon: const Icon(Icons.traffic_sharp)),
-                    ],
-                  )),
-                ),
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Card(
-                elevation: 0,
-                margin: const EdgeInsets.only(left: 10, right: 5, bottom: 10),
-                color: Theme.of(context).colorScheme.surfaceVariant,
-                child: OpenContainer(
-                    transitionType: ContainerTransitionType.fadeThrough,
-                    closedColor: Theme.of(context).colorScheme.surfaceVariant,
-                    middleColor: Theme.of(context).colorScheme.background,
-                    openColor: Theme.of(context).colorScheme.background,
-                    transitionDuration: const Duration(milliseconds: 350),
-                    closedShape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    closedBuilder: (context, action) {
-                      return SizedBox(
-                        width: clampDouble(
-                            MediaQuery.of(context).size.width / 3 - (13 + 1/3), 0, 161),
-                        height: (actualHeight - 20) * (2/10) - 10,
-                        child: const InkWell(
-                          child: Center(child: Text('Simon')),
-                        ),
-                      );
-                    },
-                    openBuilder: (context, action) {
-                      return const ChecklistPage(
-                          title: 'Garbage Man', list: <String>[]);
-                    }),
-              ),
-              Card(
-                elevation: 0,
-                margin: const EdgeInsets.only(right: 5, left: 5, bottom: 10),
-                color: Theme.of(context).colorScheme.surfaceVariant,
-                child: OpenContainer(
-                    transitionType: ContainerTransitionType.fadeThrough,
-                    closedColor: Theme.of(context).colorScheme.surfaceVariant,
-                    middleColor: Theme.of(context).colorScheme.background,
-                    openColor: Theme.of(context).colorScheme.background,
-                    transitionDuration: const Duration(milliseconds: 350),
-                    closedShape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    closedBuilder: (context, action) {
-                      return SizedBox(
-                        width: clampDouble(
-                            MediaQuery.of(context).size.width / 3 - (13 + 1/3), 0, 161),
-                        height: (actualHeight - 20) * (2/10) - 10,
-                        child: const InkWell(
-                          child: Center(child: Text('Simon')),
-                        ),
-                      );
-                    },
-                    openBuilder: (context, action) {
-                      return const ChecklistPage(
-                          title: 'Garbage Man', list: <String>[]);
-                    }),
-              ),
-              Card(
-                elevation: 0,
-                margin: const EdgeInsets.only(left: 5, right: 10, bottom: 10),
-                color: Theme.of(context).colorScheme.surfaceVariant,
-                child: OpenContainer(
-                    transitionType: ContainerTransitionType.fadeThrough,
-                    closedColor: Theme.of(context).colorScheme.surfaceVariant,
-                    middleColor: Theme.of(context).colorScheme.background,
-                    openColor: Theme.of(context).colorScheme.background,
-                    transitionDuration: const Duration(milliseconds: 350),
-                    closedShape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    closedBuilder: (context, action) {
-                      return SizedBox(
-                        width: clampDouble(
-                            MediaQuery.of(context).size.width / 3 - (13 + 1/3), 0, 161),
-                        height: (actualHeight - 20) * (2/10) - 10,
-                        child: const InkWell(
-                          child: Center(child: Text('Simon')),
-                        ),
-                      );
-                    },
-                    openBuilder: (context, action) {
-                      return const ChecklistPage(
-                          title: 'Garbage Man', list: <String>[]);
-                    }),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
+    switch (memberCount) {
+      case 1: return Dashboard1(tasksAmount: 10);
+      case 2: return Dashboard2(tasksAmount: 10);
+      case 3: return Dashboard3(tasksAmount: 10);
+      case 4: return Dashboard4(tasksAmount: 10);
+    }
+    return const Text("ERROR fetching memberCount");
   }
 }
 
