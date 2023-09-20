@@ -7,6 +7,7 @@ import '../settings.dart';
 
 late Scaffold scaffold;
 late NavigationBarThemeData navBarTheme;
+late double bodyHeight;
 
 class NavBar extends StatefulWidget {
   const NavBar({Key? key}) : super(key: key);
@@ -57,9 +58,14 @@ class _NavBarState extends State<NavBar> {
             ),
           ],
         ),
-        body: IndexedStack(
-          index: _currentIndex,
-          children: pages,
+        body: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            bodyHeight = constraints.maxHeight;
+            return IndexedStack(
+              index: _currentIndex,
+              children: pages,
+            );
+          },
         ),
         bottomNavigationBar: NavigationBarTheme(
           data: navBarTheme,

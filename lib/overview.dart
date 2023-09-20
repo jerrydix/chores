@@ -98,10 +98,10 @@ class _HomePageState extends State<HomePage> {
                   onTap: () {
               }),
               DataCell(
-                  Center(
+                  const Center(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                      children: [
                         Icon(Icons.cleaning_services_outlined),
                         Icon(Icons.cleaning_services_outlined),
                         Icon(Icons.cleaning_services_outlined),
