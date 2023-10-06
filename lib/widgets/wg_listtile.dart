@@ -10,8 +10,9 @@ class WGListTile extends StatefulWidget {
   final String name;
   final int count;
   final String uid;
+  final String username;
 
-  const WGListTile({super.key, required this.name, required this.count, required this.uid});
+  const WGListTile({super.key, required this.name, required this.count, required this.uid, required this.username});
 
   @override
   State<StatefulWidget> createState() => _WGListTileState();
@@ -103,6 +104,7 @@ class _WGListTileState extends State<WGListTile> {
     });
 
     await db.collection("users").doc(auth.currentUser?.uid).set({
+      "username": widget.username,
       "wg": uid
     });
   }

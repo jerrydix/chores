@@ -146,23 +146,15 @@ class _SignUpPageState extends State<SignUpPage> {
 
     if (user != null) {
       await user.updateDisplayName(username);
-      await saveUserToDatabase(user: user, username: username);
     }
 
 
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
-          builder: (context) => const WGSelection(),
+          builder: (context) => WGSelection(username: username),
         ), (route) => false
     );
 
     return null;
-  }
-
-  Future saveUserToDatabase({required User user, required String username}) async {
-    await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-      'username': username,
-      'email': user.email,
-    });
   }
 }

@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class WGSelection extends StatefulWidget {
-  const WGSelection({Key? key}) : super(key: key);
+  final String username;
+  const WGSelection({super.key, required this.username});
 
   @override
   State<StatefulWidget> createState() => _WGSelectionState();
@@ -47,7 +48,7 @@ class _WGSelectionState extends State<WGSelection> {
               //padding: const EdgeInsets.all(8),
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (BuildContext context, int index) {
-                return WGListTile(name: snapshot.data!.docs[index]["name"], count: snapshot.data!.docs[index]["count"], uid: snapshot.data!.docs[index].id);
+                return WGListTile(name: snapshot.data!.docs[index]["name"], count: snapshot.data!.docs[index]["count"], uid: snapshot.data!.docs[index].id, username: widget.username);
               },
               separatorBuilder: (BuildContext context, int index) => const Divider(
                 indent: 10,
