@@ -12,7 +12,7 @@ import 'navigationbar.dart' as navBar;
 class Dashboard1 extends StatefulWidget {
 
   final int tasksAmount;
-  const Dashboard1({super.key, required this.tasksAmount});
+  const Dashboard1({super.key, required this.tasksAmount, required int primaryRole, required List<int> otherRoles, required BoolList completedTasks});
 
   @override
   State<Dashboard1> createState() => _Dashboard1State();
