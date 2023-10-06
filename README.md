@@ -1,3 +1,2 @@
 # chores
-
-A small flutter app for managing household chores.
+A flutter app for managing household chores in shared apartments.
