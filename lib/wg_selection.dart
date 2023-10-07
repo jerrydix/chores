@@ -22,8 +22,6 @@ class _WGSelectionState extends State<WGSelection> {
     super.initState();
   }
 
-  //Map<String, int> entries = {'StraßfeldWG': 1, 'LOL': 2, 'Test': 3, 'StraßfeldWG2': 1, 'LOL2': 2, 'Test2': 3, 'Straßfeld3WG': 1, 'LO3L': 2, 'T3est': 3, 'Straßf3eldWG2': 1, 'L3OL2': 2, '3Test2': 3};
-
   @override
   Widget build(BuildContext context) {
     var db = FirebaseFirestore.instance;
