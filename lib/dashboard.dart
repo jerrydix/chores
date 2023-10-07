@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/src/boollist.dart';
+import 'package:chores/member_manager.dart';
 
 
 class CurrentPage extends StatefulWidget {
@@ -25,7 +26,7 @@ class _CurrentPageState extends State<CurrentPage> {
   late String username;
   late int primaryRole;
   late List<int> otherRoles;
-  late BoolList completedTasks;
+  late List<bool> tasks;
 
   CheckboxListTile createCheckboxTile(Icon icon, Text text, bool? checked) {
     return CheckboxListTile(
@@ -47,32 +48,14 @@ class _CurrentPageState extends State<CurrentPage> {
   @override
   void initState() {
     super.initState();
-    String userID = user!.uid;
 
-    db.collection("users").doc(userID).get().then((value) {
-      wgID = value["wg"];
-    });
+    MemberManager manager = MemberManager.instance;
+    manager.fetchWGData();
 
-    db.collection("wgs").doc(wgID).get().then((value) {
-        memberCount = value["count"];
-    });
-
-    db.collection("wgs").doc(wgID).get().then((value) {
-        completedTasks = BoolList.of(value["tasks"]);
-    });
-
-    db.collection("wgs").doc(wgID).collection("members").doc(userID).get().then((value) {
-        primaryRole = value["role"];
-    });
-
-    if (memberCount > 1) {
-      db.collection("wgs").doc(wgID).collection("members").where("uid", isNotEqualTo: userID).get().then((value) {
-        otherRoles = [];
-        for (int i = 0; i < value.docs.length; i++) {
-          otherRoles.add(value.docs[i]["role"]);
-        }
-      });
-    }
+    memberCount = manager.memberCount;
+    tasks = manager.tasks;
+    primaryRole = manager.primaryRole;
+    otherRoles = manager.otherRoles;
   }
 
 
@@ -93,13 +76,13 @@ class _CurrentPageState extends State<CurrentPage> {
 
           switch (memberCount) {
             case 1:
-              return Dashboard1(tasksAmount: 10, primaryRole: primaryRole, otherRoles: otherRoles, completedTasks: completedTasks);
+              return Dashboard1(tasks: tasks, primaryRole: primaryRole, otherRoles: otherRoles, tasksAmount: 10,);
             case 2:
-              return Dashboard2(tasksAmount: 10);
+              //return Dashboard2(tasks: tasks, primaryRole: primaryRole, otherRoles: otherRoles);
             case 3:
-              return Dashboard3(tasksAmount: 10);
+              //return Dashboard3(tasks: tasks, primaryRole: primaryRole, otherRoles: otherRoles);
             case 4:
-              return Dashboard4(tasksAmount: 10);
+              //return Dashboard4(tasks: tasks, primaryRole: primaryRole, otherRoles: otherRoles);
           }
           return const Text("ERROR fetching memberCount");
         });
