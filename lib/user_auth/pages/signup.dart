@@ -148,7 +148,6 @@ class _SignUpPageState extends State<SignUpPage> {
       await user.updateDisplayName(username);
     }
 
-
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (context) => WGSelection(username: username),

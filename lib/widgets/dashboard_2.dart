@@ -61,28 +61,7 @@ class _Dashboard2State extends State<Dashboard2> {
                   thickness: 3,
                   child: SingleChildScrollView(
                       child: Column(
-                        children: [
-                          CheckboxTile(
-                              title: "test",
-                              style: styles.elementAt(0),
-                              checked: checked[0],
-                              icon: const Icon(Icons.abc)),
-                          CheckboxTile(
-                              title: "test",
-                              style: styles.elementAt(1),
-                              checked: checked[1],
-                              icon: const Icon(Icons.delete)),
-                          CheckboxTile(
-                              title: "test",
-                              style: styles.elementAt(2),
-                              checked: checked[2],
-                              icon: const Icon(Icons.airplane_ticket)),
-                          CheckboxTile(
-                              title: "test",
-                              style: styles.elementAt(3),
-                              checked: checked[3],
-                              icon: const Icon(Icons.traffic_sharp)),
-                        ],
+                        children: []
                       )),
                 ),
               ),

@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
               DataCell(const Center(child: Icon(Icons.delete_outlined),),
                   onTap: () {
               }),
-              DataCell(const Center(child: Icon(Icons.kitchen_outlined)),
+              DataCell(const Center(child: Icon(Icons.soup_kitchen_outlined)),
                   onTap: () {
               }),
               DataCell(const Center(child: Icon(Icons.bathtub_outlined)),
@@ -102,9 +102,6 @@ class _HomePageState extends State<HomePage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.cleaning_services_outlined),
-                        Icon(Icons.cleaning_services_outlined),
-                        Icon(Icons.cleaning_services_outlined),
                         Icon(Icons.cleaning_services_outlined),
                       ],
                     ),
