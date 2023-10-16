@@ -14,7 +14,6 @@ class MemberManager {
   String currentWgID = "-1";
   int memberCount = -1;
   String wgName= "-1";
-  String wgID = "-1";
   String username = "-1";
   int primaryRole= -1;
   List<int> otherRoles = [];
@@ -23,22 +22,19 @@ class MemberManager {
 
   MemberManager._internal() {
     userID = user!.uid;
-    fetchWGData();
+    //fetchWGData();
   }
 
   Future<void> fetchWGData() async {
-    print("User ID: " + userID!);
+    //print("User ID: " + userID!);
     await db.collection("users").doc(userID).get().then((value) {
       currentWgID = value["wg"];
-      print("WG id: " + currentWgID);
+      //print("WG id: " + currentWgID);
     });
 
-    print("WG id: " + currentWgID);
+    //print("WG id: " + currentWgID);
     await db.collection("wgs").doc(currentWgID).get().then((value) {
       memberCount = value["count"];
-    });
-
-    await db.collection("wgs").doc(currentWgID).get().then((value) {
       tasks = value["tasks"].cast<bool>();
     });
 
@@ -47,12 +43,13 @@ class MemberManager {
     });
 
     if (memberCount > 1) {
-      await db.collection("wgs").doc(wgID).collection("members").where("uid", isNotEqualTo: userID).get().then((value) {
+      await db.collection("wgs").doc(currentWgID).collection("members").where("uid", isNotEqualTo: userID).get().then((value) {
         for (int i = 0; i < value.docs.length; i++) {
           otherRoles.add(value.docs[i]["role"]);
         }
       });
     }
+    print("FINISHED");
   }
 
   int setCurrentWgID() {
@@ -71,12 +68,12 @@ class MemberManager {
     return -1;
   }
 
-  BoolList getTasksList() {
+  List<bool> getTasksList() {
     db.collection("wgs").doc(currentWgID).get().then((value) {
-      tasks = BoolList.of(value["tasks"]);
+      tasks = value["tasks"].cast<bool>();
       return tasks;
     });
-    return BoolList.empty();
+    return [];
   }
 
   int getPrimaryRole() {
@@ -88,7 +85,7 @@ class MemberManager {
   }
 
   List<int> getOtherRoles() {
-    db.collection("wgs").doc(wgID).collection("members").where("uid", isNotEqualTo: userID).get().then((value) {
+    db.collection("wgs").doc(currentWgID).collection("members").where("uid", isNotEqualTo: userID).get().then((value) {
       for (int i = 0; i < value.docs.length; i++) {
         otherRoles.add(value.docs[i]["role"]);
         return otherRoles;
