@@ -60,7 +60,7 @@ class _WGListTileState extends State<WGListTile> {
                 ));
                 return;
               }
-              saveWGMemberToDatabase(uid: widget.uid);
+              saveWGMemberToDatabase(uid: widget.uid, username: widget.username);
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
                     builder: (context) => const NavBar(),
@@ -74,7 +74,7 @@ class _WGListTileState extends State<WGListTile> {
     );
   }
 
-  Future saveWGMemberToDatabase({required String uid}) async {
+  Future saveWGMemberToDatabase({required String uid, required String username}) async {
     var db = FirebaseFirestore.instance;
     var auth = FirebaseAuth.instance;
 
@@ -87,7 +87,7 @@ class _WGListTileState extends State<WGListTile> {
        }
     });
 
-    for (int i = 1; i <= 4; i++) {
+    for (int i = 0; i <= 3; i++) {
       if (!roles.contains(i)) {
         role = i;
         break;
@@ -96,7 +96,8 @@ class _WGListTileState extends State<WGListTile> {
 
     await db.collection("wgs").doc(uid).collection("members").doc(auth.currentUser?.uid).set({
       "uid": auth.currentUser?.uid,
-      "role": role
+      "role": role,
+      "username": username
     });
 
     await db.collection("wgs").doc(uid).update({

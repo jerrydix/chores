@@ -17,6 +17,7 @@ class MemberManager {
   String username = "-1";
   int primaryRole= -1;
   List<int> otherRoles = [];
+  List<String> otherNames = [];
   List<bool> tasks = [];
 
 
@@ -40,15 +41,20 @@ class MemberManager {
 
     await db.collection("wgs").doc(currentWgID).collection("members").doc(userID).get().then((value) {
       primaryRole = value["role"];
+      username = value["username"];
     });
 
     if (memberCount > 1) {
       await db.collection("wgs").doc(currentWgID).collection("members").where("uid", isNotEqualTo: userID).get().then((value) {
+        otherRoles = [];
+        otherNames = [];
         for (int i = 0; i < value.docs.length; i++) {
           otherRoles.add(value.docs[i]["role"]);
+          otherNames.add(value.docs[i]["username"]);
         }
       });
     }
+    print(otherRoles.length);
     print("FINISHED");
   }
 

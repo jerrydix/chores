@@ -21,11 +21,12 @@ class _CurrentPageState extends State<CurrentPage> {
   var db = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
   int memberCount = -1;
-  String wgName = "";
-  String wgID = "";
-  String username = "";
+  String wgName = "-1";
+  String wgID = "-1";
+  String username = "-1";
   int primaryRole = -1;
   List<int> otherRoles = [];
+  List<String> otherNames = [];
   List<bool> tasks = [];
 
   CheckboxListTile createCheckboxTile(Icon icon, Text text, bool? checked) {
@@ -63,21 +64,12 @@ class _CurrentPageState extends State<CurrentPage> {
             tasks = manager.tasks;
             primaryRole = manager.primaryRole;
             otherRoles = manager.otherRoles;
-            print(memberCount);
-            switch (memberCount) {
-              case 1:
-                return Dashboard1(tasks: tasks,
-                  primaryRole: primaryRole,
-                  otherRoles: otherRoles,);
-              case 2:
-              //return Dashboard2(tasks: tasks, primaryRole: primaryRole, otherRoles: otherRoles);
-              case 3:
-              //return Dashboard3(tasks: tasks, primaryRole: primaryRole, otherRoles: otherRoles);
-              case 4:
-              //return Dashboard4(tasks: tasks, primaryRole: primaryRole, otherRoles: otherRoles);
+            username = manager.username;
+            otherNames = manager.otherNames;
 
-            }
-            return Text("ERROR fetching data (data is $memberCount; $tasks; $primaryRole; $otherRoles)");
+            return Dashboard1(tasks: tasks,
+              primaryRole: primaryRole,
+              otherRoles: otherRoles, otherNames: otherNames, username: username,);
         }
         return const Center(child: CircularProgressIndicator());
     });
