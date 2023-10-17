@@ -144,6 +144,7 @@ class _Dashboard1State extends State<Dashboard1> {
           }
         case 2:
           {
+            print("TESTETST");
             otherCheckedList.add(createCheckedList(13, 4));
             break;
           }
@@ -200,7 +201,7 @@ class _Dashboard1State extends State<Dashboard1> {
 
   List<bool> createCheckedList(int startIndex, int length) {
     List<bool> result = [];
-    for (int i = startIndex; i < length; i++) {
+    for (int i = startIndex; i < startIndex + length; i++) {
       result.add(widget.tasks[i]);
     }
     return result;
