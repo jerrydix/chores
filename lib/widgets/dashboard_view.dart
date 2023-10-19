@@ -13,14 +13,14 @@ import '../widgets/secondary_card.dart';
 
 import 'navigationbar.dart' as navBar;
 
-class Dashboard1 extends StatefulWidget {
+class DashboardView extends StatefulWidget {
   final List<bool> tasks;
   final int primaryRole;
   final String username;
   final List<int> otherRoles;
   final List<String> otherNames;
 
-  const Dashboard1(
+  const DashboardView(
       {super.key,
       required this.tasks,
       required this.primaryRole,
@@ -29,10 +29,10 @@ class Dashboard1 extends StatefulWidget {
       required this.username});
 
   @override
-  State<Dashboard1> createState() => _Dashboard1State();
+  State<DashboardView> createState() => _DashboardViewState();
 }
 
-class _Dashboard1State extends State<Dashboard1> {
+class _DashboardViewState extends State<DashboardView> {
   List<TextStyle> styles = [];
   String roleName = "-1";
   int indexCounter = -1;
@@ -144,7 +144,6 @@ class _Dashboard1State extends State<Dashboard1> {
           }
         case 2:
           {
-            print("TESTETST");
             otherCheckedList.add(createCheckedList(13, 4));
             break;
           }

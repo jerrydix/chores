@@ -13,7 +13,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   late AutoScrollController controller;
   int scrollOffset = DateTime.now().weekOfYear - 2;
   double rowHeight = 50;
@@ -22,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     controller = AutoScrollController(
-     // viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
+      // viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
       axis: Axis.vertical,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToCurrentWeek());
@@ -32,11 +31,18 @@ class _HomePageState extends State<HomePage> {
     List<DataColumn2> columns = [];
     columns.add(DataColumn2(
         label: Container(
-            decoration:  BoxDecoration(
-                border: Border(right: BorderSide(width: 1, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2))),
+            decoration: BoxDecoration(
+              border: Border(
+                  right: BorderSide(
+                      width: 1,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.2))),
             ),
             child: Center(
-                child: Text(AppLocalizations.of(context)!.cw, style: const TextStyle(fontWeight: FontWeight.bold)))),
+                child: Text(AppLocalizations.of(context)!.cw,
+                    style: const TextStyle(fontWeight: FontWeight.bold)))),
         size: ColumnSize.M));
     columns.add(const DataColumn2(
         label: Center(child: Text('David')), size: ColumnSize.L));
@@ -68,10 +74,12 @@ class _HomePageState extends State<HomePage> {
         rows.add(DataRow2(
             color: (() {
               if (current) {
-                return MaterialStateProperty.all(Theme.of(context).colorScheme.primary.withOpacity(0.15));
+                return MaterialStateProperty.all(
+                    Theme.of(context).colorScheme.primary.withOpacity(0.15));
               }
               if (wasCurrent) {
-                return MaterialStateProperty.all(Theme.of(context).colorScheme.surface);
+                return MaterialStateProperty.all(
+                    Theme.of(context).colorScheme.surface);
               }
               return MaterialStateProperty.all(Colors.grey.withOpacity(0.05));
             }()),
@@ -81,22 +89,26 @@ class _HomePageState extends State<HomePage> {
                   Container(
                       decoration: BoxDecoration(
                           border: Border(
-                              right:
-                                  BorderSide(width: 1, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2)))),
+                              right: BorderSide(
+                                  width: 1,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withOpacity(0.2)))),
                       child: Center(
                           child: Text((i + 1).toString(),
                               style: const TextStyle(
-                                  fontWeight: FontWeight.bold)))), onTap: () {
-              }),
-              DataCell(const Center(child: Icon(Icons.delete_outlined),),
-                  onTap: () {
-              }),
+                                  fontWeight: FontWeight.bold)))),
+                  onTap: () {}),
+              DataCell(
+                  const Center(
+                    child: Icon(Icons.delete_outlined),
+                  ),
+                  onTap: () {}),
               DataCell(const Center(child: Icon(Icons.soup_kitchen_outlined)),
-                  onTap: () {
-              }),
+                  onTap: () {}),
               DataCell(const Center(child: Icon(Icons.bathtub_outlined)),
-                  onTap: () {
-              }),
+                  onTap: () {}),
               DataCell(
                   const Center(
                     child: Row(
@@ -114,10 +126,12 @@ class _HomePageState extends State<HomePage> {
         rows.add(DataRow2(
             color: (() {
               if (current) {
-                return MaterialStateProperty.all(Theme.of(context).colorScheme.primary.withOpacity(0.15));
+                return MaterialStateProperty.all(
+                    Theme.of(context).colorScheme.primary.withOpacity(0.15));
               }
               if (wasCurrent) {
-                return MaterialStateProperty.all(Theme.of(context).colorScheme.surface);
+                return MaterialStateProperty.all(
+                    Theme.of(context).colorScheme.surface);
               }
               return MaterialStateProperty.all(Colors.grey.withOpacity(0.05));
             }()),
@@ -127,75 +141,38 @@ class _HomePageState extends State<HomePage> {
                   Container(
                       decoration: BoxDecoration(
                           border: Border(
-                              right:
-                              BorderSide(width: 1, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2)))),
+                              right: BorderSide(
+                                  width: 1,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withOpacity(0.2)))),
                       child: Center(
                           child: Text((i + 1).toString(),
                               style: const TextStyle(
-                                  fontWeight: FontWeight.bold)))), onTap: () {
-              }),
+                                  fontWeight: FontWeight.bold)))),
+                  onTap: () {}),
               DataCell(
                   const Center(child: Icon(Icons.cleaning_services_outlined)),
-                  onTap: () {
-              }),
+                  onTap: () {}),
               DataCell(const Center(child: Icon(Icons.delete_outlined)),
-                  onTap: () {
-              }),
+                  onTap: () {}),
               DataCell(const Center(child: Icon(Icons.kitchen_outlined)),
-                  onTap: () {
-              }),
+                  onTap: () {}),
               DataCell(const Center(child: Icon(Icons.bathtub_outlined)),
-                  onTap: () {
-              }),
+                  onTap: () {}),
             ]));
         variant++;
       } else if (variant == 2) {
         rows.add(DataRow2(
             color: (() {
               if (current) {
-                return MaterialStateProperty.all(Theme.of(context).colorScheme.primary.withOpacity(0.15));
+                return MaterialStateProperty.all(
+                    Theme.of(context).colorScheme.primary.withOpacity(0.15));
               }
               if (wasCurrent) {
-                return MaterialStateProperty.all(Theme.of(context).colorScheme.surface);
-              }
-              return MaterialStateProperty.all(Colors.grey.withOpacity(0.05));
-            }()),
-        specificRowHeight: rowHeight,
-            cells: [
-              DataCell(
-                  Container(
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right:
-                              BorderSide(width: 1, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2)))),
-                      child: Center(
-                          child: Text((i + 1).toString(),
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold)))), onTap: () {
-              }),
-              DataCell(const Center(child: Icon(Icons.bathtub_outlined)),
-                  onTap: () {
-              }),
-              DataCell(
-                  const Center(child: Icon(Icons.cleaning_services_outlined)),
-                  onTap: () {
-              }),
-              DataCell(const Center(child: Icon(Icons.delete_outlined)),
-                  onTap: () {
-              }),
-              DataCell(const Center(child: Icon(Icons.kitchen_outlined)),
-                  onTap: () {
-              }),
-            ]));
-        variant++;
-      } else if (variant == 3) {
-        rows.add(DataRow2(
-            color: (() {
-              if (current) {
-                return MaterialStateProperty.all(Theme.of(context).colorScheme.primary.withOpacity(0.15));
-              }
-              if (wasCurrent) {
-                return MaterialStateProperty.all(Theme.of(context).colorScheme.surface);
+                return MaterialStateProperty.all(
+                    Theme.of(context).colorScheme.surface);
               }
               return MaterialStateProperty.all(Colors.grey.withOpacity(0.05));
             }()),
@@ -205,26 +182,67 @@ class _HomePageState extends State<HomePage> {
                   Container(
                       decoration: BoxDecoration(
                           border: Border(
-                              right:
-                              BorderSide(width: 1, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2)))),
+                              right: BorderSide(
+                                  width: 1,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withOpacity(0.2)))),
                       child: Center(
                           child: Text((i + 1).toString(),
                               style: const TextStyle(
-                                  fontWeight: FontWeight.bold)))), onTap: () {
-              }),
-              DataCell(const Center(child: Icon(Icons.kitchen_outlined)),
-                  onTap: () {
-              }),
+                                  fontWeight: FontWeight.bold)))),
+                  onTap: () {}),
               DataCell(const Center(child: Icon(Icons.bathtub_outlined)),
-                  onTap: () {
-              }),
+                  onTap: () {}),
               DataCell(
                   const Center(child: Icon(Icons.cleaning_services_outlined)),
-                  onTap: () {
-              }),
+                  onTap: () {}),
               DataCell(const Center(child: Icon(Icons.delete_outlined)),
-                  onTap: () {
-              }),
+                  onTap: () {}),
+              DataCell(const Center(child: Icon(Icons.kitchen_outlined)),
+                  onTap: () {}),
+            ]));
+        variant++;
+      } else if (variant == 3) {
+        rows.add(DataRow2(
+            color: (() {
+              if (current) {
+                return MaterialStateProperty.all(
+                    Theme.of(context).colorScheme.primary.withOpacity(0.15));
+              }
+              if (wasCurrent) {
+                return MaterialStateProperty.all(
+                    Theme.of(context).colorScheme.surface);
+              }
+              return MaterialStateProperty.all(Colors.grey.withOpacity(0.05));
+            }()),
+            specificRowHeight: rowHeight,
+            cells: [
+              DataCell(
+                  Container(
+                      decoration: BoxDecoration(
+                          border: Border(
+                              right: BorderSide(
+                                  width: 1,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withOpacity(0.2)))),
+                      child: Center(
+                          child: Text((i + 1).toString(),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold)))),
+                  onTap: () {}),
+              DataCell(const Center(child: Icon(Icons.kitchen_outlined)),
+                  onTap: () {}),
+              DataCell(const Center(child: Icon(Icons.bathtub_outlined)),
+                  onTap: () {}),
+              DataCell(
+                  const Center(child: Icon(Icons.cleaning_services_outlined)),
+                  onTap: () {}),
+              DataCell(const Center(child: Icon(Icons.delete_outlined)),
+                  onTap: () {}),
             ]));
         variant = 0;
       }
@@ -235,7 +253,8 @@ class _HomePageState extends State<HomePage> {
 
   Future _scrollToCurrentWeek() async {
     Future.delayed(const Duration(seconds: 1), () {
-      controller.animateTo(rowHeight * scrollOffset, duration: const Duration(seconds: 1), curve: Curves.ease);
+      controller.animateTo(rowHeight * scrollOffset,
+          duration: const Duration(seconds: 1), curve: Curves.ease);
     });
   }
 

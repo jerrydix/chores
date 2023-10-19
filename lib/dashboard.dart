@@ -1,8 +1,5 @@
 import 'dart:ui';
-import 'package:chores/widgets/dashboard_1.dart';
-import 'package:chores/widgets/dashboard_2.dart';
-import 'package:chores/widgets/dashboard_3.dart';
-import 'package:chores/widgets/dashboard_4.dart';
+import 'package:chores/widgets/dashboard_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -62,12 +59,12 @@ class _CurrentPageState extends State<CurrentPage> {
             }
             memberCount = manager.memberCount;
             tasks = manager.tasks;
-            primaryRole = manager.primaryRole;
-            otherRoles = manager.otherRoles;
+            primaryRole = manager.primaryRoles;
+            otherRoles = manager.otherRoleLists;
             username = manager.username;
             otherNames = manager.otherNames;
 
-            return Dashboard1(tasks: tasks,
+            return DashboardView(tasks: tasks,
               primaryRole: primaryRole,
               otherRoles: otherRoles, otherNames: otherNames, username: username,);
         }
