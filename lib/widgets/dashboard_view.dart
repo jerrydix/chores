@@ -130,7 +130,13 @@ class _DashboardViewState extends State<DashboardView> {
       List<int> currentRoles = widget.otherRoles[i];
       List<LinkedHashMap<String, Icon>> currentMaps =
           createTaskMap(currentRoles, false);
-      otherTaskMapList.addAll(currentMaps);
+      LinkedHashMap<String, Icon> currentCombinedMap = currentMaps[0];
+      if (currentMaps.length > 1) {
+        for (int j = 1; j < currentMaps.length; j++) {
+          currentCombinedMap.addAll(currentMaps[j]);
+        }
+      }
+      otherTaskMapList.add(currentCombinedMap);
       List<bool> currentCheckList = [];
       for (var role in currentRoles) {
         switch (role) {
@@ -294,33 +300,6 @@ class _DashboardViewState extends State<DashboardView> {
         //print(currentTasks);
       });
     }
-      /*taskMap.forEach((name, icon) {
-        currentTasks.add(StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return CheckboxListTile(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  checkboxShape:
-                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                  title: Text(name,
-                      style: styles.elementAt(
-                          start + currentTasks.indexOf(context.widget))),
-                  value: widget
-                      .tasks[start + currentTasks.indexOf(context.widget)],
-                  onChanged: (value) {
-                    int indexInList = currentTasks.indexOf(context.widget);
-                    setState(() {
-                      widget.tasks[start + indexInList] = value!;
-                      styleSwitcher(start + indexInList, value);
-                    });
-                    saveSelectionStateToDB();
-                  },
-                  secondary: icon);
-            }));
-      });*/
-    print(currentTasks);
-
     return currentTasks;
   }
 

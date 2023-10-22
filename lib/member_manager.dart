@@ -14,6 +14,7 @@ class MemberManager {
   User? user = FirebaseAuth.instance.currentUser;
   String? userID;
   String currentWgID = "-1";
+  int wgCW = -1;
   int memberCount = -1;
   String wgName= "-1";
   String username = "-1";
@@ -33,9 +34,21 @@ class MemberManager {
     });
 
     await db.collection("wgs").doc(currentWgID).get().then((value) {
+      wgCW = value["cw"];
+    });
+
+    if (wgCW != DateTime.now().weekOfYear) {
+      await db.collection("wgs").doc(currentWgID).set({
+        "tasks": List.filled(22, false),
+        "wgCW": DateTime.now().weekOfYear,
+      });
+    }
+
+    await db.collection("wgs").doc(currentWgID).get().then((value) {
       memberCount = value["count"]; //treated as number of ready users
       tasks = value["tasks"].cast<bool>();
     });
+
 
     if (memberCount > 1) {
       await db.collection("wgs").doc(currentWgID).collection("members").orderBy("memberID").get().then((value) { //where("active", isEqualTo: true)
