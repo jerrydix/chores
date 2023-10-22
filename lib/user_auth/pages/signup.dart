@@ -5,7 +5,9 @@ import 'package:chores/user_auth/authentication_provider.dart';
 import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
 import 'package:chores/widgets/navigationbar.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:keybinder/keybinder.dart';
 
 import '../../wg_selection.dart';
 
@@ -23,6 +25,17 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final enterButton = Keybinding.from({LogicalKeyboardKey.enter});
+
+  @override
+  void initState() {
+    super.initState();
+    Keybinder.bind(enterButton, onPressed);
+  }
+
+  void onPressed() {
+    _signUp();
+  }
 
 
   @override
@@ -143,6 +156,7 @@ class _SignUpPageState extends State<SignUpPage> {
         toastLength: Toast.LENGTH_SHORT,
       );
     }
+    Keybinder.remove(enterButton, onPressed);
 
     if (user != null) {
       await user.updateDisplayName(username);

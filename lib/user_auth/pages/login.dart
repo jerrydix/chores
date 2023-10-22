@@ -4,7 +4,9 @@ import 'package:chores/user_auth/widgets/form_container.dart';
 import 'package:chores/user_auth/pages/signup.dart';
 import 'package:chores/user_auth/authentication_provider.dart';
 import 'package:chores/widgets/navigationbar.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:keybinder/keybinder.dart';
 
 import '../../wg_selection.dart';
 
@@ -20,6 +22,17 @@ class _LoginPageState extends State<LoginPage> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final enterButton = Keybinding.from({LogicalKeyboardKey.enter});
+
+  @override
+  void initState() {
+    super.initState();
+    Keybinder.bind(enterButton, onPressed);
+  }
+
+  void onPressed() {
+    _signIn();
+  }
 
   @override
   void dispose() {
@@ -125,6 +138,7 @@ class _LoginPageState extends State<LoginPage> {
         toastLength: Toast.LENGTH_SHORT,
       );
     }
+    Keybinder.remove(enterButton, onPressed);
 
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
