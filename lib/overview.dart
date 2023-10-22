@@ -1,3 +1,4 @@
+import 'package:chores/member_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -48,21 +49,23 @@ class _HomePageState extends State<HomePage> {
         label: Center(child: Text('David')), size: ColumnSize.L));
     columns.add(const DataColumn2(
         label: Center(child: Text('Jeremy')), size: ColumnSize.L));
-    columns.add(const DataColumn2(
+    /*columns.add(const DataColumn2(
         label: Center(child: Text('Simon')), size: ColumnSize.L));
     columns.add(const DataColumn2(
-        label: Center(child: Text('Noah')), size: ColumnSize.M));
+        label: Center(child: Text('Noah')), size: ColumnSize.M));*/
     return columns;
   }
 
   //TODO wtf is this
   List<DataRow2> _generateRows() {
+
     List<DataRow2> rows = [];
     int variant = 0;
     bool current = false;
     bool wasCurrent = false;
 
-    for (int i = 0; i < 52; i++) {
+    for (int i = 0; i < DateTime.utc(DateTime.now().year, 12, 31).weekOfYear; i++) {
+
       if (DateTime.now().weekOfYear == i + 1) {
         current = true;
         wasCurrent = true;
@@ -70,7 +73,88 @@ class _HomePageState extends State<HomePage> {
         current = false;
       }
 
-      if (variant == 0) {
+      List<List<int>> allRoles = MemberManager.instance.setRoles(i + 1, false);
+      List<DataCell> cells = [];
+      cells.add(DataCell(
+          Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      right: BorderSide(
+                          width: 1,
+                          color: Theme
+                              .of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.2)))),
+              child: Center(
+                  child: Text((i + 1).toString(),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold)))),
+          onTap: () {})
+      );
+
+      for (var roles in allRoles) {
+        List<Icon> currentIcons = [];
+        for (var role in roles) {
+          switch (role) {
+            case 0:
+              {
+                currentIcons.add(const Icon(Icons.delete_outlined));
+                break;
+              }
+            case 1:
+              {
+                currentIcons.add(const Icon(Icons.bathtub_outlined));
+                break;
+              }
+            case 2:
+              {
+                currentIcons.add(const Icon(Icons.soup_kitchen_outlined));
+                break;
+              }
+            case 3:
+              {
+                currentIcons.add(const Icon(Icons.cleaning_services_outlined));
+                break;
+              }
+          }
+        }
+
+        cells.add(DataCell(
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: currentIcons,
+              ),
+            ), onTap: () {}),
+        );
+      }
+
+      rows.add(DataRow2(
+        color: (() {
+          if (current) {
+            return MaterialStateProperty.all(
+                Theme
+                    .of(context)
+                    .colorScheme
+                    .primary
+                    .withOpacity(0.15));
+          }
+          if (wasCurrent) {
+            return MaterialStateProperty.all(
+                Theme
+                    .of(context)
+                    .colorScheme
+                    .surface);
+          }
+          return MaterialStateProperty.all(Colors.grey.withOpacity(0.05));
+        }()),
+        specificRowHeight: rowHeight,
+        cells: cells,
+      ));
+    }
+
+      /*if (variant == 0) {
         rows.add(DataRow2(
             color: (() {
               if (current) {
@@ -246,7 +330,7 @@ class _HomePageState extends State<HomePage> {
             ]));
         variant = 0;
       }
-    }
+    }*/
 
     return rows;
   }
