@@ -7,22 +7,22 @@ import 'package:collection/src/boollist.dart';
 import 'package:chores/member_manager.dart';
 
 
-class CurrentPage extends StatefulWidget {
-  const CurrentPage({super.key});
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key});
 
   @override
-  State<CurrentPage> createState() => _CurrentPageState();
+  State<Dashboard> createState() => _DashboardState();
 }
 
-class _CurrentPageState extends State<CurrentPage> {
+class _DashboardState extends State<Dashboard> {
   var db = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
   int memberCount = -1;
   String wgName = "-1";
   String wgID = "-1";
   String username = "-1";
-  int primaryRole = -1;
-  List<int> otherRoles = [];
+  List<int> primaryRoles = [];
+  List<List<int>> otherRoles = [];
   List<String> otherNames = [];
   List<bool> tasks = [];
 
@@ -59,13 +59,13 @@ class _CurrentPageState extends State<CurrentPage> {
             }
             memberCount = manager.memberCount;
             tasks = manager.tasks;
-            primaryRole = manager.primaryRoles;
-            otherRoles = manager.otherRoleLists;
+            primaryRoles = manager.primaryRoles;
+            otherRoles = manager.otherRoles;
             username = manager.username;
             otherNames = manager.otherNames;
 
             return DashboardView(tasks: tasks,
-              primaryRole: primaryRole,
+              primaryRoles: primaryRoles,
               otherRoles: otherRoles, otherNames: otherNames, username: username,);
         }
         return const Center(child: CircularProgressIndicator());

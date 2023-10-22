@@ -11,7 +11,7 @@ class SecondaryCardData {
   final List<EdgeInsets> edgeInsets;
   final List<double> widths;
   final List<String> titles;
-  final List<String> roles;
+  final List<List<String>> roles;
   final List<LinkedHashMap<String, Icon>> taskLists;
   final List<List<bool>> checkedLists;
 
@@ -69,7 +69,7 @@ class _SecondaryCardState extends State<SecondaryCard> {
                 );
               },
               openBuilder: (context, action) {
-                return ChecklistPage(title: data.titles[i], role: data.roles[i], tasks: data.taskLists[i], checked: data.checkedLists[i]);
+                return ChecklistPage(title: data.titles[i], roles: data.roles[i], tasks: data.taskLists[i], checked: data.checkedLists[i]);
               }),
         ),);
     }

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 
 class MemberManager {
@@ -17,9 +18,8 @@ class MemberManager {
   String wgName= "-1";
   String username = "-1";
   List<int> primaryRoles = [];
-  int primaryID = -1;
-  List<int> otherIDs = [];
-  List<List<int>> otherRoleLists = [];
+  int primaryIndex = -1;
+  List<List<int>> otherRoles = [];
   List<String> otherNames = [];
   List<bool> tasks = [];
 
@@ -33,25 +33,29 @@ class MemberManager {
     });
 
     await db.collection("wgs").doc(currentWgID).get().then((value) {
-      memberCount = value["count"];
+      memberCount = value["count"]; //treated as number of ready users
       tasks = value["tasks"].cast<bool>();
     });
 
-    await db.collection("wgs").doc(currentWgID).collection("members").doc(userID).get().then((value) {
-      primaryID = value["role"];
-      username = value["username"];
-    });
-
     if (memberCount > 1) {
-      await db.collection("wgs").doc(currentWgID).collection("members").where("uid", isNotEqualTo: userID).get().then((value) {
-        otherIDs = [];
+      await db.collection("wgs").doc(currentWgID).collection("members").orderBy("memberID").get().then((value) { //where("active", isEqualTo: true)
         otherNames = [];
         for (int i = 0; i < value.docs.length; i++) {
-          otherIDs.add(value.docs[i]["role"]);
-          otherNames.add(value.docs[i]["username"]);
+          var currentID = value.docs[i]["uid"];
+          var currentName = value.docs[i]["username"];
+
+          if (currentID == userID) {
+            primaryIndex = i;
+            username = currentName;
+            continue;
+          }
+
+          otherNames.add(currentName);
         }
       });
     }
+
+    setRoles();
   }
 
   int setCurrentWgID() {
@@ -78,32 +82,38 @@ class MemberManager {
     return [];
   }
 
-  int getPrimaryRole() {
-    db.collection("wgs").doc(currentWgID).collection("members").doc(userID).get().then((value) {
-      primaryID = value["role"];
-      return primaryID;
-    });
-    return -1;
-  }
-
-  List<int> getOtherIDs() {
-    db.collection("wgs").doc(currentWgID).collection("members").where("uid", isNotEqualTo: userID).get().then((value) {
-      otherIDs = [];
+  List<int> getOtherNames() {
+    db.collection("wgs").doc(currentWgID).collection("members").where("uid", isNotEqualTo: userID).orderBy("memberID").get().then((value) { //where("active", isEqualTo: true)
       otherNames = [];
       for (int i = 0; i < value.docs.length; i++) {
-        otherIDs.add(value.docs[i]["role"]);
-        otherNames.add(value.docs[i]["username"]);
+        var currentID = value.docs[i]["uid"];
+        var currentName = value.docs[i]["username"];
+
+        if (currentID == userID) {
+          primaryIndex = i;
+          username = currentName;
+          continue;
+        }
+
+        otherNames.add(currentName);
       }
-      return otherIDs;
+      return otherNames;
     });
     return [];
   }
 
   void setRoles() {
     var cw = DateTime.now().weekOfYear;
+    List<List<int>> allRoles = [];
+    if (memberCount != otherNames.length + 1) {
+      if (kDebugMode) {
+        print("MemberCount does not match fetched users!");
+      }
+    }
+
     switch (memberCount) {
       case 1: {
-        primaryRoles = [0,1,2,3];
+        allRoles = [[0,1,2,3]];
         break;
       }
       case 2: {
@@ -111,50 +121,46 @@ class MemberManager {
         int mod6 = cw % 6;
         switch (mod6) {
           case 0: {
-            primaryRoles = [0,3];
-            otherRoleLists = [[1,2]];
+            allRoles = [[0,3],[1,2]];
             break;
           }
           case 1: {
-            primaryRoles = [1,2];
-            otherRoleLists = [[0,3]];
+            allRoles = [[1,2],[0,3]];
             break;
           }
           case 2: {
-            primaryRoles = [0,2];
-            otherRoleLists = [[1,3]];
+            allRoles = [[0,2],[1,3]];
             break;
           }
           case 3: {
-            primaryRoles = [1,3];
-            otherRoleLists = [[0,2]];
+            allRoles = [[1,3],[0,2]];
+
             break;
           }
           case 4: {
-            primaryRoles = [0,1];
-            otherRoleLists = [[2,3]];
+            allRoles = [[0,1],[2,3]];
             break;
           }
           case 5: {
-            primaryRoles = [2,3];
-            otherRoleLists = [[0,1]];
+            allRoles = [[2,3],[0,1]];
             break;
           }
         }
         break;
       }
       case 3: {
-        primaryRoles = [0,3];
-        otherRoleLists = [[1],[2]];
-        break; //todo add algorithm
+        allRoles = [[1,2],[3],[4]];
+        break; //todo add algorithm with custom map, and after sort by ascending memberID
       }
       case 4: {
         // 4-rotation
         int mod4 = cw % 4;
-        primaryRoles = [mod4];
-        otherRoleLists = [[mod4 + 1 > 3 ? mod4 + 1 - 4 : mod4 + 1],[mod4 + 2 > 3 ? mod4 + 2 - 4 : mod4 + 2],[mod4 + 3 > 3 ? mod4 + 3 - 4 : mod4 + 3]];
+        allRoles = [[mod4],[mod4 + 1 > 3 ? mod4 + 1 - 4 : mod4 + 1],[mod4 + 2 > 3 ? mod4 + 2 - 4 : mod4 + 2],[mod4 + 3 > 3 ? mod4 + 3 - 4 : mod4 + 3]];
       }
     }
+    primaryRoles = allRoles[primaryIndex];
+    allRoles.removeAt(primaryIndex);
+    otherRoles = allRoles;
   }
 
 }

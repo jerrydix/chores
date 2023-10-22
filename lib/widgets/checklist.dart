@@ -5,12 +5,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChecklistPage extends StatefulWidget {
   final String title;
-  final String role;
+  final List<String> roles;
   final LinkedHashMap<String, Icon> tasks;
   final List<bool> checked;
 
 
-  const ChecklistPage({super.key, required this.title, required this.role, required this.tasks, required this.checked});
+  const ChecklistPage({super.key, required this.title, required this.roles, required this.tasks, required this.checked});
 
   @override
   State<ChecklistPage> createState() => _ChecklistState();
@@ -21,7 +21,7 @@ class _ChecklistState extends State<ChecklistPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.title} (${widget.role})"),
+        title: createRolesText(),
       ),
       body: ListView(
         children: createListTiles(widget.tasks, widget.checked)
@@ -39,5 +39,15 @@ class _ChecklistState extends State<ChecklistPage> {
       ),);
     }
     return result;
+  }
+
+  Text createRolesText() {
+    String text = "${widget.title} (";
+    for (var element in widget.roles) {
+      text += "$element, ";
+    }
+    text = text.substring(0, text.length - 2);
+    text += ")";
+    return Text(text);
   }
 }

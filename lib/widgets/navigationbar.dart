@@ -19,7 +19,7 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> {
   int _currentIndex = 0;
   List<Widget> pages = [
-    const CurrentPage(),
+    const Dashboard(),
     const HomePage(),
   ];
 
