@@ -35,40 +35,38 @@ class MemberManager {
 
     await db.collection("wgs").doc(currentWgID).get().then((value) {
       wgCW = value["cw"];
+      memberCount = value["count"];
     });
 
     if (wgCW != DateTime.now().weekOfYear) {
       await db.collection("wgs").doc(currentWgID).set({
         "tasks": List.filled(22, false),
-        "wgCW": DateTime.now().weekOfYear,
+        "cw": DateTime.now().weekOfYear,
+        "count": memberCount,
       });
     }
 
     await db.collection("wgs").doc(currentWgID).get().then((value) {
-      memberCount = value["count"]; //treated as number of ready users
       tasks = value["tasks"].cast<bool>();
     });
 
+    await db.collection("wgs").doc(currentWgID).collection("members").orderBy("memberID").get().then((value) { //where("active", isEqualTo: true)
+      otherNames = [];
+      for (int i = 0; i < value.docs.length; i++) {
+        var currentID = value.docs[i]["uid"];
+        var currentName = value.docs[i]["username"];
 
-    if (memberCount > 1) {
-      await db.collection("wgs").doc(currentWgID).collection("members").orderBy("memberID").get().then((value) { //where("active", isEqualTo: true)
-        otherNames = [];
-        for (int i = 0; i < value.docs.length; i++) {
-          var currentID = value.docs[i]["uid"];
-          var currentName = value.docs[i]["username"];
-
-          if (currentID == userID) {
-            primaryIndex = i;
-            username = currentName;
-            continue;
-          }
-
-          otherNames.add(currentName);
+        if (currentID == userID) {
+          primaryIndex = i;
+          username = currentName;
+          continue;
         }
-      });
-    }
 
-    setRoles();
+        otherNames.add(currentName);
+      }
+      setRoles(DateTime.now().weekOfYear, true);
+    });
+
   }
 
   int setCurrentWgID() {
@@ -115,12 +113,12 @@ class MemberManager {
     return [];
   }
 
-  void setRoles() {
-    var cw = DateTime.now().weekOfYear;
+  List<List<int>> setRoles(int cw, bool overwrite) {
     List<List<int>> allRoles = [];
     if (memberCount != otherNames.length + 1) {
       if (kDebugMode) {
         print("MemberCount does not match fetched users!");
+        return [];
       }
     }
 
@@ -147,7 +145,6 @@ class MemberManager {
           }
           case 3: {
             allRoles = [[1,3],[0,2]];
-
             break;
           }
           case 4: {
@@ -171,9 +168,18 @@ class MemberManager {
         allRoles = [[mod4],[mod4 + 1 > 3 ? mod4 + 1 - 4 : mod4 + 1],[mod4 + 2 > 3 ? mod4 + 2 - 4 : mod4 + 2],[mod4 + 3 > 3 ? mod4 + 3 - 4 : mod4 + 3]];
       }
     }
-    primaryRoles = allRoles[primaryIndex];
+    if (overwrite) {
+      primaryRoles = allRoles[primaryIndex];
+    }
+    List<int> overviewCurrentPrimaryRoles = allRoles[primaryIndex];
     allRoles.removeAt(primaryIndex);
-    otherRoles = allRoles;
+    if (overwrite) {
+      otherRoles = allRoles;
+    }
+    List<List<int>> overviewResult = [];
+    overviewResult.add(overviewCurrentPrimaryRoles);
+    overviewResult.addAll(allRoles);
+    return overviewResult;
   }
 
 }
