@@ -25,6 +25,7 @@ class _DashboardState extends State<Dashboard> {
   List<List<int>> otherRoles = [];
   List<String> otherNames = [];
   List<bool> tasks = [];
+  MemberManager manager = MemberManager.instance;
 
   CheckboxListTile createCheckboxTile(Icon icon, Text text, bool? checked) {
     return CheckboxListTile(
@@ -44,10 +45,14 @@ class _DashboardState extends State<Dashboard> {
   }
 
   @override
+  void initState() {
+    manager.dataFuture = manager.fetchWGData();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    MemberManager manager = MemberManager.instance;
     return FutureBuilder<void>(
-      future: manager.fetchWGData(),
+      future: manager.dataFuture,
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:

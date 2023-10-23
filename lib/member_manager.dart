@@ -23,6 +23,7 @@ class MemberManager {
   List<List<int>> otherRoles = [];
   List<String> otherNames = [];
   List<bool> tasks = [];
+  Future<void> dataFuture = Future(() => null);
 
   MemberManager._internal() {
     userID = user!.uid;
