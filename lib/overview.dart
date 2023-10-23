@@ -1,4 +1,5 @@
 import 'package:chores/member_manager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,9 +18,12 @@ class _HomePageState extends State<HomePage> {
   late AutoScrollController controller;
   int scrollOffset = DateTime.now().weekOfYear - 2;
   double rowHeight = 50;
+  List<List<int>> allRoles = [];
+  List<DataRow2> rows = [];
+  List<DataColumn2> columns = [];
 
   @override
-  void initState() {
+  Future<void> initState() async {
     super.initState();
     controller = AutoScrollController(
       axis: Axis.vertical,
@@ -52,7 +56,7 @@ class _HomePageState extends State<HomePage> {
 
     List<ColumnSize> columnSizes = [];
 
-    switch (MemberManager.instance.memberCount) {
+    switch (allRoles.length) {
       case 1: {
         columnSizes = [ColumnSize.L];
         break;
@@ -68,6 +72,11 @@ class _HomePageState extends State<HomePage> {
       case 4: {
         columnSizes = [ColumnSize.L, ColumnSize.L, ColumnSize.L, ColumnSize.M];
         break;
+      }
+      default: {
+        if (kDebugMode) {
+          print("Member Count invalid!");
+        }
       }
     }
 
@@ -96,7 +105,7 @@ class _HomePageState extends State<HomePage> {
         current = false;
       }
 
-      List<List<int>> allRoles = MemberManager.instance.setRoles(i + 1, false);
+      allRoles = MemberManager.instance.setRoles(i + 1, false);
       List<DataCell> cells = [];
       cells.add(DataCell(
           Container(
