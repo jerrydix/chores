@@ -22,7 +22,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     controller = AutoScrollController(
-      // viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
       axis: Axis.vertical,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToCurrentWeek());
@@ -30,6 +29,11 @@ class _HomePageState extends State<HomePage> {
 
   List<DataColumn2> _generateColumns() {
     List<DataColumn2> columns = [];
+
+    List<String> sortedNames = [];
+    sortedNames.add(MemberManager.instance.username);
+    sortedNames.addAll(MemberManager.instance.otherNames);
+
     columns.add(DataColumn2(
         label: Container(
             decoration: BoxDecoration(
@@ -45,14 +49,33 @@ class _HomePageState extends State<HomePage> {
                 child: Text(AppLocalizations.of(context)!.cw,
                     style: const TextStyle(fontWeight: FontWeight.bold)))),
         size: ColumnSize.M));
-    columns.add(const DataColumn2(
-        label: Center(child: Text('David')), size: ColumnSize.L));
-    columns.add(const DataColumn2(
-        label: Center(child: Text('Jeremy')), size: ColumnSize.L));
-    /*columns.add(const DataColumn2(
-        label: Center(child: Text('Simon')), size: ColumnSize.L));
-    columns.add(const DataColumn2(
-        label: Center(child: Text('Noah')), size: ColumnSize.M));*/
+
+    List<ColumnSize> columnSizes = [];
+
+    switch (MemberManager.instance.memberCount) {
+      case 1: {
+        columnSizes = [ColumnSize.L];
+        break;
+      }
+      case 2: {
+        columnSizes = [ColumnSize.M, ColumnSize.M];
+        break;
+      }
+      case 3: {
+        columnSizes = [ColumnSize.M, ColumnSize.M, ColumnSize.L];
+        break;
+      }
+      case 4: {
+        columnSizes = [ColumnSize.L, ColumnSize.L, ColumnSize.L, ColumnSize.M];
+        break;
+      }
+    }
+
+    for (int i = 0; i < sortedNames.length; i++) {
+      columns.add(DataColumn2(
+          label: Center(child: Text(sortedNames[i])), size: columnSizes[i]));
+    }
+
     return columns;
   }
 
@@ -153,184 +176,6 @@ class _HomePageState extends State<HomePage> {
         cells: cells,
       ));
     }
-
-      /*if (variant == 0) {
-        rows.add(DataRow2(
-            color: (() {
-              if (current) {
-                return MaterialStateProperty.all(
-                    Theme.of(context).colorScheme.primary.withOpacity(0.15));
-              }
-              if (wasCurrent) {
-                return MaterialStateProperty.all(
-                    Theme.of(context).colorScheme.surface);
-              }
-              return MaterialStateProperty.all(Colors.grey.withOpacity(0.05));
-            }()),
-            specificRowHeight: rowHeight,
-            cells: [
-              DataCell(
-                  Container(
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                  width: 1,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withOpacity(0.2)))),
-                      child: Center(
-                          child: Text((i + 1).toString(),
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold)))),
-                  onTap: () {}),
-              DataCell(
-                  const Center(
-                    child: Icon(Icons.delete_outlined),
-                  ),
-                  onTap: () {}),
-              DataCell(const Center(child: Icon(Icons.soup_kitchen_outlined)),
-                  onTap: () {}),
-              DataCell(const Center(child: Icon(Icons.bathtub_outlined)),
-                  onTap: () {}),
-              DataCell(
-                  const Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.cleaning_services_outlined),
-                      ],
-                    ),
-                  ), onTap: () {
-                debugPrint('Cell tapped.');
-              }),
-            ]));
-        variant++;
-      } else if (variant == 1) {
-        rows.add(DataRow2(
-            color: (() {
-              if (current) {
-                return MaterialStateProperty.all(
-                    Theme.of(context).colorScheme.primary.withOpacity(0.15));
-              }
-              if (wasCurrent) {
-                return MaterialStateProperty.all(
-                    Theme.of(context).colorScheme.surface);
-              }
-              return MaterialStateProperty.all(Colors.grey.withOpacity(0.05));
-            }()),
-            specificRowHeight: rowHeight,
-            cells: [
-              DataCell(
-                  Container(
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                  width: 1,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withOpacity(0.2)))),
-                      child: Center(
-                          child: Text((i + 1).toString(),
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold)))),
-                  onTap: () {}),
-              DataCell(
-                  const Center(child: Icon(Icons.cleaning_services_outlined)),
-                  onTap: () {}),
-              DataCell(const Center(child: Icon(Icons.delete_outlined)),
-                  onTap: () {}),
-              DataCell(const Center(child: Icon(Icons.kitchen_outlined)),
-                  onTap: () {}),
-              DataCell(const Center(child: Icon(Icons.bathtub_outlined)),
-                  onTap: () {}),
-            ]));
-        variant++;
-      } else if (variant == 2) {
-        rows.add(DataRow2(
-            color: (() {
-              if (current) {
-                return MaterialStateProperty.all(
-                    Theme.of(context).colorScheme.primary.withOpacity(0.15));
-              }
-              if (wasCurrent) {
-                return MaterialStateProperty.all(
-                    Theme.of(context).colorScheme.surface);
-              }
-              return MaterialStateProperty.all(Colors.grey.withOpacity(0.05));
-            }()),
-            specificRowHeight: rowHeight,
-            cells: [
-              DataCell(
-                  Container(
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                  width: 1,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withOpacity(0.2)))),
-                      child: Center(
-                          child: Text((i + 1).toString(),
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold)))),
-                  onTap: () {}),
-              DataCell(const Center(child: Icon(Icons.bathtub_outlined)),
-                  onTap: () {}),
-              DataCell(
-                  const Center(child: Icon(Icons.cleaning_services_outlined)),
-                  onTap: () {}),
-              DataCell(const Center(child: Icon(Icons.delete_outlined)),
-                  onTap: () {}),
-              DataCell(const Center(child: Icon(Icons.kitchen_outlined)),
-                  onTap: () {}),
-            ]));
-        variant++;
-      } else if (variant == 3) {
-        rows.add(DataRow2(
-            color: (() {
-              if (current) {
-                return MaterialStateProperty.all(
-                    Theme.of(context).colorScheme.primary.withOpacity(0.15));
-              }
-              if (wasCurrent) {
-                return MaterialStateProperty.all(
-                    Theme.of(context).colorScheme.surface);
-              }
-              return MaterialStateProperty.all(Colors.grey.withOpacity(0.05));
-            }()),
-            specificRowHeight: rowHeight,
-            cells: [
-              DataCell(
-                  Container(
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                  width: 1,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withOpacity(0.2)))),
-                      child: Center(
-                          child: Text((i + 1).toString(),
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold)))),
-                  onTap: () {}),
-              DataCell(const Center(child: Icon(Icons.kitchen_outlined)),
-                  onTap: () {}),
-              DataCell(const Center(child: Icon(Icons.bathtub_outlined)),
-                  onTap: () {}),
-              DataCell(
-                  const Center(child: Icon(Icons.cleaning_services_outlined)),
-                  onTap: () {}),
-              DataCell(const Center(child: Icon(Icons.delete_outlined)),
-                  onTap: () {}),
-            ]));
-        variant = 0;
-      }
-    }*/
 
     return rows;
   }
