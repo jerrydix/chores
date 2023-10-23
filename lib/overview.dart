@@ -21,9 +21,10 @@ class _HomePageState extends State<HomePage> {
   List<List<int>> allRoles = [];
   List<DataRow2> rows = [];
   List<DataColumn2> columns = [];
+  MemberManager manager = MemberManager.instance;
 
   @override
-  Future<void> initState() async {
+  void initState() {
     super.initState();
     controller = AutoScrollController(
       axis: Axis.vertical,
@@ -35,8 +36,8 @@ class _HomePageState extends State<HomePage> {
     List<DataColumn2> columns = [];
 
     List<String> sortedNames = [];
-    sortedNames.add(MemberManager.instance.username);
-    sortedNames.addAll(MemberManager.instance.otherNames);
+    sortedNames.add(manager.username);
+    sortedNames.addAll(manager.otherNames);
 
     columns.add(DataColumn2(
         label: Container(
@@ -56,7 +57,7 @@ class _HomePageState extends State<HomePage> {
 
     List<ColumnSize> columnSizes = [];
 
-    switch (allRoles.length) {
+    switch (manager.memberCount) {
       case 1: {
         columnSizes = [ColumnSize.L];
         break;
@@ -75,7 +76,7 @@ class _HomePageState extends State<HomePage> {
       }
       default: {
         if (kDebugMode) {
-          print("Member Count invalid!");
+          print("Member count ${manager.memberCount} invalid!" );
         }
       }
     }
@@ -105,7 +106,7 @@ class _HomePageState extends State<HomePage> {
         current = false;
       }
 
-      allRoles = MemberManager.instance.setRoles(i + 1, false);
+      allRoles = manager.setRoles(i + 1, false);
       List<DataCell> cells = [];
       cells.add(DataCell(
           Container(
@@ -198,12 +199,26 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return DataTable2(
-      scrollController: controller,
-      fixedTopRows: 1,
-      columns: _generateColumns(),
-      rows: _generateRows(),
-      columnSpacing: 0,
-    );
+    return FutureBuilder<void>(
+        future: manager.dataFuture,
+        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              const Center(child: CircularProgressIndicator());
+              break;
+            default:
+              if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+              return DataTable2(
+                scrollController: controller,
+                fixedTopRows: 1,
+                columns: _generateColumns(),
+                rows: _generateRows(),
+                columnSpacing: 0,
+              );
+          }
+          return const Center(child: CircularProgressIndicator());
+        });
   }
 }
