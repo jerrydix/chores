@@ -2,7 +2,6 @@ import 'package:chores/member_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

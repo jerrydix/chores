@@ -1,9 +1,7 @@
-import 'dart:ui';
 import 'package:chores/widgets/dashboard_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:collection/src/boollist.dart';
 import 'package:chores/member_manager.dart';
 
 

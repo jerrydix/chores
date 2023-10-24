@@ -1,9 +1,7 @@
-import 'dart:collection';
 
 import 'package:chores/widgets/wg_listtile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class WGSelection extends StatefulWidget {
   final String username;
