@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   List<DataRow2> rows = [];
   List<DataColumn2> columns = [];
   MemberManager manager = MemberManager.instance;
+  String username = "-1";
 
   @override
   void initState() {
@@ -191,10 +192,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future _scrollToCurrentWeek() async {
-    Future.delayed(const Duration(seconds: 1), () {
+    await manager.dataFuture.then((value) => Future.delayed(const Duration(seconds: 1), () {
       controller.animateTo(rowHeight * scrollOffset,
           duration: const Duration(seconds: 1), curve: Curves.ease);
-    });
+    }));
+
   }
 
   @override
@@ -210,6 +212,7 @@ class _HomePageState extends State<HomePage> {
               if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               }
+              username = manager.username;
               return DataTable2(
                 scrollController: controller,
                 fixedTopRows: 1,
@@ -220,5 +223,11 @@ class _HomePageState extends State<HomePage> {
           }
           return const Center(child: CircularProgressIndicator());
         });
+  }
+
+  void overviewStateCallback() {
+    setState(() {
+      username = manager.username;
+    });
   }
 }

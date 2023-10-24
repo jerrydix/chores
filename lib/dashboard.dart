@@ -17,7 +17,6 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   var db = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
-  int memberCount = -1;
   String wgName = "-1";
   String wgID = "-1";
   String username = "-1";
@@ -62,18 +61,25 @@ class _DashboardState extends State<Dashboard> {
             if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             }
-            memberCount = manager.memberCount;
             tasks = manager.tasks;
             primaryRoles = manager.primaryRoles;
             otherRoles = manager.otherRoles;
             username = manager.username;
             otherNames = manager.otherNames;
 
+
+
             return DashboardView(tasks: tasks,
               primaryRoles: primaryRoles,
               otherRoles: otherRoles, otherNames: otherNames, username: username,);
         }
         return const Center(child: CircularProgressIndicator());
+    });
+  }
+
+  void dashboardStateCallback() {
+    setState(() {
+      username = manager.username;
     });
   }
 }

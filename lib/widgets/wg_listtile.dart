@@ -63,7 +63,7 @@ class _WGListTileState extends State<WGListTile> {
               saveWGMemberToDatabase(uid: widget.uid, username: widget.username);
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
-                    builder: (context) => const NavBar(),
+                    builder: (context) => NavBar(key: UniqueKey()),
                   ), (route) => false
               );
             },
@@ -83,7 +83,7 @@ class _WGListTileState extends State<WGListTile> {
 
     db.collection("wgs").doc(uid).collection("members").get().then((querySnapshot) {
        for (var doc in querySnapshot.docs) {
-         roles.add(doc["role"]);
+         roles.add(doc["memberID"]);
        }
     });
 
@@ -96,8 +96,9 @@ class _WGListTileState extends State<WGListTile> {
 
     await db.collection("wgs").doc(uid).collection("members").doc(auth.currentUser?.uid).set({
       "uid": auth.currentUser?.uid,
-      "role": role,
-      "username": username
+      "memberID": role,
+      "username": username,
+      "active": true
     });
 
     await db.collection("wgs").doc(uid).update({

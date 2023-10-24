@@ -1,3 +1,4 @@
+import 'package:chores/widgets/navigationbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -24,7 +25,7 @@ class MemberManager {
   List<String> otherNames = [];
   List<bool> tasks = [];
   Future<void> dataFuture = Future(() => null);
-
+  
   MemberManager._internal() {
     userID = user!.uid;
   }
@@ -37,13 +38,13 @@ class MemberManager {
     await db.collection("wgs").doc(currentWgID).get().then((value) {
       wgCW = value["cw"];
       memberCount = value["count"];
+      wgName = value["name"];
     });
 
     if (wgCW != DateTime.now().weekOfYear) {
-      await db.collection("wgs").doc(currentWgID).set({
-        "tasks": List.filled(22, false),
+      await db.collection("wgs").doc(currentWgID).update({
         "cw": DateTime.now().weekOfYear,
-        "count": memberCount,
+        "tasks": List.filled(22, false),
       });
     }
 
@@ -57,6 +58,10 @@ class MemberManager {
         var currentID = value.docs[i]["uid"];
         var currentName = value.docs[i]["username"];
 
+        print(currentID);
+        print(userID);
+        print("");
+
         if (currentID == userID) {
           primaryIndex = i;
           username = currentName;
@@ -65,6 +70,7 @@ class MemberManager {
 
         otherNames.add(currentName);
       }
+      print("primary index: $primaryIndex");
       setRoles(DateTime.now().weekOfYear, true);
     });
 
@@ -117,6 +123,7 @@ class MemberManager {
   List<List<int>> setRoles(int cw, bool overwrite) {
     List<List<int>> allRoles = [];
     if (memberCount != otherNames.length + 1) {
+      print("MemberCount does not match fetched users!");
       if (kDebugMode) {
         print("MemberCount does not match fetched users!");
         return [];
