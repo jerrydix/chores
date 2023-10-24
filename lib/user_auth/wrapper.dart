@@ -1,10 +1,8 @@
-import 'package:chores/dashboard.dart';
 import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/widgets/navigationbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../overview.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({Key? key}) : super(key: key);

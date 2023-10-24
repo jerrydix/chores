@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:keybinder/keybinder.dart';
 
-import '../../wg_selection.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -108,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(width: 5,),
                   InkWell(
                       onTap: (){
-                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignUpPage()), (route) => false);
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const SignUpPage()), (route) => false);
                       },
                       borderRadius: BorderRadius.circular(5),
                       child: Text("Sign Up", style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),))

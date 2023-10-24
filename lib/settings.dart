@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -518,7 +517,7 @@ class _SettingsPageState extends State<SettingsPage> {
         title: Text(AppLocalizations.of(context)!.settings),
         actions: <Widget>[
           Container(
-            padding: EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 10),
             child: ElevatedButton(onPressed: () {
               openLogoutDialog();
             }, child: Text(AppLocalizations.of(context)!.logout)),

@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/user_auth/authentication_provider.dart';
 import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
-import 'package:chores/widgets/navigationbar.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:keybinder/keybinder.dart';
@@ -125,7 +123,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   InkWell(
                       onTap: () {
                         Navigator.pushAndRemoveUntil(
-                            context, MaterialPageRoute(builder: (context) => LoginPage()), (route) => false);
+                            context, MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false);
                       },
                       borderRadius: BorderRadius.circular(5),
                       child: Text("Login", style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),))

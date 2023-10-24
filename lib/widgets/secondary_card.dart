@@ -5,7 +5,6 @@ import 'package:animations/animations.dart';
 import 'package:flutter/foundation.dart';
 import 'checklist.dart';
 import 'navigationbar.dart' as navBar;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SecondaryCardData {
   final List<EdgeInsets> edgeInsets;

@@ -28,7 +28,7 @@ class FormContainer extends StatefulWidget {
 
 
   @override
-  _FormContainerState createState() => new _FormContainerState();
+  _FormContainerState createState() => _FormContainerState();
 }
 
 class _FormContainerState extends State<FormContainer> {

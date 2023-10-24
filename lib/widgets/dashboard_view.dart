@@ -1,14 +1,11 @@
 import 'dart:collection';
 
-import 'package:animations/animations.dart';
 import 'package:chores/member_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../dashboard.dart';
-import 'checklist.dart';
 import '../widgets/secondary_card.dart';
 
 import 'navigationbar.dart' as navBar;
@@ -88,7 +85,7 @@ class _DashboardViewState extends State<DashboardView> {
       child: Column(
         children: <Widget>[
           Card(
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             elevation: 0,
             color: Theme.of(context).colorScheme.surfaceVariant,
             child: SizedBox(
