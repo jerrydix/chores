@@ -44,6 +44,8 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     manager.dataFuture = manager.fetchWGData();
+    print("TESTSTdwadawDADwadada dasiklghjaklshrfjlasbfasbf jlbsafhjbseajfvbjlSHEBfjlASEBfasebfjklhbsAEjlfhbasejlkhfbasejlhbTT");
+    super.initState();
   }
 
   @override
@@ -64,8 +66,6 @@ class _DashboardState extends State<Dashboard> {
             otherRoles = manager.otherRoles;
             username = manager.username;
             otherNames = manager.otherNames;
-
-
 
             return DashboardView(tasks: tasks,
               primaryRoles: primaryRoles,

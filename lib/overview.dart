@@ -93,7 +93,6 @@ class _HomePageState extends State<HomePage> {
   List<DataRow2> _generateRows() {
 
     List<DataRow2> rows = [];
-    int variant = 0;
     bool current = false;
     bool wasCurrent = false;
 
@@ -191,10 +190,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future _scrollToCurrentWeek() async {
-    await manager.dataFuture.then((value) => Future.delayed(const Duration(seconds: 1), () {
+    await /*manager.dataFuture.then((value) => */Future.delayed(const Duration(seconds: 1), () {
       controller.animateTo(rowHeight * scrollOffset,
           duration: const Duration(seconds: 1), curve: Curves.ease);
-    }));
+    });
 
   }
 
@@ -229,4 +228,6 @@ class _HomePageState extends State<HomePage> {
       username = manager.username;
     });
   }
+
+
 }

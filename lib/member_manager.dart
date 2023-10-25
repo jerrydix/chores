@@ -29,6 +29,9 @@ class MemberManager {
   }
 
   Future<void> fetchWGData() async {
+    user = FirebaseAuth.instance.currentUser;
+    print("CURRENT USER: ${user?.displayName}");
+
     await db.collection("users").doc(userID).get().then((value) {
       currentWgID = value["wg"];
     });
@@ -56,10 +59,6 @@ class MemberManager {
         var currentID = value.docs[i]["uid"];
         var currentName = value.docs[i]["username"];
 
-        print(currentID);
-        print(userID);
-        print("");
-
         if (currentID == userID) {
           primaryIndex = i;
           username = currentName;
@@ -68,7 +67,6 @@ class MemberManager {
 
         otherNames.add(currentName);
       }
-      print("primary index: $primaryIndex");
       setRoles(DateTime.now().weekOfYear, true);
     });
 
