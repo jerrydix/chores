@@ -62,7 +62,7 @@ class _WGListTileState extends State<WGListTile> {
               saveWGMemberToDatabase(uid: widget.uid, username: widget.username);
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
-                    builder: (context) => NavBar(key: UniqueKey()),
+                    builder: (context) => const NavBar(),
                   ), (route) => false
               );
             },
