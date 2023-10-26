@@ -1,3 +1,5 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/user_auth/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -17,6 +19,7 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   State<StatefulWidget> createState() => _MyAppState();
@@ -105,6 +108,7 @@ class _MyAppState extends State<MyApp> {
         theme: setThemeData(lightDynamic, Brightness.light),
         darkTheme: setThemeData(darkDynamic, Brightness.dark),
         themeMode: _themeMode,
+        navigatorKey: MyApp.navigatorKey,
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
