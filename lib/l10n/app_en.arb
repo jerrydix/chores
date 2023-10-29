@@ -11,14 +11,14 @@
   "dark": "Dark",
   "light": "Light",
   "monday": "Once a week (Monday)",
-  "sunday": "Once a week (Sunday)",
+  "sunday": "Once a week (Saturday)",
   "twice": "Twice a week",
   "every": "Every day (lmao)",
   "info": "Info",
   "options": "Options",
   "confirm": "Confirm",
   "cancel": "Cancel",
-  "friday": "Once a week (Friday)",
+  "friday": "Once a week (Wednesday)",
   "en": "English",
   "de": "German",
   "ru": "Russian",
@@ -57,5 +57,7 @@
 
   "logout": "Logout",
   "logout_t": "Logout from Chores?",
-  "cw": "CW"
+  "cw": "CW",
+  "n_title": "Reminder",
+  "n_text": "to finish your chores for the week."
 }
