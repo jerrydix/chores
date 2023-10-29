@@ -27,5 +27,6 @@
 
   "logout": "Ausloggen",
   "logout_t": "Aus Chores ausloggen?",
-  "cw": "KW"
+  "cw": "KW",
+  "active": "Aktivitätsstatus"
 }

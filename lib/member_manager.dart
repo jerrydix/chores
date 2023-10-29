@@ -39,7 +39,6 @@ class MemberManager {
 
     await db.collection("wgs").doc(currentWgID).get().then((value) {
       wgCW = value["cw"];
-      memberCount = value["count"];
       wgName = value["name"];
     });
 
@@ -54,7 +53,7 @@ class MemberManager {
       tasks = value["tasks"].cast<bool>();
     });
 
-    await db.collection("wgs").doc(currentWgID).collection("members").orderBy("memberID").where("active", isEqualTo: true).get().then((value) {
+    await db.collection("wgs").doc(currentWgID).collection("members").orderBy("memberID").get().then((value) {
       otherNames = [];
       for (int i = 0; i < value.docs.length; i++) {
         QueryDocumentSnapshot doc = value.docs[i];
@@ -67,12 +66,13 @@ class MemberManager {
           active = doc["active"];
           continue;
         }
-
-        otherNames.add(currentName);
+        if (doc["active"]) {
+          otherNames.add(currentName);
+        }
       }
+      memberCount = otherNames.length + 1;
       setRoles(DateTime.now().weekOfYear, true);
     });
-
   }
 
   int setCurrentWgID() {
@@ -83,38 +83,10 @@ class MemberManager {
     return -1;
   }
 
-  int getMemberCount() {
-    db.collection("wgs").doc(currentWgID).get().then((value) {
-      memberCount = value["count"];
-      return memberCount;
-    });
-    return -1;
-  }
-
   List<bool> getTasksList() {
     db.collection("wgs").doc(currentWgID).get().then((value) {
       tasks = value["tasks"].cast<bool>();
       return tasks;
-    });
-    return [];
-  }
-
-  List<int> getOtherNames() {
-    db.collection("wgs").doc(currentWgID).collection("members").where("uid", isNotEqualTo: userID).orderBy("memberID").where("active", isEqualTo: true).get().then((value) {
-      otherNames = [];
-      for (int i = 0; i < value.docs.length; i++) {
-        var currentID = value.docs[i]["uid"];
-        var currentName = value.docs[i]["username"];
-
-        if (currentID == userID) {
-          primaryIndex = i;
-          username = currentName;
-          continue;
-        }
-
-        otherNames.add(currentName);
-      }
-      return otherNames;
     });
     return [];
   }
