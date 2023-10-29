@@ -577,22 +577,21 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingsTile.switchTile(
                 initialValue: currentActiveValue,
                 leading: currentActiveIcon,
-                title: Text(AppLocalizations.of(context)!.notEnable),
+                title: Text(AppLocalizations.of(context)!.active),
                 onToggle: (bool value) async {
                   FirebaseFirestore db = FirebaseFirestore.instance;
                   MemberManager manager = MemberManager.instance;
-                  await db.collection("wgs").doc(manager.currentWgID).collection("members").doc(manager.userID).update({
+                  await db.collection("wgs").doc(manager.currentWgID).collection("members").doc(manager.user?.uid).update({
                     "active": value,
                   });
                   setState(() {
+                    MemberManager.instance.active = value;
                     currentActiveValue = value;
                     if (value) {
-                      if (currentActiveValue!) {
                         currentActiveIcon = const Icon(Icons.check_circle);
                       } else {
                         currentActiveIcon = const Icon(Icons.check_circle_outline);
                       }
-                    }
                   });
                 }
               ),

@@ -59,5 +59,6 @@
   "logout_t": "Logout from Chores?",
   "cw": "CW",
   "n_title": "Reminder",
-  "n_text": "to finish your chores for the week."
+  "n_text": "to finish your chores for the week.",
+  "active": "Active status"
 }
