@@ -1,5 +1,3 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/user_auth/wrapper.dart';
 import 'package:chores/utils/notification_service.dart';
 import 'package:flutter/material.dart';

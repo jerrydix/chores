@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:chores/widgets/navigationbar.dart';
 import 'package:flutter/material.dart';
@@ -8,101 +10,114 @@ class NotificationService {
     await AwesomeNotifications().initialize(
         null,
         [
-          NotificationChannel(channelGroupKey: "reminder_channel_group", channelKey: "reminder_channel", channelName: "reminder_channel", channelDescription: "Reminder channel", defaultColor: Colors.white, ledColor: Colors.white, importance: NotificationImportance.Max, channelShowBadge: true, onlyAlertOnce: true, playSound: true, criticalAlerts: true)
+          NotificationChannel(
+              channelGroupKey: "reminder_channel_group",
+              channelKey: "reminder_channel",
+              channelName: "reminder_channel",
+              channelDescription: "Reminder channel",
+              defaultColor: Colors.transparent,
+              ledColor: Colors.white,
+              importance: NotificationImportance.Max,
+              defaultPrivacy: NotificationPrivacy.Public,
+              defaultRingtoneType: DefaultRingtoneType.Notification,
+              locked: true,
+              enableVibration: true,
+              playSound: true,
+              criticalAlerts: true)
         ],
-        channelGroups:  [
-          NotificationChannelGroup(channelGroupKey: "reminder_channel_group", channelGroupName: "Reminder group")
+        channelGroups: [
+          NotificationChannelGroup(
+              channelGroupKey: "reminder_channel_group",
+              channelGroupName: "Reminder group")
         ],
-        debug: true
-    );
+        debug: true);
 
-    await AwesomeNotifications().isNotificationAllowed().then(
-        (allowed) async {
-          if (!allowed) {
-            await AwesomeNotifications().requestPermissionToSendNotifications();
-          }
-        }
-    );
+    await AwesomeNotifications().isNotificationAllowed().then((allowed) async {
+      if (!allowed) {
+        await AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
 
     AwesomeNotifications().setListeners(
-        onActionReceivedMethod:         onActionReceivedMethod,
-        onNotificationCreatedMethod:    onNotificationCreatedMethod,
-        onNotificationDisplayedMethod:  onNotificationDisplayedMethod,
-        onDismissActionReceivedMethod:  onDismissActionReceivedMethod
-    );
+        onActionReceivedMethod: onActionReceivedMethod,
+        onNotificationCreatedMethod: onNotificationCreatedMethod,
+        onNotificationDisplayedMethod: onNotificationDisplayedMethod,
+        onDismissActionReceivedMethod: onDismissActionReceivedMethod);
   }
 
   /// Use this method to detect when a new notification or a schedule is created
   @pragma("vm:entry-point")
-  static Future <void> onNotificationCreatedMethod(ReceivedNotification receivedNotification) async {
+  static Future<void> onNotificationCreatedMethod(
+      ReceivedNotification receivedNotification) async {
     debugPrint("notification created");
     final payload = receivedNotification.payload ?? {};
     if (payload["navigate"] == "true") {
-      MyApp.navigatorKey.currentState?.push(
-        MaterialPageRoute(
-            builder: (_) => const NavBar(),
-        )
-      );
+      MyApp.navigatorKey.currentState?.push(MaterialPageRoute(
+        builder: (_) => const NavBar(),
+      ));
     }
   }
 
   /// Use this method to detect every time that a new notification is displayed
   @pragma("vm:entry-point")
-  static Future <void> onNotificationDisplayedMethod(ReceivedNotification receivedNotification) async {
+  static Future<void> onNotificationDisplayedMethod(
+      ReceivedNotification receivedNotification) async {
     debugPrint("notification displayed");
   }
 
   /// Use this method to detect if the user dismissed a notification
   @pragma("vm:entry-point")
-  static Future <void> onDismissActionReceivedMethod(ReceivedAction receivedAction) async {
+  static Future<void> onDismissActionReceivedMethod(
+      ReceivedAction receivedAction) async {
     debugPrint("notification dismissed action");
   }
 
   /// Use this method to detect when the user taps on a notification or action button
   @pragma("vm:entry-point")
-  static Future <void> onActionReceivedMethod(ReceivedAction receivedAction) async {
+  static Future<void> onActionReceivedMethod(
+      ReceivedAction receivedAction) async {
     debugPrint("notification action");
 
     // Navigate into pages, avoiding to open the notification details page over another details page already opened
-    MyApp.navigatorKey.currentState?.pushNamedAndRemoveUntil('/notification-page',
-            (route) => (route.settings.name != '/notification-page') || route.isFirst,
+    MyApp.navigatorKey.currentState?.pushNamedAndRemoveUntil(
+        '/notification-page',
+        (route) =>
+            (route.settings.name != '/notification-page') || route.isFirst,
         arguments: receivedAction);
   }
 
-  static Future<void> showNotification({
+  static Future<void> scheduleChoresNotification({
+    required final int id,
     required final String title,
     required final String body,
-    final String? summary,
-    final Map<String, String>? payload,
-    final ActionType actionType = ActionType.Default,
-    final NotificationLayout notificationLayout = NotificationLayout.Default,
-    final NotificationCategory? category,
-    final String? bigPicture,
+    required final int weekday,
     final List<NotificationActionButton>? actionButtons,
-    final bool scheduled = false,
-    final int? interval,
   }) async {
-    assert(!scheduled || (scheduled && interval != null));
-    
+    Random random = Random();
     await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: -1,
-          channelKey: "reminder_channel",
-          title: title,
-          body: body,
-          actionType: actionType,
-          notificationLayout: notificationLayout,
-          summary: summary,
-          category: category,
-          payload: payload,
-          bigPicture: bigPicture,
-        ),
+      content: NotificationContent(
+        id: random.nextInt(10000),
+        channelKey: "reminder_channel",
+        title: title,
+        body: body,
+        category: NotificationCategory.Alarm,
+        actionType: ActionType.Default,
+        notificationLayout: NotificationLayout.BigText,
+        locked: true,
+        wakeUpScreen: true,
+        fullScreenIntent: true,
+        backgroundColor: Colors.transparent,
+      ),
       actionButtons: actionButtons,
-      schedule: scheduled ? NotificationInterval(
-        interval: interval,
-        timeZone: await AwesomeNotifications().getLocalTimeZoneIdentifier(),
+      schedule: NotificationCalendar(
+        minute: 0,
+        hour: 13,
+        weekday: weekday,
         preciseAlarm: true,
-      ) : null,
+        allowWhileIdle: true,
+        timeZone: await AwesomeNotifications().getLocalTimeZoneIdentifier(),
+        repeats: true,
+      ),
     );
   }
 }

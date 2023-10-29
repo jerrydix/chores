@@ -23,6 +23,7 @@ class MemberManager {
   List<String> otherNames = [];
   List<bool> tasks = [];
   Future<void> dataFuture = Future(() => null);
+  bool active = true;
   
   MemberManager._internal() {
     userID = user!.uid;
@@ -53,15 +54,17 @@ class MemberManager {
       tasks = value["tasks"].cast<bool>();
     });
 
-    await db.collection("wgs").doc(currentWgID).collection("members").orderBy("memberID").get().then((value) { //where("active", isEqualTo: true)
+    await db.collection("wgs").doc(currentWgID).collection("members").orderBy("memberID").where("active", isEqualTo: true).get().then((value) {
       otherNames = [];
       for (int i = 0; i < value.docs.length; i++) {
-        var currentID = value.docs[i]["uid"];
-        var currentName = value.docs[i]["username"];
+        QueryDocumentSnapshot doc = value.docs[i];
+        var currentID = doc["uid"];
+        var currentName = doc["username"];
 
         if (currentID == userID) {
           primaryIndex = i;
           username = currentName;
+          active = doc["active"];
           continue;
         }
 
@@ -97,7 +100,7 @@ class MemberManager {
   }
 
   List<int> getOtherNames() {
-    db.collection("wgs").doc(currentWgID).collection("members").where("uid", isNotEqualTo: userID).orderBy("memberID").get().then((value) { //where("active", isEqualTo: true)
+    db.collection("wgs").doc(currentWgID).collection("members").where("uid", isNotEqualTo: userID).orderBy("memberID").where("active", isEqualTo: true).get().then((value) {
       otherNames = [];
       for (int i = 0; i < value.docs.length; i++) {
         var currentID = value.docs[i]["uid"];

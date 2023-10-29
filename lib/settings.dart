@@ -1,6 +1,10 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:chores/member_manager.dart';
 import 'package:chores/user_auth/authentication_provider.dart';
 import 'package:chores/user_auth/pages/login.dart';
+import 'package:chores/utils/notification_service.dart';
 import 'package:chores/utils/userprefs.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -24,10 +28,11 @@ enum Themes { system, light, dark }
 enum Languages { en, de, ru }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool first = true;
-
   bool? currentValue;
   Icon? currentNotificationStatus;
+
+  bool? currentActiveValue;
+  Icon? currentActiveIcon;
 
   Text? currentInterval;
   Text? currentIntervalValue;
@@ -47,7 +52,13 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void init() {
     currentValue = UserPreferences.getNotificationsBool();
-    if (currentValue == true) {
+    currentActiveValue = MemberManager.instance.active;
+    if (currentActiveValue!) {
+      currentActiveIcon = const Icon(Icons.check_circle);
+    } else {
+      currentActiveIcon = const Icon(Icons.check_circle_outline);
+    }
+    if (currentValue!) {
       currentNotificationStatus = const Icon(Icons.notifications_on);
     } else {
       currentNotificationStatus = const Icon(Icons.notifications_off);
@@ -56,36 +67,31 @@ class _SettingsPageState extends State<SettingsPage> {
     switch (UserPreferences.getNotificationInterval()) {
       case 0:
         {
-          currentInterval =
-              currentIntervalValue = Text(AppLocalizations.of(context)!.monday);
+          currentInterval = currentIntervalValue = Text(AppLocalizations.of(context)!.monday);
           _character = Intervals.onceBegin;
           break;
         }
       case 1:
         {
-          currentInterval =
-              currentIntervalValue = Text(AppLocalizations.of(context)!.friday);
+          currentInterval = currentIntervalValue = Text(AppLocalizations.of(context)!.friday);
           _character = Intervals.onceMiddle;
           break;
         }
       case 2:
         {
-          currentInterval =
-              currentIntervalValue = Text(AppLocalizations.of(context)!.sunday);
+          currentInterval = currentIntervalValue = Text(AppLocalizations.of(context)!.sunday);
           _character = Intervals.onceEnd;
           break;
         }
       case 3:
         {
-          currentInterval =
-              currentIntervalValue = Text(AppLocalizations.of(context)!.twice);
+          currentInterval = currentIntervalValue = Text(AppLocalizations.of(context)!.twice);
           _character = Intervals.twice;
           break;
         }
       case 4:
         {
-          currentInterval =
-              currentIntervalValue = Text(AppLocalizations.of(context)!.every);
+          currentInterval = currentIntervalValue = Text(AppLocalizations.of(context)!.every);
           _character = Intervals.every;
           break;
         }
@@ -126,7 +132,6 @@ class _SettingsPageState extends State<SettingsPage> {
     }
 
     switchCurrentLanguageValue();
-
   }
 
   void switchCurrentLanguageValue() {
@@ -156,7 +161,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future openIntervalDialog() => showAnimatedDialog(
-        barrierDismissible: true,
+        barrierDismissible: false,
         animationType: DialogTransitionType.fade,
         duration: const Duration(milliseconds: 300),
         context: context,
@@ -253,11 +258,24 @@ class _SettingsPageState extends State<SettingsPage> {
                           },
                           child: Text(AppLocalizations.of(context)!.cancel)),
                       TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
+                          onPressed: () async {
+                            await AwesomeNotifications().cancelAllSchedules().then((_) async {
+                              if (UserPreferences.getNotificationsBool()) {
+                                List<int> weekdays = getNotificationWeekday(_character!);
+                                for (int weekday in weekdays) {
+                                  await NotificationService.scheduleChoresNotification(
+                                      id: 0,
+                                      title: AppLocalizations.of(context)!.n_title,
+                                      body: AppLocalizations.of(context)!.n_text,
+                                      weekday: weekday
+                                  );
+                                }
+                              }
+                            });
                             this.setState(() {
                               currentIntervalValue = currentInterval;
                             });
+                            Navigator.pop(context);
                           },
                           child: Text(AppLocalizations.of(context)!.confirm)),
                     ],
@@ -345,7 +363,7 @@ class _SettingsPageState extends State<SettingsPage> {
       });
 
   Future openThemeDialog() => showAnimatedDialog(
-        barrierDismissible: true,
+        barrierDismissible: false,
         animationType: DialogTransitionType.fade,
         duration: const Duration(milliseconds: 300),
         context: context,
@@ -431,7 +449,7 @@ class _SettingsPageState extends State<SettingsPage> {
       );
 
   Future openLanguageDialog() => showAnimatedDialog(
-        barrierDismissible: true,
+        barrierDismissible: false,
         animationType: DialogTransitionType.fade,
         duration: const Duration(milliseconds: 300),
         context: context,
@@ -506,12 +524,37 @@ class _SettingsPageState extends State<SettingsPage> {
         },
       );
 
+  List<int> getNotificationWeekday(Intervals interval) {
+    List<int> weekdays = [];
+    switch (interval) {
+      case Intervals.onceBegin:
+        weekdays.add(1);
+        break;
+      case Intervals.onceMiddle:
+        weekdays.add(3);
+        break;
+      case Intervals.onceEnd:
+        weekdays.add(6);
+        break;
+      case Intervals.twice:
+        weekdays.add(2);
+        weekdays.add(5);
+        break;
+      case Intervals.every:
+        weekdays.add(1);
+        weekdays.add(2);
+        weekdays.add(3);
+        weekdays.add(4);
+        weekdays.add(5);
+        weekdays.add(6);
+        break;
+    }
+    return weekdays;
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (first) {
-      init();
-      first = false;
-    }
+    init();
     return SelectionArea(child: Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settings),
@@ -531,6 +574,28 @@ class _SettingsPageState extends State<SettingsPage> {
                 color: Colors.grey,
                 child: Text(AppLocalizations.of(context)!.options)),
             tiles: <SettingsTile>[
+              SettingsTile.switchTile(
+                initialValue: currentActiveValue,
+                leading: currentActiveIcon,
+                title: Text(AppLocalizations.of(context)!.notEnable),
+                onToggle: (bool value) async {
+                  FirebaseFirestore db = FirebaseFirestore.instance;
+                  MemberManager manager = MemberManager.instance;
+                  await db.collection("wgs").doc(manager.currentWgID).collection("members").doc(manager.userID).update({
+                    "active": value,
+                  });
+                  setState(() {
+                    currentActiveValue = value;
+                    if (value) {
+                      if (currentActiveValue!) {
+                        currentActiveIcon = const Icon(Icons.check_circle);
+                      } else {
+                        currentActiveIcon = const Icon(Icons.check_circle_outline);
+                      }
+                    }
+                  });
+                }
+              ),
               SettingsTile.navigation(
                 leading: currentThemeIcon,
                 title: Text(AppLocalizations.of(context)!.theme),
@@ -551,7 +616,22 @@ class _SettingsPageState extends State<SettingsPage> {
                 initialValue: currentValue,
                 leading: currentNotificationStatus,
                 title: Text(AppLocalizations.of(context)!.notEnable),
-                onToggle: (bool value) {
+                onToggle: (bool value) async {
+                  if (value) {
+                    await AwesomeNotifications().cancelAllSchedules().then((_) async {
+                      List<int> weekdays = getNotificationWeekday(_character!);
+                      for (int weekday in weekdays) {
+                        await NotificationService.scheduleChoresNotification(
+                            id: 0,
+                            title: AppLocalizations.of(context)!.n_title,
+                            body: AppLocalizations.of(context)!.n_text,
+                            weekday: weekday
+                        );
+                      }
+                    });
+                  } else {
+                    await AwesomeNotifications().cancelAllSchedules();
+                  }
                   setState(() {
                     currentValue = value;
                     if (value) {
