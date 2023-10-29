@@ -71,6 +71,7 @@ class MemberManager {
         }
       }
       memberCount = otherNames.length + 1;
+      print("MemberCount: $memberCount");
       setRoles(DateTime.now().weekOfYear, true);
     });
   }
@@ -139,7 +140,7 @@ class MemberManager {
       }
       case 3: {
         allRoles = [[1,2],[3],[4]];
-        break; //todo add algorithm with custom map, and after sort by ascending memberID
+        break; // todo add algorithm with custom map, and after sort by ascending memberID
       }
       case 4: {
         // 4-rotation
@@ -147,9 +148,13 @@ class MemberManager {
         allRoles = [[mod4],[mod4 + 1 > 3 ? mod4 + 1 - 4 : mod4 + 1],[mod4 + 2 > 3 ? mod4 + 2 - 4 : mod4 + 2],[mod4 + 3 > 3 ? mod4 + 3 - 4 : mod4 + 3]];
       }
     }
+    print("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
+
     if (overwrite) {
       primaryRoles = allRoles[primaryIndex];
     }
+    print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
+
     List<int> overviewCurrentPrimaryRoles = allRoles[primaryIndex];
     allRoles.removeAt(primaryIndex);
     if (overwrite) {

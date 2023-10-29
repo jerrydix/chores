@@ -44,7 +44,6 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     manager.dataFuture = manager.fetchWGData();
-    print("TESTSTdwadawDADwadada dasiklghjaklshrfjlasbfasbf jlbsafhjbseajfvbjlSHEBfjlASEBfasebfjklhbsAEjlfhbasejlkhfbasejlhbTT");
     super.initState();
   }
 

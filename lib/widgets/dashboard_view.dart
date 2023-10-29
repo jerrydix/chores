@@ -63,6 +63,7 @@ class _DashboardViewState extends State<DashboardView> {
 
   @override
   Widget build(BuildContext context) {
+    print("LLLLLLLLLLLLLLL");
     double actualHeight = kIsWeb
         ? MediaQuery.of(context).size.height -
             MediaQuery.of(context).padding.top -
@@ -256,16 +257,14 @@ class _DashboardViewState extends State<DashboardView> {
 
   List<Widget> createPrimaryTasks() {
     taskMaps = createTaskMap(widget.primaryRoles, true);
-    //todo maybe add new reference
 
     List<Widget> currentTasks = [];
-    //taskLength = taskMaps.keys.length;
-    //print(taskMaps.length);
-    //print(indexCounters.length);
     List<int> offsets = [];
 
+    print(offsets);
+    print(currentTasks);
+
     for (int i = 0; i < indexCounters.length; i++) {
-      //print("unmodified index: ${indexCounters.keys.elementAt(i)}");
       offsets.add(currentTasks.length);
       taskMaps[i].forEach((name, icon) {
         currentTasks.add(StatefulBuilder(
@@ -283,13 +282,11 @@ class _DashboardViewState extends State<DashboardView> {
                       .tasks[indexCounters.keys.elementAt(i) + currentTasks.indexOf(context.widget) - offsets[i]],
                   onChanged: (value) {
                     int indexInList = currentTasks.indexOf(context.widget);
-                    //print("index in list: $indexInList");
-                    //print("modified index: ${indexCounters.keys.elementAt(i) + indexInList}");
+
                     setState(() {
                       widget.tasks[indexCounters.keys.elementAt(i) + indexInList - offsets[i]] = value!;
                       styleSwitcher(indexCounters.keys.elementAt(i) + indexInList - offsets[i], value);
                     });
-                    //print(widget.tasks);
                     saveSelectionStateToDB();
                   },
                   secondary: icon);
@@ -297,6 +294,8 @@ class _DashboardViewState extends State<DashboardView> {
         //print(currentTasks);
       });
     }
+    print(offsets);
+    print(currentTasks);
     return currentTasks;
   }
 
