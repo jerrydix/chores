@@ -28,5 +28,7 @@
   "logout": "Ausloggen",
   "logout_t": "Aus Chores ausloggen?",
   "cw": "KW",
-  "active": "Aktivitätsstatus"
+  "active": "Aktivitätsstatus",
+  "noPrimaryRoles": "Dein Status ist inaktiv.",
+  "noPrimaryRoles2": "Dir wurden keine Hausarbeiten zugewiesen."
 }
