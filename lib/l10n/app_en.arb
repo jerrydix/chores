@@ -61,5 +61,6 @@
   "n_title": "Reminder",
   "n_text": "to finish your chores for the week.",
   "active": "Active status",
-  "noPrimaryRoles": "Your status is set inactive.\nNo chores are assigned to you."
+  "noPrimaryRoles": "Your status is set inactive.",
+  "noPrimaryRoles2": "No chores are assigned to you."
 }

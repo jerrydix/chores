@@ -63,7 +63,6 @@ class _DashboardViewState extends State<DashboardView> {
 
   @override
   Widget build(BuildContext context) {
-    print("LLLLLLLLLLLLLLL");
     double actualHeight = kIsWeb
         ? MediaQuery.of(context).size.height -
             MediaQuery.of(context).padding.top -
@@ -82,6 +81,31 @@ class _DashboardViewState extends State<DashboardView> {
         widths: otherWidths,
         titles: widget.otherNames);
 
+    Widget primaryWidget;
+
+    Widget primaryActiveWidget = Padding(
+      padding: const EdgeInsets.all(10),
+      child: Scrollbar(
+        radius: const Radius.circular(10),
+        thickness: 3,
+        child: SingleChildScrollView(
+            child: Column(
+              children: createPrimaryTasks(),
+            )),
+      ),
+    );
+
+    Widget primaryInactiveWidget = Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [Text(AppLocalizations.of(context)!.noPrimaryRoles), Text(AppLocalizations.of(context)!.noPrimaryRoles2)]);
+
+    if (widget.primaryRoles.isEmpty) {
+      primaryWidget = primaryInactiveWidget;
+    } else {
+      primaryWidget = primaryActiveWidget;
+    }
+
     return Center(
       child: Column(
         children: <Widget>[
@@ -92,17 +116,7 @@ class _DashboardViewState extends State<DashboardView> {
             child: SizedBox(
               width: clampDouble(MediaQuery.of(context).size.width, 0, 500),
               height: (actualHeight - 20) * primaryHeightMultiplier,
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Scrollbar(
-                  radius: const Radius.circular(10),
-                  thickness: 3,
-                  child: SingleChildScrollView(
-                      child: Column(
-                    children: createPrimaryTasks(),
-                  )),
-                ),
-              ),
+              child: primaryWidget,
             ),
           ),
           SecondaryCard(data: data)
@@ -256,9 +270,6 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
   List<Widget> createPrimaryTasks() {
-    if (widget.primaryRoles.isEmpty) {
-      return [Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.center, children: [Text(AppLocalizations.of(context)!.noPrimaryRoles)])];
-    }
     taskMaps = createTaskMap(widget.primaryRoles, true);
 
     List<Widget> currentTasks = [];
