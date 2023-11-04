@@ -27,7 +27,8 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "build/app/outputs/flutter-apk/app-release.apk"
-          tag: Chores v0.0.${{ github.run_number }}
+          tag: v0.0.${{ github.run_number }}
+          name: Chores v0.0.${{ github.run_number }}
           token: ${{ secrets.TOKEN }}
       - run: flutter build web
       - name: Deploy to Firebase Hosting
