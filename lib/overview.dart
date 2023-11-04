@@ -36,7 +36,9 @@ class _HomePageState extends State<HomePage> {
     List<DataColumn2> columns = [];
 
     List<String> sortedNames = [];
-    sortedNames.add(manager.username);
+    if (manager.active) {
+      sortedNames.add(manager.username);
+    }
     sortedNames.addAll(manager.otherNames);
 
     columns.add(DataColumn2(
