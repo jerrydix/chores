@@ -55,22 +55,26 @@ class MemberManager {
 
     await db.collection("wgs").doc(currentWgID).collection("members").orderBy("memberID").get().then((value) {
       otherNames = [];
+      int j = 0;
       for (int i = 0; i < value.docs.length; i++) {
         QueryDocumentSnapshot doc = value.docs[i];
         var currentID = doc["uid"];
         var currentName = doc["username"];
 
         if (currentID == userID) {
-          primaryIndex = i;
           username = currentName;
           active = doc["active"];
+          if (active) {
+            primaryIndex = j;
+          }
           continue;
         }
         if (doc["active"]) {
           otherNames.add(currentName);
+          j++;
         }
       }
-      memberCount = otherNames.length + 1;
+      memberCount = active ? otherNames.length + 1 : otherNames.length;
       print("MemberCount: $memberCount");
       setRoles(DateTime.now().weekOfYear, true);
     });
@@ -94,13 +98,6 @@ class MemberManager {
 
   List<List<int>> setRoles(int cw, bool overwrite) {
     List<List<int>> allRoles = [];
-    if (memberCount != otherNames.length + 1) {
-      print("MemberCount does not match fetched users!");
-      if (kDebugMode) {
-        print("MemberCount does not match fetched users!");
-        return [];
-      }
-    }
 
     switch (memberCount) {
       case 1: {
@@ -149,19 +146,25 @@ class MemberManager {
       }
     }
     print("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
+    print("primary index: $primaryIndex");
 
-    if (overwrite) {
+    if (overwrite && active) {
       primaryRoles = allRoles[primaryIndex];
     }
     print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
 
-    List<int> overviewCurrentPrimaryRoles = allRoles[primaryIndex];
-    allRoles.removeAt(primaryIndex);
+    List<int> overviewCurrentPrimaryRoles = [];
+    if (active) {
+      overviewCurrentPrimaryRoles = allRoles[primaryIndex];
+      allRoles.removeAt(primaryIndex);
+    }
     if (overwrite) {
       otherRoles = allRoles;
     }
     List<List<int>> overviewResult = [];
-    overviewResult.add(overviewCurrentPrimaryRoles);
+    if (active) {
+      overviewResult.add(overviewCurrentPrimaryRoles);
+    }
     overviewResult.addAll(allRoles);
     return overviewResult;
   }

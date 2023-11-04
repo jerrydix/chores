@@ -256,6 +256,9 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
   List<Widget> createPrimaryTasks() {
+    if (widget.primaryRoles.isEmpty) {
+      return [Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.center, children: [Text(AppLocalizations.of(context)!.noPrimaryRoles)])];
+    }
     taskMaps = createTaskMap(widget.primaryRoles, true);
 
     List<Widget> currentTasks = [];
