@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 
 class MemberManager {
@@ -75,7 +74,6 @@ class MemberManager {
         }
       }
       memberCount = active ? otherNames.length + 1 : otherNames.length;
-      print("MemberCount: $memberCount");
       setRoles(DateTime.now().weekOfYear, true);
     });
   }
@@ -145,13 +143,10 @@ class MemberManager {
         allRoles = [[mod4],[mod4 + 1 > 3 ? mod4 + 1 - 4 : mod4 + 1],[mod4 + 2 > 3 ? mod4 + 2 - 4 : mod4 + 2],[mod4 + 3 > 3 ? mod4 + 3 - 4 : mod4 + 3]];
       }
     }
-    print("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
-    print("primary index: $primaryIndex");
 
     if (overwrite && active) {
       primaryRoles = allRoles[primaryIndex];
     }
-    print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
 
     List<int> overviewCurrentPrimaryRoles = [];
     if (active) {
