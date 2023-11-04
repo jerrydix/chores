@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build_deploy_release:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +22,6 @@ jobs:
       - run: flutter pub get
       #- run: flutter test
       - run: flutter build apk
-      - run: flutter build web
       #- run: flutter build appbundle
       - name: Release to GitHub
         uses: ncipollo/release-action@v1
@@ -30,3 +29,11 @@ jobs:
           artifacts: "build/app/outputs/flutter-apk/app-release.apk"
           tag: Chores v0.0.${{ github.run_number }}
           token: ${{ secrets.TOKEN }}
+      - run: flutter build web
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CHORES_4725C }}
+          channelId: live
+          projectId: chores-4725c
