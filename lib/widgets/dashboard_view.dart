@@ -69,8 +69,7 @@ class _DashboardViewState extends State<DashboardView> {
             MediaQuery.of(context).padding.bottom -
             navBar.getPaddings()
         : navBar.bodyHeight;
-    double primaryHeightMultiplier =
-        widget.otherRoles.isNotEmpty ? (8 / 10) : 1;
+    double primaryHeightMultiplier = widget.otherRoles.isNotEmpty ? (8 / 10) : 1;
 
     createSecondaryData();
     SecondaryCardData data = SecondaryCardData(
@@ -140,11 +139,11 @@ class _DashboardViewState extends State<DashboardView> {
   void createSecondaryData() {
 
     print("otherRoles: ${widget.otherRoles.length}");
+    print("otherRoles: ${widget.otherRoles}");
 
     for (int i = 0; i < widget.otherRoles.length; i++) {
       List<int> currentRoles = widget.otherRoles[i];
-      List<LinkedHashMap<String, Icon>> currentMaps =
-          createTaskMap(currentRoles, false);
+      List<LinkedHashMap<String, Icon>> currentMaps = createTaskMap(currentRoles, false);
       LinkedHashMap<String, Icon> currentCombinedMap = currentMaps[0];
       if (currentMaps.length > 1) {
         for (int j = 1; j < currentMaps.length; j++) {

@@ -6,7 +6,6 @@ class MemberManager {
   static final MemberManager _instance = MemberManager._internal();
 
   static MemberManager get instance => _instance;
-  //TODO treat roles as member ids
 
   var db = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
@@ -134,8 +133,8 @@ class MemberManager {
         break;
       }
       case 3: {
-        allRoles = [[1,2],[3],[4]];
-        break; // todo add algorithm with custom map, and after sort by ascending memberID
+        allRoles = [[0,1],[2],[3]];
+        break;
       }
       case 4: {
         // 4-rotation
