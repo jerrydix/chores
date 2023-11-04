@@ -138,6 +138,9 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
   void createSecondaryData() {
+
+    print("otherRoles: ${widget.otherRoles.length}");
+
     for (int i = 0; i < widget.otherRoles.length; i++) {
       List<int> currentRoles = widget.otherRoles[i];
       List<LinkedHashMap<String, Icon>> currentMaps =
@@ -175,7 +178,7 @@ class _DashboardViewState extends State<DashboardView> {
           default:
             {
               if (kDebugMode) {
-                print("ERROR: wrong role id");
+                print("ERROR: wrong role id $role");
               }
               return;
             }
