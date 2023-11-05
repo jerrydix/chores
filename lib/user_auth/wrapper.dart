@@ -23,9 +23,7 @@ class _WrapperState extends State<Wrapper> {
   }
 
   updateUserState(event) {
-    setState(() {
-      user = event;
-    });
+    user = event;
   }
 
   @override

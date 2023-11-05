@@ -51,7 +51,7 @@ class _WGListTileState extends State<WGListTile> {
           ),
           const SizedBox(width: 15,),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (widget.count >= 4) {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text("This WG is full, cannot join."),
@@ -59,7 +59,7 @@ class _WGListTileState extends State<WGListTile> {
                 ));
                 return;
               }
-              saveWGMemberToDatabase(uid: widget.uid, username: widget.username);
+              await saveWGMemberToDatabase(uid: widget.uid, username: widget.username);
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
                     builder: (context) => const NavBar(),
@@ -80,11 +80,12 @@ class _WGListTileState extends State<WGListTile> {
     List<int> roles = [];
     int role = -1;
 
-    db.collection("wgs").doc(uid).collection("members").get().then((querySnapshot) {
+    await db.collection("wgs").doc(uid).collection("members").get().then((querySnapshot) {
        for (var doc in querySnapshot.docs) {
          roles.add(doc["memberID"]);
        }
     });
+
 
     for (int i = 0; i <= 3; i++) {
       if (!roles.contains(i)) {
@@ -108,6 +109,7 @@ class _WGListTileState extends State<WGListTile> {
       "username": widget.username,
       "wg": uid
     });
+
   }
 }
 

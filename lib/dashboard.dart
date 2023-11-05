@@ -66,6 +66,11 @@ class _DashboardState extends State<Dashboard> {
             username = manager.username;
             otherNames = manager.otherNames;
 
+            //print("PRIMARY ROLES: $primaryRoles");
+            //print("OTHER ROLES: $otherRoles");
+            //print("OTHER NAMES: $otherNames");
+            //print("USERNAME: $username");
+
             return DashboardView(tasks: tasks,
               primaryRoles: primaryRoles,
               otherRoles: otherRoles, otherNames: otherNames, username: username,);
