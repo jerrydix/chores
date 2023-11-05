@@ -23,12 +23,11 @@ class MemberManager {
   Future<void> dataFuture = Future(() => null);
   bool active = true;
   
-  MemberManager._internal() {
-    userID = user!.uid;
-  }
+  MemberManager._internal();
 
   Future<void> fetchWGData() async {
     user = FirebaseAuth.instance.currentUser;
+    userID = user!.uid;
     print("CURRENT USER: ${user?.displayName}");
 
     await db.collection("users").doc(userID).get().then((value) {
