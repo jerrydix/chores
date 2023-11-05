@@ -13,17 +13,22 @@ class Wrapper extends StatefulWidget {
 
 class _WrapperState extends State<Wrapper> {
   User? user;
+  bool firstRun = true;
   @override
   void initState() {
     super.initState();
-
     FirebaseAuth.instance
         .authStateChanges()
         .listen((event) => updateUserState(event));
   }
 
   updateUserState(event) {
-    user = event;
+    if (firstRun) {
+      firstRun = false;
+      setState(() {
+        user = event;
+      });
+    }
   }
 
   @override
