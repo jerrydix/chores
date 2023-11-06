@@ -111,7 +111,7 @@ class _DashboardViewState extends State<DashboardView> {
           Card(
             margin: const EdgeInsets.all(10),
             elevation: 0,
-            color: Theme.of(context).colorScheme.surfaceVariant,
+            color: Theme.of(context).colorScheme.secondaryContainer,
             child: SizedBox(
               width: clampDouble(MediaQuery.of(context).size.width, 0, 500),
               height: (actualHeight - 20) * primaryHeightMultiplier,
@@ -186,34 +186,30 @@ class _DashboardViewState extends State<DashboardView> {
       otherCheckedLists.add(currentCheckList);
     }
 
+    print("otherRolesLength: ${widget.otherRoles.length}");
+
     switch (widget.otherRoles.length) {
       case 1:
         {
-          otherEdgeInsets
-              .add(const EdgeInsets.only(left: 10, right: 10, bottom: 10));
-          otherWidths
-              .add(clampDouble(MediaQuery.of(context).size.width - 20, 0, 500));
+          otherEdgeInsets.add(const EdgeInsets.only(left: 10, right: 10, bottom: 10));
+          otherWidths.add(clampDouble(MediaQuery.of(context).size.width - 20, 0, 500));
           break;
         }
       case 2:
         {
+          otherEdgeInsets.add(const EdgeInsets.only(right: 5, left: 10, bottom: 10));
+          otherEdgeInsets.add(const EdgeInsets.only(right: 10, left: 5, bottom: 10));
           for (int i = 0; i < 2; i++) {
-            otherEdgeInsets
-                .add(const EdgeInsets.only(right: 5, left: 10, bottom: 10));
-            otherWidths.add(clampDouble(
-                MediaQuery.of(context).size.width / 2 - 15, 0, 245));
+            otherWidths.add(clampDouble(MediaQuery.of(context).size.width / 2 - 15, 0, 245));
           }
           break;
         }
       case 3:
         {
-          otherEdgeInsets
-              .add(const EdgeInsets.only(left: 10, right: 5, bottom: 10));
-          otherEdgeInsets
-              .add(const EdgeInsets.only(left: 5, right: 5, bottom: 10));
-          otherEdgeInsets
-              .add(const EdgeInsets.only(left: 10, right: 5, bottom: 5));
-          for (int i = 0; i < 2; i++) {
+          otherEdgeInsets.add(const EdgeInsets.only(left: 10, right: 5, bottom: 10));
+          otherEdgeInsets.add(const EdgeInsets.only(left: 5, right: 5, bottom: 10));
+          otherEdgeInsets.add(const EdgeInsets.only(left: 5, right: 10, bottom: 10));
+          for (int i = 0; i < 3; i++) {
             otherWidths.add(clampDouble(
                 MediaQuery.of(context).size.width / 3 - (13 + 1 / 3), 0, 161));
           }

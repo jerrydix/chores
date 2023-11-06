@@ -8,9 +8,8 @@ import 'package:chores/widgets/navigationbar.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:keybinder/keybinder.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../wg_selection.dart';
-
 
 
 class LoginPage extends StatefulWidget {
@@ -43,9 +42,10 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
+    AppLocalizations loc = AppLocalizations.of(context)!;
+
     return SelectionArea(child: Scaffold(
       body: Center(
         child: Padding(
@@ -64,8 +64,8 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(
                 height: 30,
               ),
-              const Text(
-                "Login to Chores",
+              Text(
+                loc.login,
                 style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
@@ -73,13 +73,13 @@ class _LoginPageState extends State<LoginPage> {
               ),
               FormContainer(
                 controller: _emailController,
-                hintText: "Email",
+                hintText: loc.email,
                 isPasswordField: false,
               ),
               const SizedBox(height: 10,),
               FormContainer(
                 controller: _passwordController,
-                hintText: "Password",
+                hintText: loc.pw,
                 isPasswordField: true,
               ),
               const SizedBox(height: 30,),
@@ -99,21 +99,21 @@ class _LoginPageState extends State<LoginPage> {
                       color: Colors.transparent,
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    child: Center(child: Text("Login", style: TextStyle(color: Theme.of(context).colorScheme.surface, fontWeight: FontWeight.bold, fontSize: 17),)),
+                    child: Center(child: Text(loc.login_b, style: TextStyle(color: Theme.of(context).colorScheme.surface, fontWeight: FontWeight.bold, fontSize: 17),)),
                   ),
                 ),
               ),
               const SizedBox(height: 20,),
               Row(mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't have an account?"),
+                  Text(loc.noAccount),
                   const SizedBox(width: 5,),
                   InkWell(
                       onTap: (){
                         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const SignUpPage()), (route) => false);
                       },
                       borderRadius: BorderRadius.circular(5),
-                      child: Text("Sign Up", style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),))
+                      child: Text(loc.signup_b, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),))
                 ],
               )
             ],
