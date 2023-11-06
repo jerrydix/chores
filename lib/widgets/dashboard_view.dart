@@ -81,13 +81,16 @@ class _DashboardViewState extends State<DashboardView> {
         titles: widget.otherNames);
 
     Widget primaryWidget;
+    ScrollController scrollController = ScrollController();
 
     Widget primaryActiveWidget = Padding(
       padding: const EdgeInsets.all(10),
       child: Scrollbar(
         radius: const Radius.circular(10),
         thickness: 3,
+        controller: scrollController,
         child: SingleChildScrollView(
+            controller: scrollController,
             child: Column(
               children: createPrimaryTasks(),
             )),
@@ -185,8 +188,6 @@ class _DashboardViewState extends State<DashboardView> {
       }
       otherCheckedLists.add(currentCheckList);
     }
-
-    print("otherRolesLength: ${widget.otherRoles.length}");
 
     switch (widget.otherRoles.length) {
       case 1:
@@ -417,15 +418,5 @@ class _DashboardViewState extends State<DashboardView> {
         "tasks": currentTaskList,
       });
     });
-  }
-
-  Text createPrimaryRolesText() {
-    String text = "${widget.username} (";
-    for (var element in primaryRoleNames) {
-      text += "$element, ";
-    }
-    text = text.substring(0, text.length - 2);
-    text += ")";
-    return Text(text);
   }
 }

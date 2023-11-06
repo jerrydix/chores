@@ -314,15 +314,15 @@ class _SettingsPageState extends State<SettingsPage> {
             height: 55,
           ),
           applicationName: 'Chores',
-          applicationVersion: '1.0',
+          applicationVersion: '1.0.0',
           children: <Widget>[
             RichText(
               text: TextSpan(
                 children: [
-                  const TextSpan(
+                  TextSpan(
                       text: 'Developed by Jeremy Dix\n\n',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onBackground,
                       )),
                   makeLink('GitHub', _ghurl),
                   makeLink('Itch.io', _itchurl),
