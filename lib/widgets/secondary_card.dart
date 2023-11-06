@@ -5,6 +5,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/foundation.dart';
 import 'checklist.dart';
 import 'navigationbar.dart' as navBar;
+import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
 class SecondaryCardData {
   final List<EdgeInsets> edgeInsets;
@@ -48,6 +49,14 @@ class _SecondaryCardState extends State<SecondaryCard> {
     print("Widths: ${data.widths.length}");
 
     for (int i = 0; i < data.titles.length; i++) {
+
+      int completedTaskAmount = 0;
+      for (bool checked in data.checkedLists[i]) {
+        if (checked) {
+          completedTaskAmount++;
+        }
+      }
+
       result.add(
         Card(
           elevation: 0,
@@ -67,7 +76,33 @@ class _SecondaryCardState extends State<SecondaryCard> {
                   width: data.widths[i],
                   height: (actualHeight - 20) * (2/10) - 10,
                   child: InkWell(
-                    child: Center(child: Text(data.titles[i])),
+                    child: Center(child:
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(data.titles[i]),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SimpleCircularProgressBar(
+                            backColor: Theme.of(context).colorScheme.outline,
+                            progressColors: [Theme.of(context).colorScheme.primary],
+                            mergeMode: true,
+                            size: 50,
+                            progressStrokeWidth: 5,
+                            backStrokeWidth: 5,
+                            maxValue: data.checkedLists[i].length as double,
+                            animationDuration: 4,
+                            fullProgressColor: Theme.of(context).colorScheme.error,
+                            onGetText: (_) {
+                              return Text("${completedTaskAmount}/${data.checkedLists[i].length}");
+                            },
+                            valueNotifier: ValueNotifier(completedTaskAmount as double),
+                          ),
+                        ]
+                      ),
+                    )
                   ),
                 );
               },

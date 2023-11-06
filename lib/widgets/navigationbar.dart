@@ -1,5 +1,6 @@
 import 'package:chores/member_manager.dart';
 import 'package:chores/overview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -27,12 +28,7 @@ class _NavBarState extends State<NavBar> {
   Future<void> openSettings(String value) async {
     Route route = MaterialPageRoute(builder: (context) => const SettingsPage());
     await Navigator.push(context, route);
-    print("Test");
-    setState(() {
-      print("test");
-      print(MemberManager.instance.active);
-    });
-    print("Test2");
+    setState(() {});
   }
 
   @override
@@ -47,7 +43,7 @@ class _NavBarState extends State<NavBar> {
 
     scaffold = Scaffold(
         appBar: AppBar(
-          title: const Text('Chores'),
+          title: createPrimaryRolesText(),
           actions: <Widget>[
             PopupMenuButton<String>(
               onSelected: openSettings,
@@ -95,6 +91,56 @@ class _NavBarState extends State<NavBar> {
           ),
         ));
     return SelectionArea(child: scaffold);
+  }
+
+  List<String> primaryRoleIntToStr(List<int> roles) {
+    AppLocalizations loc = AppLocalizations.of(context)!;
+
+    List<String> result = [];
+    for (var role in roles) {
+      switch (role) {
+        case 0:
+        {
+          result.add(loc.garbage);
+          break;
+        }
+        case 1:
+        {
+          result.add(loc.bathroom);
+          break;
+        }
+        case 2:
+        {
+          result.add(loc.kitchen);
+          break;
+        }
+        case 3:
+        {
+          result.add(loc.vacuum);
+          break;
+        }
+        default:
+        {
+          if (kDebugMode) {
+            print("ERROR: wrong role id");
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  Text createPrimaryRolesText() {
+    if (MemberManager.instance.primaryRoles.isEmpty) {
+      return const Text("Chores");
+    }
+    String text = "Chores (";
+    for (var element in primaryRoleIntToStr(MemberManager.instance.primaryRoles)) {
+      text += "$element, ";
+    }
+    text = text.substring(0, text.length - 2);
+    text += ")";
+    return Text(text);
   }
 }
 
