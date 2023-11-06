@@ -1,3 +1,4 @@
+import 'package:chores/member_manager.dart';
 import 'package:chores/overview.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,15 +24,19 @@ class _NavBarState extends State<NavBar> {
     const HomePage(),
   ];
 
+  Future<void> openSettings(String value) async {
+    Route route = MaterialPageRoute(builder: (context) => const SettingsPage());
+    await Navigator.push(context, route);
+    print("Test");
+    setState(() {
+      print("test");
+      print(MemberManager.instance.active);
+    });
+    print("Test2");
+  }
+
   @override
   Widget build(BuildContext context) {
-    void openSettings(String value) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const SettingsPage(),
-        ),
-      );
-    }
 
     navBarTheme = NavigationBarThemeData(
       labelTextStyle: MaterialStateTextStyle.resolveWith((states) =>
