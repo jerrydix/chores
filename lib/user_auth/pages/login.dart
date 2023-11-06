@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
@@ -7,6 +8,8 @@ import 'package:chores/widgets/navigationbar.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:keybinder/keybinder.dart';
+
+import '../../wg_selection.dart';
 
 
 
@@ -139,11 +142,24 @@ class _LoginPageState extends State<LoginPage> {
     }
     Keybinder.remove(enterButton, onPressed);
 
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (context) => const NavBar(),
-        ), (route) => false
-    );
+    dynamic currentWgID;
+    await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) {
+      currentWgID = value["wg"];
+    });
+
+    if (currentWgID == -1) {
+      return Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (context) => WGSelection(
+                  username: FirebaseAuth.instance.currentUser!.displayName!)
+          ), (route) => false);
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const NavBar(),
+          ), (route) => false
+      );
+    }
 
     return null;
   }
