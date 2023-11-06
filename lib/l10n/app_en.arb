@@ -62,5 +62,15 @@
   "n_text": "to finish your chores for the week.",
   "active": "Active status",
   "noPrimaryRoles": "Your status is set inactive.",
-  "noPrimaryRoles2": "No chores are assigned to you."
+  "noPrimaryRoles2": "No chores are assigned to you.",
+  "uname": "Username",
+  "email": "Email",
+  "pw": "Password",
+  "login": "Login to Chores",
+  "login_b": "Login",
+  "signup": "Sign up to Chores",
+  "signup_b": "Sign up",
+  "noAccount": "Don't have an account?",
+  "haveAccount": "Already have an account?"
+
 }

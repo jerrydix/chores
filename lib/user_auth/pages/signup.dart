@@ -7,6 +7,7 @@ import 'package:chores/user_auth/widgets/form_container.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:keybinder/keybinder.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../wg_selection.dart';
 
@@ -47,6 +48,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations loc = AppLocalizations.of(context)!;
+
     return SelectionArea(child: Scaffold(
       body: Center(
         child: Padding(
@@ -65,8 +68,8 @@ class _SignUpPageState extends State<SignUpPage> {
               const SizedBox(
                 height: 30,
               ),
-              const Text(
-                "Sign Up to Chores",
+              Text(
+                loc.signup,
                 style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
@@ -74,7 +77,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               FormContainer(
                 controller: _usernameController,
-                hintText: "Username",
+                hintText: loc.uname,
                 isPasswordField: false,
               ),
               const SizedBox(
@@ -82,7 +85,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               FormContainer(
                 controller: _emailController,
-                hintText: "Email",
+                hintText: loc.email,
                 isPasswordField: false,
               ),
               const SizedBox(
@@ -90,7 +93,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               FormContainer(
                 controller: _passwordController,
-                hintText: "Password",
+                hintText: loc.pw,
                 isPasswordField: true,
               ),
               const SizedBox(
@@ -112,14 +115,14 @@ class _SignUpPageState extends State<SignUpPage> {
                       color: Colors.transparent,
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    child: Center(child: Text("Sign Up", style: TextStyle(color: Theme.of(context).colorScheme.surface, fontWeight: FontWeight.bold, fontSize: 17),)),
+                    child: Center(child: Text(loc.signup_b, style: TextStyle(color: Theme.of(context).colorScheme.surface, fontWeight: FontWeight.bold, fontSize: 17),)),
                   ),
                 ),
               ),
               const SizedBox(height: 20,),
               Row(mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Already have an account?"),
+                  Text(loc.haveAccount),
                   const SizedBox(width: 5,),
                   InkWell(
                       onTap: () {
@@ -127,7 +130,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             context, MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false);
                       },
                       borderRadius: BorderRadius.circular(5),
-                      child: Text("Login", style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),))
+                      child: Text(loc.login_b, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),))
                 ],
               )
             ],

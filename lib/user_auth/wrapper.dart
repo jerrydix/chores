@@ -60,7 +60,7 @@ class _WrapperState extends State<Wrapper> {
               }
               return const NavBar();
           }
-          return const Text("Error in DB");
+          return const Center(child: CircularProgressIndicator());
         });
   }
 

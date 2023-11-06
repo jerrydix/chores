@@ -45,16 +45,17 @@ class _SecondaryCardState extends State<SecondaryCard> {
     print("Roles: ${data.roles.length}");
     print("Tasks: ${data.taskLists.length}");
     print("Checked: ${data.checkedLists.length}");
+    print("Widths: ${data.widths.length}");
 
     for (int i = 0; i < data.titles.length; i++) {
       result.add(
         Card(
           elevation: 0,
           margin: data.edgeInsets[i],
-          color: Theme.of(context).colorScheme.surfaceVariant,
+          color: Theme.of(context).colorScheme.secondaryContainer,
           child: OpenContainer(
               transitionType: ContainerTransitionType.fadeThrough,
-              closedColor: Theme.of(context).colorScheme.surfaceVariant,
+              closedColor: Theme.of(context).colorScheme.secondaryContainer,
               middleColor: Theme.of(context).colorScheme.background,
               openColor: Theme.of(context).colorScheme.background,
               transitionDuration: const Duration(milliseconds: 350),
