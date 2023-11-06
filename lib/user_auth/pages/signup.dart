@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/user_auth/authentication_provider.dart';
@@ -142,6 +143,7 @@ class _SignUpPageState extends State<SignUpPage> {
     String password = _passwordController.text;
 
     FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseFirestore db = FirebaseFirestore.instance;
     const CircularProgressIndicator();
     String? message = await AuthenticationProvider(auth).signUp(email: email, password: password);
     User? user = auth.currentUser;
@@ -159,6 +161,11 @@ class _SignUpPageState extends State<SignUpPage> {
     if (user != null) {
       await user.updateDisplayName(username);
     }
+
+    await db.collection("users").doc(auth.currentUser?.uid).set({
+      "username": username,
+      "wg": -1,
+    });
 
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(

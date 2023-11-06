@@ -105,9 +105,8 @@ class _WGListTileState extends State<WGListTile> {
       "count": FieldValue.increment(1)
     });
 
-    await db.collection("users").doc(auth.currentUser?.uid).set({
-      "username": widget.username,
-      "wg": uid
+    await db.collection("users").doc(auth.currentUser?.uid).update({
+      "wg": uid,
     });
 
   }
