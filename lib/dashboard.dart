@@ -23,6 +23,7 @@ class _DashboardState extends State<Dashboard> {
   List<String> otherNames = [];
   List<bool> tasks = [];
   MemberManager manager = MemberManager.instance;
+  bool active = true;
 
   CheckboxListTile createCheckboxTile(Icon icon, Text text, bool? checked) {
     return CheckboxListTile(
@@ -43,40 +44,48 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void initState() {
-    manager.dataFuture = manager.fetchWGData();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<void>(
-      future: manager.dataFuture,
-      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            const Center(child: CircularProgressIndicator());
-            break;
-          default:
-            if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            }
-            tasks = manager.tasks;
-            primaryRoles = manager.primaryRoles;
-            otherRoles = manager.otherRoles;
-            username = manager.username;
-            otherNames = manager.otherNames;
+    return ListenableBuilder(
+      listenable: MemberManager.instance,
+      builder: (BuildContext context, Widget? child) {
+        manager.dataFuture = manager.fetchWGData();
+        return FutureBuilder<void>(
+            future: manager.dataFuture,
+            builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  const Center(child: CircularProgressIndicator());
+                  break;
+                default:
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+                  print("Active ${manager.active}");
 
-            //print("PRIMARY ROLES: $primaryRoles");
-            //print("OTHER ROLES: $otherRoles");
-            //print("OTHER NAMES: $otherNames");
-            //print("USERNAME: $username");
+                  tasks = manager.tasks;
+                  primaryRoles = manager.primaryRoles;
+                  otherRoles = manager.otherRoles;
+                  username = manager.username;
+                  otherNames = manager.otherNames;
+                  active = manager.active;
 
-            return DashboardView(tasks: tasks,
-              primaryRoles: primaryRoles,
-              otherRoles: otherRoles, otherNames: otherNames, username: username,);
-        }
-        return const Center(child: CircularProgressIndicator());
-    });
+                  //print("PRIMARY ROLES: $primaryRoles");
+                  //print("OTHER ROLES: $otherRoles");
+                  //print("OTHER NAMES: $otherNames");
+                  //print("USERNAME: $username");
+
+                  return DashboardView(tasks: tasks,
+                    primaryRoles: primaryRoles,
+                    otherRoles: otherRoles, otherNames: otherNames, username: username, active: active);
+              }
+              return const Center(child: CircularProgressIndicator());
+            });
+      },
+    );
   }
 
   void dashboardStateCallback() {

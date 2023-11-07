@@ -16,6 +16,7 @@ class DashboardView extends StatefulWidget {
   final String username;
   final List<List<int>> otherRoles;
   final List<String> otherNames;
+  final bool active;
 
   const DashboardView(
       {super.key,
@@ -23,7 +24,7 @@ class DashboardView extends StatefulWidget {
       required this.primaryRoles,
       required this.otherRoles,
       required this.otherNames,
-      required this.username});
+      required this.username, required this.active});
 
   @override
   State<DashboardView> createState() => _DashboardViewState();
@@ -102,7 +103,7 @@ class _DashboardViewState extends State<DashboardView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [Text(AppLocalizations.of(context)!.noPrimaryRoles), Text(AppLocalizations.of(context)!.noPrimaryRoles2)]);
 
-    if (widget.primaryRoles.isEmpty) {
+    if (!widget.active) {
       primaryWidget = primaryInactiveWidget;
     } else {
       primaryWidget = primaryActiveWidget;

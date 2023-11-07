@@ -70,7 +70,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               Text(
                 loc.signup,
-                style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 30,
