@@ -470,12 +470,12 @@ class _SettingsPageState extends State<SettingsPage> {
                       value: Languages.en,
                       groupValue: _language,
                       onChanged: (value) {
+                        UserPreferences.setLanguage(0);
                         setState(() {
                           currentLocale = const Locale('en');
                           currentLanguage = const Text("English");
                           _language = value;
                         });
-                        UserPreferences.setLanguage(0);
                       }),
                   RadioListTile<Languages>(
                       shape: RoundedRectangleBorder(
@@ -485,12 +485,12 @@ class _SettingsPageState extends State<SettingsPage> {
                       value: Languages.de,
                       groupValue: _language,
                       onChanged: (value) {
+                        UserPreferences.setLanguage(1);
                         setState(() {
                           currentLocale = const Locale('de');
                           currentLanguage = const Text("Deutsch");
                           _language = value;
                         });
-                        UserPreferences.setLanguage(1);
                       }),
                   RadioListTile<Languages>(
                       shape: RoundedRectangleBorder(
@@ -500,12 +500,12 @@ class _SettingsPageState extends State<SettingsPage> {
                       value: Languages.ru,
                       groupValue: _language,
                       onChanged: (value) {
+                        UserPreferences.setLanguage(2);
                         setState(() {
                           currentLocale = const Locale('ru');
                           currentLanguage = const Text("Русский");
                           _language = value;
                         });
-                        UserPreferences.setLanguage(2);
                       }),
                   TextButton(
                       onPressed: () {
@@ -572,7 +572,7 @@ class _SettingsPageState extends State<SettingsPage> {
           SettingsSection(
             title: Title(
                 color: Colors.grey,
-                child: Text(AppLocalizations.of(context)!.options)),
+                child: Text(AppLocalizations.of(context)!.options, style: TextStyle(color: Theme.of(context).colorScheme.primary))),
             tiles: <SettingsTile>[
               SettingsTile.switchTile(
                 initialValue: currentActiveValue,
@@ -657,7 +657,7 @@ class _SettingsPageState extends State<SettingsPage> {
           SettingsSection(
               title: Title(
                   color: Colors.grey,
-                  child: Text(AppLocalizations.of(context)!.info)),
+                  child: Text(AppLocalizations.of(context)!.info, style: TextStyle(color: Theme.of(context).colorScheme.primary))),
               tiles: <SettingsTile>[
                 SettingsTile.navigation(
                   leading: const Icon(Icons.info_outline),
