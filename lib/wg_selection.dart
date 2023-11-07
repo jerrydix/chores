@@ -32,7 +32,12 @@ class _WGSelectionState extends State<WGSelection> {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return SelectionArea(
+            child: Scaffold(
+                appBar: AppBar(
+                  title: const Text("Select WG"),
+                ),
+                body: const Center(child: CircularProgressIndicator())));
         }
 
         return SelectionArea(
