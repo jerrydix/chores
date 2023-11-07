@@ -92,13 +92,13 @@ class _SecondaryCardState extends State<SecondaryCard> {
                             size: 50,
                             progressStrokeWidth: 5,
                             backStrokeWidth: 5,
-                            maxValue: data.checkedLists[i].length as double,
+                            maxValue: data.checkedLists[i].length.toDouble(),
                             animationDuration: 4,
                             fullProgressColor: Theme.of(context).colorScheme.error,
                             onGetText: (_) {
                               return Text("$completedTaskAmount/${data.checkedLists[i].length}");
                             },
-                            valueNotifier: ValueNotifier(completedTaskAmount as double),
+                            valueNotifier: ValueNotifier(completedTaskAmount.toDouble()),
                           ),
                         ]
                       ),
