@@ -584,8 +584,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   await db.collection("wgs").doc(manager.currentWgID).collection("members").doc(manager.user?.uid).update({
                     "active": value,
                   });
+                  MemberManager.instance.updateActive(value);
                   setState(() {
-                    MemberManager.instance.active = value;
                     currentActiveValue = value;
                     if (value) {
                         currentActiveIcon = const Icon(Icons.check_circle);

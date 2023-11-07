@@ -201,27 +201,31 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<void>(
-        future: manager.dataFuture,
-        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              const Center(child: CircularProgressIndicator());
-              break;
-            default:
-              if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              }
-              username = manager.username;
-              return DataTable2(
-                scrollController: controller,
-                fixedTopRows: 1,
-                columns: _generateColumns(),
-                rows: _generateRows(),
-                columnSpacing: 0,
-              );
-          }
-          return const Center(child: CircularProgressIndicator());
+    return ListenableBuilder(
+        listenable: MemberManager.instance,
+        builder: (BuildContext context, Widget? child) {
+          return FutureBuilder<void>(
+              future: manager.dataFuture,
+              builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    const Center(child: CircularProgressIndicator());
+                    break;
+                  default:
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+                    username = manager.username;
+                    return DataTable2(
+                      scrollController: controller,
+                      fixedTopRows: 1,
+                      columns: _generateColumns(),
+                      rows: _generateRows(),
+                      columnSpacing: 0,
+                    );
+                }
+                return const Center(child: CircularProgressIndicator());
+              });
         });
   }
 

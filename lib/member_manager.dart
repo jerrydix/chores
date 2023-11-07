@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 
-class MemberManager {
+class MemberManager with ChangeNotifier{
   static final MemberManager _instance = MemberManager._internal();
 
   static MemberManager get instance => _instance;
@@ -160,6 +161,11 @@ class MemberManager {
     }
     overviewResult.addAll(allRoles);
     return overviewResult;
+  }
+
+  Future<void> updateActive(bool value) async {
+    MemberManager.instance.active = value;
+    notifyListeners();
   }
 
 }
