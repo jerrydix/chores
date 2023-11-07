@@ -44,7 +44,7 @@ class _WGListTileState extends State<WGListTile> {
             onGetText: (_) {
               return Text("${widget.count}/4");
             },
-            valueNotifier: ValueNotifier(widget.count as double),
+            valueNotifier: ValueNotifier(widget.count.toDouble()),
           ),
           const SizedBox(width: 15,),
           ElevatedButton(
