@@ -64,6 +64,13 @@ class _SettingsPageState extends State<SettingsPage> {
       currentNotificationStatus = const Icon(Icons.notifications_off);
     }
 
+    switchCurrentNotificationValue();
+    switchCurrentThemeValue();
+    switchCurrentLanguageValue();
+  }
+
+  void switchCurrentNotificationValue() {
+    print("notf interval: ${UserPreferences.getNotificationInterval()}");
     switch (UserPreferences.getNotificationInterval()) {
       case 0:
         {
@@ -96,7 +103,9 @@ class _SettingsPageState extends State<SettingsPage> {
           break;
         }
     }
+  }
 
+  void switchCurrentThemeValue() {
     switch (UserPreferences.getTheme()) {
       case 0:
         {
@@ -130,8 +139,6 @@ class _SettingsPageState extends State<SettingsPage> {
           break;
         }
     }
-
-    switchCurrentLanguageValue();
   }
 
   void switchCurrentLanguageValue() {
@@ -160,132 +167,160 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  Future openIntervalDialog() => showAnimatedDialog(
-        barrierDismissible: false,
-        animationType: DialogTransitionType.fade,
-        duration: const Duration(milliseconds: 300),
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(
-            builder: (context, setState) {
-              return AlertDialog(
-                title: Text(
-                  AppLocalizations.of(context)!.notInterval,
-                  style: const TextStyle(fontSize: 20),
-                ),
-                actions: [
-                  RadioListTile<Intervals>(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      title: Text(AppLocalizations.of(context)!.monday),
-                      value: Intervals.onceBegin,
-                      groupValue: _character,
-                      onChanged: (value) {
-                        setState(() {
-                          currentInterval =
-                              Text(AppLocalizations.of(context)!.monday);
-                          _character = value;
-                        });
-                        UserPreferences.setNotificationInterval(0);
-                      }),
-                  RadioListTile<Intervals>(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      title: Text(AppLocalizations.of(context)!.friday),
-                      value: Intervals.onceMiddle,
-                      groupValue: _character,
-                      onChanged: (value) {
-                        setState(() {
-                          currentInterval =
-                              Text(AppLocalizations.of(context)!.friday);
-                          _character = value;
-                        });
-                        UserPreferences.setNotificationInterval(1);
-                      }),
-                  RadioListTile<Intervals>(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      title: Text(AppLocalizations.of(context)!.sunday),
-                      value: Intervals.onceEnd,
-                      groupValue: _character,
-                      onChanged: (value) {
-                        setState(() {
-                          currentInterval =
-                              Text(AppLocalizations.of(context)!.sunday);
-                          _character = value;
-                        });
-                        UserPreferences.setNotificationInterval(2);
-                      }),
-                  RadioListTile<Intervals>(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      title: Text(AppLocalizations.of(context)!.twice),
-                      value: Intervals.twice,
-                      groupValue: _character,
-                      onChanged: (value) {
-                        setState(() {
-                          currentInterval =
-                              Text(AppLocalizations.of(context)!.twice);
-                          _character = value;
-                        });
-                        UserPreferences.setNotificationInterval(3);
-                      }),
-                  RadioListTile<Intervals>(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      title: Text(AppLocalizations.of(context)!.every),
-                      value: Intervals.every,
-                      groupValue: _character,
-                      onChanged: (value) {
-                        setState(() {
-                          currentInterval =
-                              Text(AppLocalizations.of(context)!.every);
-                          _character = value;
-                        });
-                        UserPreferences.setNotificationInterval(4);
-                      }),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(AppLocalizations.of(context)!.cancel)),
-                      TextButton(
-                          onPressed: () async {
-                            await AwesomeNotifications().cancelAllSchedules().then((_) async {
-                              if (UserPreferences.getNotificationsBool()) {
-                                List<int> weekdays = getNotificationWeekday(_character!);
-                                for (int weekday in weekdays) {
-                                  await NotificationService.scheduleChoresNotification(
-                                      id: 0,
-                                      title: AppLocalizations.of(context)!.n_title,
-                                      body: AppLocalizations.of(context)!.n_text,
-                                      weekday: weekday
-                                  );
-                                }
+  Future openIntervalDialog() {
+    switchCurrentNotificationValue();
+    print("TESTST");
+    return showAnimatedDialog(
+      barrierDismissible: false,
+      animationType: DialogTransitionType.fade,
+      duration: const Duration(milliseconds: 300),
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text(
+                AppLocalizations.of(context)!.notInterval,
+                style: const TextStyle(fontSize: 20),
+              ),
+              actions: [
+                RadioListTile<Intervals>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    title: Text(AppLocalizations.of(context)!.monday),
+                    value: Intervals.onceBegin,
+                    groupValue: _character,
+                    onChanged: (value) {
+                      setState(() {
+                        currentInterval =
+                            Text(AppLocalizations.of(context)!.monday);
+                        _character = value;
+                      });
+                    }),
+                RadioListTile<Intervals>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    title: Text(AppLocalizations.of(context)!.friday),
+                    value: Intervals.onceMiddle,
+                    groupValue: _character,
+                    onChanged: (value) {
+                      setState(() {
+                        currentInterval =
+                            Text(AppLocalizations.of(context)!.friday);
+                        _character = value;
+                      });
+                    }),
+                RadioListTile<Intervals>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    title: Text(AppLocalizations.of(context)!.sunday),
+                    value: Intervals.onceEnd,
+                    groupValue: _character,
+                    onChanged: (value) {
+                      setState(() {
+                        currentInterval =
+                            Text(AppLocalizations.of(context)!.sunday);
+                        _character = value;
+                      });
+                    }),
+                RadioListTile<Intervals>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    title: Text(AppLocalizations.of(context)!.twice),
+                    value: Intervals.twice,
+                    groupValue: _character,
+                    onChanged: (value) {
+                      setState(() {
+                        currentInterval =
+                            Text(AppLocalizations.of(context)!.twice);
+                        _character = value;
+                      });
+                    }),
+                RadioListTile<Intervals>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    title: Text(AppLocalizations.of(context)!.every),
+                    value: Intervals.every,
+                    groupValue: _character,
+                    onChanged: (value) {
+                      setState(() {
+                        currentInterval =
+                            Text(AppLocalizations.of(context)!.every);
+                        _character = value;
+                      });
+                    }),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(AppLocalizations.of(context)!.cancel)),
+                    TextButton(
+                        onPressed: () async {
+                          switch (_character) {
+                            case Intervals.onceBegin:
+                              {
+                                await UserPreferences.setNotificationInterval(0);
+                                break;
                               }
-                            });
-                            this.setState(() {
-                              currentIntervalValue = currentInterval;
-                            });
-                            Navigator.pop(context);
-                          },
-                          child: Text(AppLocalizations.of(context)!.confirm)),
-                    ],
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      );
+                            case Intervals.onceMiddle:
+                              {
+                                await UserPreferences.setNotificationInterval(1);
+                                break;
+                              }
+                            case Intervals.onceEnd:
+                              {
+                                await UserPreferences.setNotificationInterval(2);
+                                break;
+                              }
+                            case Intervals.twice:
+                              {
+                                await UserPreferences.setNotificationInterval(3);
+                                break;
+                              }
+                            case Intervals.every:
+                              {
+                                await UserPreferences.setNotificationInterval(4);
+                                break;
+                              }
+                            case null:
+                              throw Exception("Interval is null");
+                          }
+                          await AwesomeNotifications().cancelAllSchedules().then((_) async {
+                            if (UserPreferences.getNotificationsBool()) {
+                              List<int> weekdays = getNotificationWeekday(_character!);
+                              for (int weekday in weekdays) {
+                                await NotificationService.scheduleChoresNotification(
+                                    id: 0,
+                                    title: AppLocalizations.of(context)!.n_title,
+                                    body: AppLocalizations.of(context)!.n_text,
+                                    weekday: weekday
+                                );
+                              }
+                            }
+                          });
+                          this.setState(() {
+                            currentIntervalValue = currentInterval;
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text(AppLocalizations.of(context)!.confirm)),
+                  ],
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 
   final Uri _ghurl = Uri.parse('https://github.com/jerrydix');
   final Uri _itchurl = Uri.parse('https://chernogop.itch.io/');
@@ -362,167 +397,204 @@ class _SettingsPageState extends State<SettingsPage> {
         );
       });
 
-  Future openThemeDialog() => showAnimatedDialog(
-        barrierDismissible: false,
-        animationType: DialogTransitionType.fade,
-        duration: const Duration(milliseconds: 300),
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(
-            builder: (context, setState) {
-              return AlertDialog(
-                title: Text(
-                  AppLocalizations.of(context)!.theme,
-                  style: const TextStyle(fontSize: 20),
-                ),
-                actions: [
-                  RadioListTile<Themes>(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      title: Text(AppLocalizations.of(context)!.sys),
-                      value: Themes.system,
-                      groupValue: _theme,
-                      onChanged: (value) {
-                        setState(() {
-                          currentThemeMode = ThemeMode.system;
-                          currentTheme =
-                              Text(AppLocalizations.of(context)!.sys);
-                          _theme = value;
-                        });
-                        UserPreferences.setTheme(0);
-                      }),
-                  RadioListTile<Themes>(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      title: Text(AppLocalizations.of(context)!.light),
-                      value: Themes.light,
-                      groupValue: _theme,
-                      onChanged: (value) {
-                        setState(() {
-                          currentThemeMode = ThemeMode.light;
-                          currentTheme =
-                              Text(AppLocalizations.of(context)!.light);
-                          _theme = value;
-                        });
-                        UserPreferences.setTheme(1);
-                      }),
-                  RadioListTile<Themes>(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      title: Text(AppLocalizations.of(context)!.dark),
-                      value: Themes.dark,
-                      groupValue: _theme,
-                      onChanged: (value) {
-                        setState(() {
-                          currentThemeMode = ThemeMode.dark;
-                          currentTheme =
-                              Text(AppLocalizations.of(context)!.dark);
-                          _theme = value;
-                        });
-                        UserPreferences.setTheme(2);
-                      }),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        this.setState(() {
-                          currentThemeValue = currentTheme;
-                          if (MediaQuery.of(context).platformBrightness ==
-                                      Brightness.dark &&
-                                  currentThemeMode == ThemeMode.system ||
-                              currentThemeMode == ThemeMode.dark) {
-                            currentThemeIcon = const Icon(Icons.dark_mode);
-                          } else {
-                            currentThemeIcon = const Icon(Icons.light_mode);
+  Future openThemeDialog() {
+    switchCurrentThemeValue();
+    return showAnimatedDialog(
+      barrierDismissible: false,
+      animationType: DialogTransitionType.fade,
+      duration: const Duration(milliseconds: 300),
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text(
+                AppLocalizations.of(context)!.theme,
+                style: const TextStyle(fontSize: 20),
+              ),
+              actions: [
+                RadioListTile<Themes>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    title: Text(AppLocalizations.of(context)!.sys),
+                    value: Themes.system,
+                    groupValue: _theme,
+                    onChanged: (value) {
+                      currentThemeMode = ThemeMode.system;
+                      setState(() {
+                        currentTheme =
+                            Text(AppLocalizations.of(context)!.sys);
+                        _theme = value;
+                      });
+                    }),
+                RadioListTile<Themes>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    title: Text(AppLocalizations.of(context)!.light),
+                    value: Themes.light,
+                    groupValue: _theme,
+                    onChanged: (value) {
+                      currentThemeMode = ThemeMode.light;
+                      setState(() {
+                        currentTheme =
+                            Text(AppLocalizations.of(context)!.light);
+                        _theme = value;
+                      });
+                    }),
+                RadioListTile<Themes>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    title: Text(AppLocalizations.of(context)!.dark),
+                    value: Themes.dark,
+                    groupValue: _theme,
+                    onChanged: (value) {
+                      currentThemeMode = ThemeMode.dark;
+                      setState(() {
+                        currentTheme =
+                            Text(AppLocalizations.of(context)!.dark);
+                        _theme = value;
+                      });
+                    }),
+                TextButton(
+                    onPressed: () {
+                      switch (_theme) {
+                        case Themes.system:
+                          {
+                            UserPreferences.setTheme(0);
+                            break;
                           }
-                        });
-                        MyApp.of(context).setTheme(currentThemeMode);
-                      },
-                      child: Text(AppLocalizations.of(context)!.confirm)),
-                ],
-              );
-            },
-          );
-        },
-      );
+                        case Themes.light:
+                          {
+                            UserPreferences.setTheme(1);
+                            break;
+                          }
+                        case Themes.dark:
+                          {
+                            UserPreferences.setTheme(2);
+                            break;
+                          }
+                        case null:
+                          throw Exception("Theme is null");
+                      }
+                      this.setState(() {
+                        currentThemeValue = currentTheme;
+                        if (MediaQuery.of(context).platformBrightness ==
+                            Brightness.dark &&
+                            currentThemeMode == ThemeMode.system ||
+                            currentThemeMode == ThemeMode.dark) {
+                          currentThemeIcon = const Icon(Icons.dark_mode);
+                        } else {
+                          currentThemeIcon = const Icon(Icons.light_mode);
+                        }
+                      });
+                      MyApp.of(context).setTheme(currentThemeMode);
+                      Navigator.pop(context);
+                    },
+                    child: Text(AppLocalizations.of(context)!.confirm)),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 
-  Future openLanguageDialog() => showAnimatedDialog(
-        barrierDismissible: false,
-        animationType: DialogTransitionType.fade,
-        duration: const Duration(milliseconds: 300),
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(
-            builder: (context, setState) {
-              return AlertDialog(
-                title: Text(
-                  AppLocalizations.of(context)!.language,
-                  style: const TextStyle(fontSize: 20),
-                ),
-                actions: [
-                  RadioListTile<Languages>(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      title: const Text("English"),
-                      value: Languages.en,
-                      groupValue: _language,
-                      onChanged: (value) {
-                        UserPreferences.setLanguage(0);
-                        setState(() {
-                          currentLocale = const Locale('en');
-                          currentLanguage = const Text("English");
-                          _language = value;
-                        });
-                      }),
-                  RadioListTile<Languages>(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      title: const Text("Deutsch"),
-                      value: Languages.de,
-                      groupValue: _language,
-                      onChanged: (value) {
-                        UserPreferences.setLanguage(1);
-                        setState(() {
-                          currentLocale = const Locale('de');
-                          currentLanguage = const Text("Deutsch");
-                          _language = value;
-                        });
-                      }),
-                  RadioListTile<Languages>(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      title: const Text("Русский"),
-                      value: Languages.ru,
-                      groupValue: _language,
-                      onChanged: (value) {
-                        UserPreferences.setLanguage(2);
-                        setState(() {
-                          currentLocale = const Locale('ru');
-                          currentLanguage = const Text("Русский");
-                          _language = value;
-                        });
-                      }),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        MyApp.of(context).setLocale(currentLocale);
-                        this.setState(() {
-                          currentLanguageValue = currentLanguage;
-                          switchCurrentLanguageValue();
-                        });
-                      },
-                      child: Text(AppLocalizations.of(context)!.confirm)),
-                ],
-              );
-            },
-          );
-        },
-      );
+  Future openLanguageDialog() {
+    switchCurrentLanguageValue();
+    return showAnimatedDialog(
+      barrierDismissible: false,
+      animationType: DialogTransitionType.fade,
+      duration: const Duration(milliseconds: 300),
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text(
+                AppLocalizations.of(context)!.language,
+                style: const TextStyle(fontSize: 20),
+              ),
+              actions: [
+                RadioListTile<Languages>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    title: const Text("English"),
+                    value: Languages.en,
+                    groupValue: _language,
+                    onChanged: (value) {
+                      currentLocale = const Locale('en');
+                      setState(() {
+                        currentLanguage = const Text("English");
+                        _language = value;
+                      });
+                    }),
+                RadioListTile<Languages>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    title: const Text("Deutsch"),
+                    value: Languages.de,
+                    groupValue: _language,
+                    onChanged: (value) {
+                      currentLocale = const Locale('de');
+                      setState(() {
+                        currentLanguage = const Text("Deutsch");
+                        _language = value;
+                      });
+                    }),
+                RadioListTile<Languages>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    title: const Text("Русский"),
+                    value: Languages.ru,
+                    groupValue: _language,
+                    onChanged: (value) {
+                      currentLocale = const Locale('ru');
+                      setState(() {
+                        currentLanguage = const Text("Русский");
+                        _language = value;
+                      });
+                    }),
+                TextButton(
+                    onPressed: () async {
+                      switch (_language) {
+                        case Languages.en:
+                          {
+                            await UserPreferences.setLanguage(0);
+                            break;
+                          }
+                        case Languages.de:
+                          {
+                            await UserPreferences.setLanguage(1);
+                            break;
+                          }
+                        case Languages.ru:
+                          {
+                            await UserPreferences.setLanguage(2);
+                            break;
+                          }
+                        case null:
+                          throw Exception("Language is null");
+                      }
+                      MyApp.of(context).setLocale(currentLocale);
+                      this.setState(() {
+                        currentLanguageValue = currentLanguage;
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Text(AppLocalizations.of(context)!.confirm)),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 
   List<int> getNotificationWeekday(Intervals interval) {
     List<int> weekdays = [];
