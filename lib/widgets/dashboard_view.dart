@@ -141,6 +141,9 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
   void createSecondaryData() {
+    otherTaskMapList = [];
+    otherCheckedLists = [];
+    otherWidths = [];
 
     print("otherRoles: ${widget.otherRoles.length}");
     print("otherRoles: ${widget.otherRoles}");
