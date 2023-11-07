@@ -70,7 +70,6 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void switchCurrentNotificationValue() {
-    print("notf interval: ${UserPreferences.getNotificationInterval()}");
     switch (UserPreferences.getNotificationInterval()) {
       case 0:
         {
@@ -169,9 +168,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future openIntervalDialog() {
     switchCurrentNotificationValue();
-    print("TESTST");
     return showAnimatedDialog(
-      barrierDismissible: false,
+      barrierDismissible: true,
       animationType: DialogTransitionType.fade,
       duration: const Duration(milliseconds: 300),
       context: context,
@@ -254,66 +252,56 @@ class _SettingsPageState extends State<SettingsPage> {
                         _character = value;
                       });
                     }),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(AppLocalizations.of(context)!.cancel)),
-                    TextButton(
-                        onPressed: () async {
-                          switch (_character) {
-                            case Intervals.onceBegin:
-                              {
-                                await UserPreferences.setNotificationInterval(0);
-                                break;
-                              }
-                            case Intervals.onceMiddle:
-                              {
-                                await UserPreferences.setNotificationInterval(1);
-                                break;
-                              }
-                            case Intervals.onceEnd:
-                              {
-                                await UserPreferences.setNotificationInterval(2);
-                                break;
-                              }
-                            case Intervals.twice:
-                              {
-                                await UserPreferences.setNotificationInterval(3);
-                                break;
-                              }
-                            case Intervals.every:
-                              {
-                                await UserPreferences.setNotificationInterval(4);
-                                break;
-                              }
-                            case null:
-                              throw Exception("Interval is null");
+                TextButton(
+                    onPressed: () async {
+                      switch (_character) {
+                        case Intervals.onceBegin:
+                          {
+                            await UserPreferences.setNotificationInterval(0);
+                            break;
                           }
-                          await AwesomeNotifications().cancelAllSchedules().then((_) async {
-                            if (UserPreferences.getNotificationsBool()) {
-                              List<int> weekdays = getNotificationWeekday(_character!);
-                              for (int weekday in weekdays) {
-                                await NotificationService.scheduleChoresNotification(
-                                    id: 0,
-                                    title: AppLocalizations.of(context)!.n_title,
-                                    body: AppLocalizations.of(context)!.n_text,
-                                    weekday: weekday
-                                );
-                              }
-                            }
-                          });
-                          this.setState(() {
-                            currentIntervalValue = currentInterval;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text(AppLocalizations.of(context)!.confirm)),
-                  ],
-                ),
+                        case Intervals.onceMiddle:
+                          {
+                            await UserPreferences.setNotificationInterval(1);
+                            break;
+                          }
+                        case Intervals.onceEnd:
+                          {
+                            await UserPreferences.setNotificationInterval(2);
+                            break;
+                          }
+                        case Intervals.twice:
+                          {
+                            await UserPreferences.setNotificationInterval(3);
+                            break;
+                          }
+                        case Intervals.every:
+                          {
+                            await UserPreferences.setNotificationInterval(4);
+                            break;
+                          }
+                        case null:
+                          throw Exception("Interval is null");
+                      }
+                      await AwesomeNotifications().cancelAllSchedules().then((_) async {
+                        if (UserPreferences.getNotificationsBool()) {
+                          List<int> weekdays = getNotificationWeekday(_character!);
+                          for (int weekday in weekdays) {
+                            await NotificationService.scheduleChoresNotification(
+                                id: 0,
+                                title: AppLocalizations.of(context)!.n_title,
+                                body: AppLocalizations.of(context)!.n_text,
+                                weekday: weekday
+                            );
+                          }
+                        }
+                      });
+                      this.setState(() {
+                        currentIntervalValue = currentInterval;
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Text(AppLocalizations.of(context)!.confirm)),
               ],
             );
           },
@@ -400,7 +388,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Future openThemeDialog() {
     switchCurrentThemeValue();
     return showAnimatedDialog(
-      barrierDismissible: false,
+      barrierDismissible: true,
       animationType: DialogTransitionType.fade,
       duration: const Duration(milliseconds: 300),
       context: context,
@@ -505,7 +493,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Future openLanguageDialog() {
     switchCurrentLanguageValue();
     return showAnimatedDialog(
-      barrierDismissible: false,
+      barrierDismissible: true,
       animationType: DialogTransitionType.fade,
       duration: const Duration(milliseconds: 300),
       context: context,
