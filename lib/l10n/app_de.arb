@@ -24,11 +24,54 @@
   "ru": "Russisch",
 
 
+  "garbage": "Müllmeister",
+  "g100plastic": "Plastikmüll",
+  "g101residual": "Restmüll",
+  "g102organic": "Biomüll",
+  "g103paper": "Papiermüll",
+  "g104glass": "Glas",
+  "g105bottles": "Pfandflaschen zurückgeben",
+
+  "bathroom": "Bademeister",
+  "b206mirrors": "Spiegel putzen",
+  "b207sink": "Waschbecken putzen",
+  "b208bath": "Badewanne putzen",
+  "b209toilet": "Toilette putzen",
+  "b210dust": "Staub auf Regal und anderen Oberflächen wischen",
+  "b211carpet": "Teppich austauschen",
+  "b212towel": "Gästehandtuch wechseln",
+  "b213b_waste": "Mülleimer leeren",
+
+  "kitchen": "Küchenchef",
+  "b314surfaces": "(Glas-)Flächen putzen",
+  "b315stove": "Herd und Backofen putzen",
+  "b316fridge": "Kühlschrank leeren und putzen",
+  "b317cloths": "Geschirrtücher, Gästehandtuch und Teppich wechseln",
+
+  "vacuum": "Saugstauber",
+  "b418v_kitchen": "Küche saugen",
+  "b419v_bath": "Badezimmer saugen",
+  "b420v_living": "Wohnzimmer saugen",
+  "b421v_stairs": "Treppen saugen",
+  "b422v_corridor": "Flure saugen",
+  "b423wipe": "Boden wischen",
+
 
   "logout": "Ausloggen",
   "logout_t": "Aus Chores ausloggen?",
   "cw": "KW",
+  "n_title": "Errinerung",
+  "n_text": "Du hast noch Hausarbeiten zu erledigen.",
   "active": "Aktivitätsstatus",
   "noPrimaryRoles": "Dein Status ist inaktiv.",
-  "noPrimaryRoles2": "Dir wurden keine Hausarbeiten zugewiesen."
+  "noPrimaryRoles2": "Dir wurden keine Hausarbeiten zugewiesen.",
+  "uname": "Benutzername",
+  "email": "E-Mail",
+  "pw": "Passwort",
+  "login": "In Chores Einloggen",
+  "login_b": "Einloggen",
+  "signup": "In Chores Registrieren",
+  "signup_b": "Registrieren",
+  "noAccount": "Noch keinen Account?",
+  "haveAccount": "Besitzt du schon einen Account?"
 }
