@@ -11,7 +11,7 @@ This roadmap lists upcoming features of the app.
 - Better / more functional UI
 
 
-### Coming late
+### Coming later
 - Ability to leave WG
 - Create own WGs
 - Create own tasks
