@@ -24,6 +24,38 @@
   "ru": "Русский",
 
 
+  "garbage": "Мусорщик",
+  "g100plastic": "Пластиковый мусор",
+  "g101residual": "Остаточный мусор",
+  "g102organic": "Органический мусор",
+  "g103paper": "Бумажный мусор",
+  "g104glass": "Стеклянный мусор",
+  "g105bottles": "Бутылки",
+
+  "bathroom": "Ванная комната",
+  "b206mirrors": "Clean mirrors",
+  "b207sink": "Clean sink",
+  "b208bath": "Clean bath",
+  "b209toilet": "Clean toilet",
+  "b210dust": "Wipe dust on shelf and surfaces",
+  "b211carpet": "Change carpet",
+  "b212towel": "Change towel",
+  "b213b_waste": "Take out bathroom waste",
+
+  "kitchen": "Kitchen Chef",
+  "b314surfaces": "Clean (glass) surfaces, including table",
+  "b315stove": "Clean stove and oven",
+  "b316fridge": "Empty fridge",
+  "b317cloths": "Wash cloths, towel and carpet",
+
+  "vacuum": "Vacuumator",
+  "b418v_kitchen": "Vacuum kitchen",
+  "b419v_bath": "Vacuum bathroom",
+  "b420v_living": "Vacuum living room",
+  "b421v_stairs": "Vacuum stairs",
+  "b422v_corridor": "Vacuum corridor",
+  "b423wipe": "Wipe floor",
+
 
   "logout": "Выйти",
   "logout_t": "Выйти из Chores?",
