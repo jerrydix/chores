@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:tuple/tuple.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 
 class MemberManager with ChangeNotifier{
@@ -133,7 +134,41 @@ class MemberManager with ChangeNotifier{
         break;
       }
       case 3: {
-        allRoles = [[0,1],[2],[3]];
+        List<TaskMemberElement> roleMemberList = [TaskMemberElement(0, "A"),TaskMemberElement(1, "B"),TaskMemberElement(2, "C"),TaskMemberElement(3, "A")];
+        List<String> people = ["A","B","C"];
+
+        int currentPersonIndex = cw % 3;
+        int currentTaskIndex = 3 - cw % 4 + 2;
+
+        if (currentTaskIndex > 3) {
+          currentTaskIndex -= 4;
+        }
+
+        for (var x in roleMemberList) {
+          x.name = people[currentPersonIndex];
+          x.role = currentTaskIndex;
+          currentPersonIndex++;
+          if (currentPersonIndex >= 3) {
+            currentPersonIndex -= 3;
+          }
+          currentTaskIndex++;
+          if (currentTaskIndex > 3) {
+            currentTaskIndex -= 4;
+          }
+        }
+
+        allRoles = [[],[],[]];
+
+        for (var x in roleMemberList) {
+          if (x.name == "A") {
+            allRoles[0].add(x.role);
+          } else if (x.name == "B") {
+            allRoles[1].add(x.role);
+          } else if (x.name == "C") {
+            allRoles[2].add(x.role);
+          }
+        }
+
         break;
       }
       case 4: {
@@ -168,4 +203,11 @@ class MemberManager with ChangeNotifier{
     notifyListeners();
   }
 
+}
+
+class TaskMemberElement {
+  int role;
+  String name;
+
+  TaskMemberElement(this.role, this.name);
 }
