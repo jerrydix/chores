@@ -100,7 +100,7 @@ class NotificationService {
         channelKey: "reminder_channel",
         title: title,
         body: body,
-        category: NotificationCategory.Event,
+        category: NotificationCategory.Recommendation,
         actionType: ActionType.Default,
         notificationLayout: NotificationLayout.Default,
         locked: true,
