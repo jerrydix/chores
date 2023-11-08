@@ -110,9 +110,8 @@ class NotificationService {
       ),
       actionButtons: actionButtons,
       schedule: NotificationCalendar(
-        second: 0,
-        minute: 50,
-        hour: 13,
+        minute: 00,
+        hour: 12,
         weekday: weekday,
         preciseAlarm: false,
         allowWhileIdle: true,
