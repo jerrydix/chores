@@ -168,17 +168,17 @@ class _DashboardViewState extends State<DashboardView> {
             }
           case 1:
             {
-              currentCheckList.addAll(createCheckedList(6, 7));
+              currentCheckList.addAll(createCheckedList(6, 8));
               break;
             }
           case 2:
             {
-              currentCheckList.addAll(createCheckedList(13, 4));
+              currentCheckList.addAll(createCheckedList(14, 4));
               break;
             }
           case 3:
             {
-              currentCheckList.addAll(createCheckedList(17, 5));
+              currentCheckList.addAll(createCheckedList(18, 6));
               break;
             }
           default:
@@ -343,7 +343,7 @@ class _DashboardViewState extends State<DashboardView> {
           {
             if (primary) {
               primaryRoleNames.add(loc.bathroom);
-              indexCounters[6] = 12;
+              indexCounters[6] = 13;
             }
             currentResult.addAll({
               loc.b206mirrors: const Icon(Icons.video_label),
@@ -352,7 +352,8 @@ class _DashboardViewState extends State<DashboardView> {
               loc.b209toilet: const Icon(Icons.airline_seat_legroom_reduced),
               loc.b210dust: const Icon(Icons.cleaning_services),
               loc.b211carpet: const Icon(Icons.calendar_view_week),
-              loc.b212b_waste: const Icon(Icons.delete),
+              loc.b212towel: const Icon(Icons.receipt),
+              loc.b213b_waste: const Icon(Icons.delete),
             });
             break;
           }
@@ -360,13 +361,13 @@ class _DashboardViewState extends State<DashboardView> {
           {
             if (primary) {
               primaryRoleNames.add(loc.kitchen);
-              indexCounters[13] = 16;
+              indexCounters[14] = 17;
             }
             currentResult.addAll({
-              loc.b313surfaces: const Icon(Icons.countertops),
-              loc.b314stove: const Icon(Icons.outdoor_grill),
-              loc.b315fridge: const Icon(Icons.kitchen),
-              loc.b316cloths: const Icon(Icons.receipt),
+              loc.b314surfaces: const Icon(Icons.countertops),
+              loc.b315stove: const Icon(Icons.outdoor_grill),
+              loc.b316fridge: const Icon(Icons.kitchen),
+              loc.b317cloths: const Icon(Icons.receipt),
             });
             break;
           }
@@ -374,14 +375,15 @@ class _DashboardViewState extends State<DashboardView> {
           {
             if (primary) {
               primaryRoleNames.add(loc.vacuum);
-              indexCounters[17] = 21;
+              indexCounters[18] = 23;
             }
             currentResult.addAll({
-              loc.b417v_kitchen: const Icon(Icons.countertops),
-              loc.b418v_bath: const Icon(Icons.hot_tub),
-              loc.b419v_living: const Icon(Icons.event_seat),
-              loc.b420v_stairs: const Icon(Icons.home),
-              loc.b421v_corridor: const Icon(Icons.home_mini),
+              loc.b418v_kitchen: const Icon(Icons.countertops),
+              loc.b419v_bath: const Icon(Icons.hot_tub),
+              loc.b420v_living: const Icon(Icons.event_seat),
+              loc.b421v_stairs: const Icon(Icons.home),
+              loc.b422v_corridor: const Icon(Icons.home_mini),
+              loc.b423wipe: const Icon(Icons.cleaning_services),
             });
             break;
           }
