@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:tuple/tuple.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 
 class MemberManager with ChangeNotifier{
