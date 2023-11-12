@@ -138,12 +138,12 @@ class _HomePageState extends State<HomePage> {
               }
             case 1:
               {
-                currentIcons.add(const Icon(Icons.bathtub_outlined));
+                currentIcons.add(const Icon(Icons.clean_hands_outlined));
                 break;
               }
             case 2:
               {
-                currentIcons.add(const Icon(Icons.soup_kitchen_outlined));
+                currentIcons.add(const Icon(Icons.countertops_outlined));
                 break;
               }
             case 3:

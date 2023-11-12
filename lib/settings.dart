@@ -15,7 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'main.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _SettingsPageState();
