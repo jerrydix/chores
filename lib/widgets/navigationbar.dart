@@ -12,7 +12,7 @@ late NavigationBarThemeData navBarTheme;
 late double bodyHeight;
 
 class NavBar extends StatefulWidget {
-  const NavBar({Key? key}) : super(key: key);
+  const NavBar({super.key});
 
   @override
   State<StatefulWidget> createState() => _NavBarState();
@@ -25,7 +25,7 @@ class _NavBarState extends State<NavBar> {
     const HomePage(),
   ];
 
-  Future<void> openSettings(String value) async {
+  Future<void> openSettings() async {
     Route route = MaterialPageRoute(builder: (context) => const SettingsPage());
     await Navigator.push(context, route);
     setState(() {});
@@ -45,7 +45,8 @@ class _NavBarState extends State<NavBar> {
         appBar: AppBar(
           title: createPrimaryRolesText(),
           actions: <Widget>[
-            PopupMenuButton<String>(
+            IconButton(onPressed: () {openSettings();}, icon: const Icon(Icons.settings))
+            /*PopupMenuButton<String>(
               onSelected: openSettings,
               itemBuilder: (BuildContext context) {
                 return {AppLocalizations.of(context)!.settings}
@@ -56,7 +57,7 @@ class _NavBarState extends State<NavBar> {
                   );
                 }).toList();
               },
-            ),
+            ),*/
           ],
         ),
         body: LayoutBuilder(
