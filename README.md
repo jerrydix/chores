@@ -5,7 +5,6 @@ A flutter app for managing household chores in shared apartments.
 This roadmap lists upcoming features of the app.
 
 ### Coming in the next weeks
-- Themed app icon
 - finished localization
 - Google OAuth 2.0
 - Better / more functional UI
