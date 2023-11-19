@@ -8,7 +8,7 @@ import 'package:chores/main.dart';
 class NotificationService {
   static Future<void> initializeNotifications() async {
     await AwesomeNotifications().initialize(
-        null,
+        'resource://drawable/res_app_icon',
         [
           NotificationChannel(
               channelGroupKey: "reminder_channel_group",
@@ -105,8 +105,8 @@ class NotificationService {
         notificationLayout: NotificationLayout.Default,
         locked: true,
         wakeUpScreen: true,
-        fullScreenIntent: true,
         backgroundColor: Colors.transparent,
+        autoDismissible: true
       ),
       actionButtons: actionButtons,
       schedule: NotificationCalendar(

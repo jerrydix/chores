@@ -43,7 +43,7 @@ class MemberManager with ChangeNotifier{
     if (wgCW != DateTime.now().weekOfYear) {
       await db.collection("wgs").doc(currentWgID).update({
         "cw": DateTime.now().weekOfYear,
-        "tasks": List.filled(22, false),
+        "tasks": List.filled(24, false),
       });
     }
 
