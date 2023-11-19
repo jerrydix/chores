@@ -12,7 +12,7 @@ class UserPreferences {
   static Future setLanguage(int languageIndex) async =>
       await _prefs?.setInt('language', languageIndex);
 
-  static int getLanguage() => _prefs?.getInt('language') ?? 0;
+  static int getLanguage() => _prefs?.getInt('language') ?? -1;
 
   static Future setNotificationsBool(bool on) async =>
       await _prefs?.setBool('notOn', on);

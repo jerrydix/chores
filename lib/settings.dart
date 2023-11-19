@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -141,6 +142,17 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void switchCurrentLanguageValue() {
+    if (UserPreferences.getLanguage() == -1) {
+      if (Intl.getCurrentLocale() == "en") {
+        UserPreferences.setLanguage(0);
+      }
+      if (Intl.getCurrentLocale() == "de") {
+        UserPreferences.setLanguage(1);
+      }
+      if (Intl.getCurrentLocale() == "ru") {
+        UserPreferences.setLanguage(2);
+      }
+    }
     switch (UserPreferences.getLanguage()) {
       case 0:
         {
