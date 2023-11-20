@@ -49,7 +49,9 @@ class _WrapperState extends State<Wrapper> {
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
-              const Center(child: CircularProgressIndicator());
+              const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
               break;
             default:
               if (snapshot.hasError) {
@@ -60,7 +62,9 @@ class _WrapperState extends State<Wrapper> {
               }
               return const NavBar();
           }
-          return const Center(child: CircularProgressIndicator());
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         });
   }
 
