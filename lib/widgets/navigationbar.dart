@@ -43,6 +43,11 @@ class _NavBarState extends State<NavBar> {
 
     scaffold = Scaffold(
         appBar: AppBar(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(8),
+            ),
+          ),
           title: createPrimaryRolesText(),
           actions: <Widget>[
             IconButton(onPressed: () {openSettings();}, icon: const Icon(Icons.settings))
@@ -69,7 +74,9 @@ class _NavBarState extends State<NavBar> {
             );
           },
         ),
-        bottomNavigationBar: NavigationBarTheme(
+        bottomNavigationBar: ClipRRect(
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(8.0), topRight: Radius.circular(8.0), ),
+            child: NavigationBarTheme(
           data: navBarTheme,
           child: NavigationBar(
             selectedIndex: _currentIndex,
@@ -89,7 +96,7 @@ class _NavBarState extends State<NavBar> {
                   icon: const Icon(Icons.calendar_month_outlined),
                   label: AppLocalizations.of(context)!.overview),
             ],
-          ),
+          ),),
         ));
     return SelectionArea(child: scaffold);
   }
