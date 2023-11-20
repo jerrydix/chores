@@ -14,6 +14,40 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+        listenable: MemberManager.instance,
+        builder: (BuildContext context, Widget? child) {
+          return FutureBuilder<void>(
+              future: MemberManager.instance.dataFuture,
+              builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    const Center(child: CircularProgressIndicator());
+                    break;
+                  default:
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+                    return const Overview();
+                }
+                return const Center(child: CircularProgressIndicator());
+              });
+        });
+  }
+
+}
+
+class Overview extends StatefulWidget {
+  const Overview({super.key});
+
+  @override
+  State<Overview> createState() => _OverviewState();
+}
+
+class _OverviewState extends State<Overview> {
   late AutoScrollController controller;
   int scrollOffset = DateTime.now().weekOfYear - 2;
   double rowHeight = 50;
@@ -26,6 +60,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    username = manager.username;
     controller = AutoScrollController(
       axis: Axis.vertical,
     );
@@ -33,8 +68,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<DataColumn2> _generateColumns() {
-    List<DataColumn2> columns = [];
 
+    List<DataColumn2> columns = [];
     List<String> sortedNames = [];
     if (manager.active) {
       sortedNames.add(manager.username);
@@ -201,39 +236,18 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-        listenable: MemberManager.instance,
-        builder: (BuildContext context, Widget? child) {
-          return FutureBuilder<void>(
-              future: manager.dataFuture,
-              builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    const Center(child: CircularProgressIndicator());
-                    break;
-                  default:
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
-                    username = manager.username;
-                    return DataTable2(
-                      scrollController: controller,
-                      fixedTopRows: 1,
-                      columns: _generateColumns(),
-                      rows: _generateRows(),
-                      columnSpacing: 0,
-                    );
-                }
-                return const Center(child: CircularProgressIndicator());
-              });
-        });
+    return RefreshIndicator(
+        onRefresh: () async {
+      await MemberManager.instance.fetchWGData();
+      setState(() {});
+    },
+    child:DataTable2(
+      scrollController: controller,
+      fixedTopRows: 1,
+      columns: _generateColumns(),
+      rows: _generateRows(),
+      columnSpacing: 0,
+    ),
+    );
   }
-
-  void overviewStateCallback() {
-    setState(() {
-      username = manager.username;
-    });
-  }
-
-
 }
