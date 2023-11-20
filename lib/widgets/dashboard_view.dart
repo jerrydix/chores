@@ -108,22 +108,30 @@ class _DashboardViewState extends State<DashboardView> {
     } else {
       primaryWidget = primaryActiveWidget;
     }
-
-    return Center(
-      child: Column(
-        children: <Widget>[
-          Card(
-            margin: const EdgeInsets.all(10),
-            elevation: 0,
-            color: Theme.of(context).colorScheme.secondaryContainer,
-            child: SizedBox(
-              width: clampDouble(MediaQuery.of(context).size.width, 0, 500),
-              height: (actualHeight - 20) * primaryHeightMultiplier,
-              child: primaryWidget,
+    return RefreshIndicator(
+      onRefresh: () async {
+        await MemberManager.instance.fetchWGData();
+        setState(() {});
+      },
+      child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Center(
+            child: Column(
+              children: <Widget>[
+                Card(
+                  margin: const EdgeInsets.all(10),
+                  elevation: 0,
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  child: SizedBox(
+                    width: clampDouble(MediaQuery.of(context).size.width, 0, 500),
+                    height: (actualHeight - 20) * primaryHeightMultiplier,
+                    child: primaryWidget,
+                  ),
+                ),
+                SecondaryCard(data: data)
+              ],
             ),
           ),
-          SecondaryCard(data: data)
-        ],
       ),
     );
   }
