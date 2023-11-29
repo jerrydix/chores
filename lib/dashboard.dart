@@ -64,7 +64,6 @@ class _DashboardState extends State<Dashboard> {
                   if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   }
-                  print("Active ${manager.active}");
 
                   tasks = manager.tasks;
                   primaryRoles = manager.primaryRoles;
@@ -72,11 +71,6 @@ class _DashboardState extends State<Dashboard> {
                   username = manager.username;
                   otherNames = manager.otherNames;
                   active = manager.active;
-
-                  //print("PRIMARY ROLES: $primaryRoles");
-                  //print("OTHER ROLES: $otherRoles");
-                  //print("OTHER NAMES: $otherNames");
-                  //print("USERNAME: $username");
 
                   return DashboardView(tasks: tasks,
                     primaryRoles: primaryRoles,

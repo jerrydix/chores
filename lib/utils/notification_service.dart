@@ -13,7 +13,7 @@ class NotificationService {
           NotificationChannel(
               channelGroupKey: "reminder_channel_group",
               channelKey: "reminder_channel",
-              channelName: "Reminders",
+              channelName: "Chores Reminder",
               channelDescription: "Reminder channel",
               defaultColor: Colors.transparent,
               ledColor: Colors.white,
@@ -29,7 +29,7 @@ class NotificationService {
         channelGroups: [
           NotificationChannelGroup(
               channelGroupKey: "reminder_channel_group",
-              channelGroupName: "Reminder group")
+              channelGroupName: "Reminders")
         ],
         debug: true);
 
@@ -101,9 +101,9 @@ class NotificationService {
         title: title,
         body: body,
         category: NotificationCategory.Reminder,
-        locked: true,
         wakeUpScreen: true,
-        autoDismissible: true
+        backgroundColor: Colors.transparent,
+        icon: 'resource://drawable/res_app_icon',
       ),
       schedule: NotificationCalendar(
         minute: 00,
