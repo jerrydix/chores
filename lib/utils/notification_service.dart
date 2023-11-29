@@ -13,17 +13,18 @@ class NotificationService {
           NotificationChannel(
               channelGroupKey: "reminder_channel_group",
               channelKey: "reminder_channel",
-              channelName: "reminder_channel",
+              channelName: "Reminders",
               channelDescription: "Reminder channel",
               defaultColor: Colors.transparent,
               ledColor: Colors.white,
-              importance: NotificationImportance.Max,
+              importance: NotificationImportance.Default,
               defaultPrivacy: NotificationPrivacy.Public,
               defaultRingtoneType: DefaultRingtoneType.Notification,
               locked: true,
               enableVibration: true,
               playSound: true,
-              criticalAlerts: true)
+              criticalAlerts: false,
+          )
         ],
         channelGroups: [
           NotificationChannelGroup(
@@ -91,7 +92,6 @@ class NotificationService {
     required final String title,
     required final String body,
     required final int weekday,
-    final List<NotificationActionButton>? actionButtons,
   }) async {
     Random random = Random();
     await AwesomeNotifications().createNotification(
@@ -100,15 +100,11 @@ class NotificationService {
         channelKey: "reminder_channel",
         title: title,
         body: body,
-        category: NotificationCategory.Recommendation,
-        actionType: ActionType.Default,
-        notificationLayout: NotificationLayout.Default,
+        category: NotificationCategory.Reminder,
         locked: true,
         wakeUpScreen: true,
-        backgroundColor: Colors.transparent,
         autoDismissible: true
       ),
-      actionButtons: actionButtons,
       schedule: NotificationCalendar(
         minute: 00,
         hour: 12,
