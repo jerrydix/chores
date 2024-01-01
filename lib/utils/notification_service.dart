@@ -106,8 +106,9 @@ class NotificationService {
         icon: 'resource://drawable/res_app_icon',
       ),
       schedule: NotificationCalendar(
-        minute: 00,
+        minute: 0,
         hour: 12,
+        second: 0,
         weekday: weekday,
         preciseAlarm: false,
         allowWhileIdle: true,
