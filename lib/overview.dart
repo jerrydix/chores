@@ -2,6 +2,7 @@ import 'package:chores/member_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
+import 'package:quiver/time.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -126,16 +127,21 @@ class _OverviewState extends State<Overview> {
     return columns;
   }
 
-  //TODO wtf is this
   List<DataRow2> _generateRows() {
 
     List<DataRow2> rows = [];
     bool current = false;
     bool wasCurrent = false;
+    int numberOfWeeks = 52;
 
-    for (int i = 0; i < DateTime.utc(DateTime.now().year, 12, 31).weekOfYear; i++) {
+    //leap year edge case
+    if (isLeapYear(DateTime.now().year)) {
+      numberOfWeeks = 53;
+    }
 
-      if (DateTime.now().weekOfYear == i + 1) {
+    for (int i = 0; i < numberOfWeeks; i++) {
+
+      if (DateTime.now().weekOfYear == i + 1 && !isLeapYear(DateTime.now().year) || DateTime.now().weekOfYear == 1 && DateTime.now().month == DateTime.december && isLeapYear(DateTime.now().year)) {
         current = true;
         wasCurrent = true;
       } else {
