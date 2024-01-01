@@ -29,7 +29,7 @@ enum Themes { system, light, dark }
 enum Languages { en, de, ru }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool? currentValue;
+  bool? currentNotificationValue;
   Icon? currentNotificationStatus;
 
   bool? currentActiveValue;
@@ -52,14 +52,14 @@ class _SettingsPageState extends State<SettingsPage> {
   Languages? _language;
 
   void init() {
-    currentValue = UserPreferences.getNotificationsBool();
+    currentNotificationValue = UserPreferences.getNotificationsBool();
     currentActiveValue = MemberManager.instance.active;
     if (currentActiveValue!) {
       currentActiveIcon = const Icon(Icons.check_circle);
     } else {
       currentActiveIcon = const Icon(Icons.check_circle_outline);
     }
-    if (currentValue!) {
+    if (currentNotificationValue!) {
       currentNotificationStatus = const Icon(Icons.notifications_on);
     } else {
       currentNotificationStatus = const Icon(Icons.notifications_off);
@@ -295,19 +295,21 @@ class _SettingsPageState extends State<SettingsPage> {
                         case null:
                           throw Exception("Interval is null");
                       }
-                      await AwesomeNotifications().cancelAllSchedules().then((_) async {
-                        if (UserPreferences.getNotificationsBool()) {
-                          List<int> weekdays = getNotificationWeekday(_character!);
-                          for (int weekday in weekdays) {
-                            await NotificationService.scheduleChoresNotification(
-                                id: 0,
-                                title: AppLocalizations.of(context)!.n_title,
-                                body: AppLocalizations.of(context)!.n_text,
-                                weekday: weekday
-                            );
+                      if (currentNotificationValue! && currentActiveValue!) {
+                        await AwesomeNotifications().cancelAllSchedules().then((_) async {
+                          if (UserPreferences.getNotificationsBool()) {
+                            List<int> weekdays = getNotificationWeekday(_character!);
+                            for (int weekday in weekdays) {
+                              await NotificationService.scheduleChoresNotification(
+                                  id: 0,
+                                  title: AppLocalizations.of(context)!.n_title,
+                                  body: AppLocalizations.of(context)!.n_text,
+                                  weekday: weekday
+                              );
+                            }
                           }
-                        }
-                      });
+                        });
+                      }
                       this.setState(() {
                         currentIntervalValue = currentInterval;
                       });
@@ -656,6 +658,21 @@ class _SettingsPageState extends State<SettingsPage> {
                   await db.collection("wgs").doc(manager.currentWgID).collection("members").doc(manager.user?.uid).update({
                     "active": value,
                   });
+                  if (value && currentNotificationValue!) {
+                    await AwesomeNotifications().cancelAllSchedules().then((_) async {
+                      List<int> weekdays = getNotificationWeekday(_character!);
+                      for (int weekday in weekdays) {
+                        await NotificationService.scheduleChoresNotification(
+                            id: 0,
+                            title: AppLocalizations.of(context)!.n_title,
+                            body: AppLocalizations.of(context)!.n_text,
+                            weekday: weekday
+                        );
+                      }
+                    });
+                  } else {
+                    await AwesomeNotifications().cancelAllSchedules();
+                  }
                   MemberManager.instance.updateActive(value);
                   setState(() {
                     currentActiveValue = value;
@@ -684,11 +701,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
               SettingsTile.switchTile(
-                initialValue: currentValue,
+                initialValue: currentNotificationValue,
                 leading: currentNotificationStatus,
                 title: Text(AppLocalizations.of(context)!.notEnable),
                 onToggle: (bool value) async {
-                  if (value) {
+                  if (value && currentActiveValue!) {
                     await AwesomeNotifications().cancelAllSchedules().then((_) async {
                       List<int> weekdays = getNotificationWeekday(_character!);
                       for (int weekday in weekdays) {
@@ -704,7 +721,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     await AwesomeNotifications().cancelAllSchedules();
                   }
                   setState(() {
-                    currentValue = value;
+                    currentNotificationValue = value;
                     if (value) {
                       currentNotificationStatus =
                           const Icon(Icons.notifications_active);
