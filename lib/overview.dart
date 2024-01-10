@@ -134,19 +134,20 @@ class _OverviewState extends State<Overview> {
     bool wasCurrent = false;
     int numberOfWeeks = 52;
 
-    //leap year edge case
-    if (isLeapYear(DateTime.now().year)) {
+    //53 weeks edge cases https://eduardklein.com/life/how-many-weeks-in-a-year/
+    if (isLeapYear(DateTime.now().year) && DateTime(DateTime.now().year, 1, 1).weekday == DateTime.thursday || !isLeapYear(DateTime.now().year) && DateTime(DateTime.now().year, 1, 1).weekday == DateTime.wednesday) {
       numberOfWeeks = 53;
     }
 
     for (int i = 0; i < numberOfWeeks; i++) {
 
-      if (DateTime.now().weekOfYear == i + 1 && !isLeapYear(DateTime.now().year) || DateTime.now().weekOfYear == 1 && DateTime.now().month == DateTime.december && isLeapYear(DateTime.now().year)) {
+      if (DateTime.now().weekOfYear == i + 1 && DateTime.now().weekOfYear != 1 || DateTime.now().weekOfYear == i + 1 && DateTime.now().weekOfYear == 1 && DateTime.now().month != DateTime.december || DateTime.now().weekOfYear == 1 && DateTime.now().month == DateTime.december && numberOfWeeks == 53) {
         current = true;
         wasCurrent = true;
       } else {
         current = false;
       }
+      print(DateTime.now().weekOfYear);
 
       allRoles = manager.setRoles(i + 1, false);
       List<DataCell> cells = [];
