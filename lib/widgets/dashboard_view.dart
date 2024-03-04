@@ -11,14 +11,14 @@ import '../widgets/secondary_card.dart';
 import 'navigationbar.dart' as navBar;
 
 class DashboardView extends StatefulWidget {
-  final List<bool> tasks;
-  final List<int> primaryRoles;
-  final String username;
-  final List<List<int>> otherRoles;
-  final List<String> otherNames;
-  final bool active;
+  List<bool> tasks;
+  List<int> primaryRoles;
+  String username;
+  List<List<int>> otherRoles;
+  List<String> otherNames;
+  bool active;
 
-  const DashboardView(
+  DashboardView(
       {super.key,
       required this.tasks,
       required this.primaryRoles,
@@ -111,6 +111,12 @@ class _DashboardViewState extends State<DashboardView> {
     return RefreshIndicator(
       onRefresh: () async {
         await MemberManager.instance.fetchWGData();
+        widget.tasks = MemberManager.instance.tasks;
+        widget.primaryRoles = MemberManager.instance.primaryRoles;
+        widget.otherRoles = MemberManager.instance.otherRoles;
+        widget.otherNames = MemberManager.instance.otherNames;
+        widget.username = MemberManager.instance.username;
+        widget.active = MemberManager.instance.active;
         setState(() {});
       },
       child: SingleChildScrollView(
