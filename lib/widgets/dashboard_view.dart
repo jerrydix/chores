@@ -122,6 +122,12 @@ class _DashboardViewState extends State<DashboardView> {
         widget.otherNames = MemberManager.instance.otherNames;
         widget.username = MemberManager.instance.username;
         widget.active = MemberManager.instance.active;
+        indexCounters.clear();
+        taskMaps.clear();
+        otherCheckedLists.clear();
+        otherTaskMapList.clear();
+        otherWidths.clear();
+        otherEdgeInsets.clear();
         setState(() {});
       },
       child: SingleChildScrollView(
