@@ -18,6 +18,9 @@ class DashboardView extends StatefulWidget {
   List<String> otherNames;
   bool active;
 
+  final ValueNotifier<bool> allTasksDone = ValueNotifier<bool>(false);
+
+
   DashboardView(
       {super.key,
       required this.tasks,
@@ -85,17 +88,18 @@ class _DashboardViewState extends State<DashboardView> {
     ScrollController scrollController = ScrollController();
 
     Widget primaryActiveWidget = Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
       child: Scrollbar(
-        radius: const Radius.circular(10),
-        thickness: 3,
-        controller: scrollController,
-        child: SingleChildScrollView(
+            radius: const Radius.circular(10),
+            thickness: 3,
             controller: scrollController,
-            child: Column(
-              children: createPrimaryTasks(),
-            )),
-      ),
+            child: SingleChildScrollView(
+                controller: scrollController,
+                child: Column(
+                  children: createPrimaryTasks(),
+                )
+            ),
+          ),
     );
 
     Widget primaryInactiveWidget = Column(
@@ -108,6 +112,7 @@ class _DashboardViewState extends State<DashboardView> {
     } else {
       primaryWidget = primaryActiveWidget;
     }
+
     return RefreshIndicator(
       onRefresh: () async {
         await MemberManager.instance.fetchWGData();
@@ -131,7 +136,38 @@ class _DashboardViewState extends State<DashboardView> {
                   child: SizedBox(
                     width: clampDouble(MediaQuery.of(context).size.width, 0, 500),
                     height: (actualHeight - 20) * primaryHeightMultiplier,
-                    child: primaryWidget,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: (actualHeight - 20) * primaryHeightMultiplier * 8.3 / 10,
+                          child: primaryWidget,
+                        ),
+                        Divider(
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+                          indent: 15,
+                          endIndent: 15,
+                          height: 20,
+                        ),
+                        ValueListenableBuilder(valueListenable: widget.allTasksDone, builder: (BuildContext context, bool value, Widget? child) =>
+                        Padding(
+                            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                            child: CheckboxListTile(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                checkboxShape:
+                                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                title: Text(AppLocalizations.of(context)!.finAllTasks),
+                                onChanged: (value) {
+                                  setState(() {
+                                    doneAllTasks();
+                                  });
+                                  saveSelectionStateToDB();
+                                },
+                                secondary: const Icon(Icons.done_all),
+                                value: widget.allTasksDone.value))),
+                      ],
+                    )
                   ),
                 ),
                 SecondaryCard(data: data)
@@ -158,9 +194,6 @@ class _DashboardViewState extends State<DashboardView> {
     otherTaskMapList = [];
     otherCheckedLists = [];
     otherWidths = [];
-
-    print("otherRoles: ${widget.otherRoles.length}");
-    print("otherRoles: ${widget.otherRoles}");
 
     for (int i = 0; i < widget.otherRoles.length; i++) {
       List<int> currentRoles = widget.otherRoles[i];
@@ -292,9 +325,6 @@ class _DashboardViewState extends State<DashboardView> {
     List<Widget> currentTasks = [];
     List<int> offsets = [];
 
-    print(offsets);
-    print(currentTasks);
-
     for (int i = 0; i < indexCounters.length; i++) {
       offsets.add(currentTasks.length);
       taskMaps[i].forEach((name, icon) {
@@ -313,21 +343,41 @@ class _DashboardViewState extends State<DashboardView> {
                       .tasks[indexCounters.keys.elementAt(i) + currentTasks.indexOf(context.widget) - offsets[i]],
                   onChanged: (value) {
                     int indexInList = currentTasks.indexOf(context.widget);
-
+                    if (!value!) {
+                      widget.allTasksDone.value = false;
+                    }
                     setState(() {
-                      widget.tasks[indexCounters.keys.elementAt(i) + indexInList - offsets[i]] = value!;
+                      widget.tasks[indexCounters.keys.elementAt(i) + indexInList - offsets[i]] = value;
                       styleSwitcher(indexCounters.keys.elementAt(i) + indexInList - offsets[i], value);
                     });
                     saveSelectionStateToDB();
                   },
                   secondary: icon);
             }));
-        //print(currentTasks);
       });
     }
-    print(offsets);
-    print(currentTasks);
     return currentTasks;
+  }
+
+  void doneAllTasks(){
+    int primaryTasksLength = 0;
+    for (int i = 0; i < indexCounters.length; i++) {
+      primaryTasksLength += taskMaps[i].length;
+    }
+    widget.allTasksDone.value = !widget.allTasksDone.value;
+    for (int i = 0; i < primaryTasksLength; i++) {
+      widget.tasks[i] = widget.allTasksDone.value;
+
+      if (widget.allTasksDone.value) {
+        styles[i] = TextStyle(
+          decoration: TextDecoration.lineThrough,
+          color: styles[i].color?.withOpacity(0.75));
+      } else {
+        styles[i] = TextStyle(
+          decoration: TextDecoration.none,
+          color: styles[i].color?.withOpacity(1));
+      }
+    }
   }
 
   List<LinkedHashMap<String, Icon>> createTaskMap(List<int> roles, bool primary) {
