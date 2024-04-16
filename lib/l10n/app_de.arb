@@ -73,5 +73,6 @@
   "signup": "In Chores Registrieren",
   "signup_b": "Registrieren",
   "noAccount": "Noch keinen Account?",
-  "haveAccount": "Besitzt du schon einen Account?"
+  "haveAccount": "Besitzt du schon einen Account?",
+  "finAllTasks": "Alle Aufgaben erledigt"
 }
