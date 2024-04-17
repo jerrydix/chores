@@ -365,23 +365,21 @@ class _DashboardViewState extends State<DashboardView> {
     return currentTasks;
   }
 
-  void doneAllTasks(){
-    int primaryTasksLength = 0;
-    for (int i = 0; i < indexCounters.length; i++) {
-      primaryTasksLength += taskMaps[i].length;
-    }
+  void doneAllTasks() {
     widget.allTasksDone.value = !widget.allTasksDone.value;
-    for (int i = 0; i < primaryTasksLength; i++) {
-      widget.tasks[i] = widget.allTasksDone.value;
 
-      if (widget.allTasksDone.value) {
-        styles[i] = TextStyle(
-          decoration: TextDecoration.lineThrough,
-          color: styles[i].color?.withOpacity(0.75));
-      } else {
-        styles[i] = TextStyle(
-          decoration: TextDecoration.none,
-          color: styles[i].color?.withOpacity(1));
+    for (var val in indexCounters.entries) {
+      for (int i = val.key; i <= val.value; i++) {
+        widget.tasks[i] = widget.allTasksDone.value;
+        if (widget.allTasksDone.value) {
+          styles[i] = TextStyle(
+              decoration: TextDecoration.lineThrough,
+              color: styles[i].color?.withOpacity(0.75));
+        } else {
+          styles[i] = TextStyle(
+              decoration: TextDecoration.none,
+              color: styles[i].color?.withOpacity(1));
+        }
       }
     }
   }
