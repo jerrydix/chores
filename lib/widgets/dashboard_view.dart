@@ -138,7 +138,7 @@ class _DashboardViewState extends State<DashboardView> {
                 Card(
                   margin: const EdgeInsets.all(10),
                   elevation: 0,
-                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  color: Theme.of(context).colorScheme.primary,
                   child: SizedBox(
                     width: clampDouble(MediaQuery.of(context).size.width, 0, 500),
                     height: (actualHeight - 20) * primaryHeightMultiplier,
