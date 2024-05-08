@@ -34,7 +34,7 @@ jobs:
         id: shorebird-patch
         uses: shorebirdtech/shorebird-patch@v0
         with:
-          args: --verbose
+          #args: --verbose
           platform: android # or 'ios'
 
       - name: 📝 Output Patch Version
