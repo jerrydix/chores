@@ -86,7 +86,7 @@ class _OverviewState extends State<Overview> {
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
-                          .withOpacity(0.0))),
+                          .withOpacity(0.2))),
             ),
             child: Center(
                 child: Text(AppLocalizations.of(context)!.cw,
