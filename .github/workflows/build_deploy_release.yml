@@ -44,14 +44,16 @@ jobs:
 
       #- run: flutter build apk
       #- run: flutter build appbundle
-      - name: 🚀 GitHub Release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "build/app/outputs/flutter-apk/app-release.apk"
-          tag: v0.1.${{ github.run_number }}
-          name: Chores v0.1.${{ github.run_number }}
-          token: ${{ secrets.TOKEN }}
-      - run: flutter build web
+      #- name: 🚀 GitHub Release
+        #uses: ncipollo/release-action@v1
+        #with:
+          #artifacts: "build/app/outputs/flutter-apk/app-release.apk"
+          #tag: v0.1.${{ github.run_number }}
+          #name: Chores v0.1.${{ github.run_number }}
+          #token: ${{ secrets.TOKEN }}
+
+      - name: Build Web Version
+        run: flutter build web
 
       - name: 🚀 Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
