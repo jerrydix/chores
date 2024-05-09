@@ -36,7 +36,7 @@ jobs:
         id: shorebird-patch
         uses: shorebirdtech/shorebird-patch@v0
         with:
-          #args: --verbose
+          args: --allow-native-diffs #--verbose
           platform: android
 
       - name: 📝 Output Patch Version
