@@ -60,8 +60,8 @@ class _SecondaryCardState extends State<SecondaryCard> {
           child: OpenContainer(
               transitionType: ContainerTransitionType.fadeThrough,
               closedColor: Theme.of(context).colorScheme.secondaryContainer,
-              middleColor: Theme.of(context).colorScheme.background,
-              openColor: Theme.of(context).colorScheme.background,
+              middleColor: Theme.of(context).colorScheme.surface,
+              openColor: Theme.of(context).colorScheme.surface,
               transitionDuration: const Duration(milliseconds: 350),
               closedShape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),

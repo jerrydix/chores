@@ -140,7 +140,7 @@ class _SignUpPageState extends State<SignUpPage> {
     ),);
   }
 
-  Future<Future<bool?>?> _signUp() async {
+  Future<dynamic> _signUp() async {
     String username = _usernameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;

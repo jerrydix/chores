@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
     ),);
   }
 
-  Future<Future<bool?>?> _signIn() async {
+  Future<dynamic> _signIn() async {
 
     String email = _emailController.text;
     String password = _passwordController.text;
