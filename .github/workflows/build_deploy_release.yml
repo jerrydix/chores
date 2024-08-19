@@ -31,7 +31,9 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-      - run: flutter pub get
+
+      - name: 📚 Flutter Pub Get
+        run: flutter pub get
 
       - name: 🐦 Setup Shorebird
         uses: shorebirdtech/setup-shorebird@v1
@@ -40,8 +42,7 @@ jobs:
         id: shorebird-patch
         uses: shorebirdtech/shorebird-patch@v0
         with:
-          #args: --allow-native-diffs #--verbose
-          args: --verbose --release-version 1.0.0+1
+          args: --release-version 1.0.0+1
           platform: android
 
       - name: 📝 Output Patch Version
@@ -57,7 +58,7 @@ jobs:
           #name: Chores v0.1.${{ github.run_number }}
           #token: ${{ secrets.TOKEN }}
 
-      - name: Build Web Version
+      - name: 📚 Build Web Version
         run: flutter build web
 
       - name: 🚀 Deploy to Firebase Hosting
