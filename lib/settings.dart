@@ -10,7 +10,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'main.dart';
@@ -180,10 +179,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future openIntervalDialog() {
     switchCurrentNotificationValue();
-    return showAnimatedDialog(
+    return showDialog(
       barrierDismissible: true,
-      animationType: DialogTransitionType.fade,
-      duration: const Duration(milliseconds: 300),
+      //animationType: DialogTransitionType.fade,
+      //duration: const Duration(milliseconds: 300),
       context: context,
       builder: (context) {
         return StatefulBuilder(
@@ -359,7 +358,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   TextSpan(
                       text: 'Developed by Jeremy Dix\n\n',
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: Theme.of(context).colorScheme.onSurface,
                       )),
                   makeLink('GitHub', _ghurl),
                   makeLink('Itch.io', _itchurl),
@@ -401,10 +400,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future openThemeDialog() {
     switchCurrentThemeValue();
-    return showAnimatedDialog(
+    return showDialog(
       barrierDismissible: true,
-      animationType: DialogTransitionType.fade,
-      duration: const Duration(milliseconds: 300),
+      //animationType: DialogTransitionType.fade,
+      //duration: const Duration(milliseconds: 300),
       context: context,
       builder: (context) {
         return StatefulBuilder(
@@ -506,10 +505,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future openLanguageDialog() {
     switchCurrentLanguageValue();
-    return showAnimatedDialog(
+    return showDialog(
       barrierDismissible: true,
-      animationType: DialogTransitionType.fade,
-      duration: const Duration(milliseconds: 300),
+      //animationType: DialogTransitionType.fade,
+      //duration: const Duration(milliseconds: 300),
       context: context,
       builder: (context) {
         return StatefulBuilder(

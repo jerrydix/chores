@@ -32,7 +32,7 @@ class _WGListTileState extends State<WGListTile> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           SimpleCircularProgressBar(
-            backColor: Theme.of(context).colorScheme.surfaceVariant,
+            backColor: Theme.of(context).colorScheme.surfaceContainerHighest,
             progressColors: [Theme.of(context).colorScheme.primary],
             mergeMode: true,
             size: 35,

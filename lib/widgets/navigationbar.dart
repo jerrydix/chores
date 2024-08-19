@@ -35,7 +35,7 @@ class _NavBarState extends State<NavBar> {
   Widget build(BuildContext context) {
 
     navBarTheme = NavigationBarThemeData(
-      labelTextStyle: MaterialStateTextStyle.resolveWith((states) =>
+      labelTextStyle: WidgetStateTextStyle.resolveWith((states) =>
           GoogleFonts.openSans(
               fontStyle: FontStyle.normal, fontSize: 13)),
       height: 80,

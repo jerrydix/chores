@@ -209,7 +209,7 @@ class _OverviewState extends State<Overview> {
       rows.add(DataRow2(
         color: (() {
           if (current) {
-            return MaterialStateProperty.all(
+            return WidgetStateProperty.all(
                 Theme
                     .of(context)
                     .colorScheme
@@ -217,13 +217,13 @@ class _OverviewState extends State<Overview> {
                     .withOpacity(0.15));
           }
           if (wasCurrent) {
-            return MaterialStateProperty.all(
+            return WidgetStateProperty.all(
                 Theme
                     .of(context)
                     .colorScheme
                     .surface);
           }
-          return MaterialStateProperty.all(Colors.grey.withOpacity(0.05));
+          return WidgetStateProperty.all(Colors.grey.withOpacity(0.05));
         }()),
         specificRowHeight: rowHeight,
         cells: cells,
