@@ -11,6 +11,10 @@ env:
 
 jobs:
   build_deploy_release:
+    defaults:
+      run:
+        shell: bash
+
     runs-on: ubuntu-latest
 
     steps:
@@ -36,7 +40,7 @@ jobs:
         id: shorebird-patch
         uses: shorebirdtech/shorebird-patch@v0
         with:
-          args: --allow-native-diffs #--verbose
+          #args: --allow-native-diffs #--verbose
           platform: android
 
       - name: 📝 Output Patch Version
