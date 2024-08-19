@@ -41,6 +41,7 @@ jobs:
         uses: shorebirdtech/shorebird-patch@v0
         with:
           #args: --allow-native-diffs #--verbose
+          args: --verbose --release-version 1.0.0+1
           platform: android
 
       - name: 📝 Output Patch Version
