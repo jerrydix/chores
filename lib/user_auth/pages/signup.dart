@@ -10,6 +10,7 @@ import 'package:keybinder/keybinder.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../wg_selection.dart';
+import '../widgets/AuthButton.dart';
 
 
 
@@ -118,6 +119,39 @@ class _SignUpPageState extends State<SignUpPage> {
                     child: Center(child: Text(loc.signup_b, style: TextStyle(color: Theme.of(context).colorScheme.surface, fontWeight: FontWeight.bold, fontSize: 17),)),
                   ),
                 ),
+              ),
+              const SizedBox(height: 20,),
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          thickness: 0.5,
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(loc.or, style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          thickness: 0.5,
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                        ),
+                      ),
+                    ],
+                  )
+              ),
+              const SizedBox(height: 20,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AuthButton(imagePath: "assets/logos/google_logo.png", onTap: () => AuthenticationProvider(FirebaseAuth.instance).signInWithGoogle(),),
+                  //const SizedBox(width: 25,),
+                  //AuthButton(imagePath: "", onTap: (){},),
+                ],
               ),
               const SizedBox(height: 20,),
               Row(mainAxisAlignment: MainAxisAlignment.center,

@@ -61,6 +61,7 @@ dependencies:
   tuple: ^2.0.2
   quiver: ^3.2.1
   fluttertoast: ^8.2.8
+  google_sign_in: ^6.2.1
   #flutter_local_notifications: ^8.2.0
 
 dev_dependencies:
