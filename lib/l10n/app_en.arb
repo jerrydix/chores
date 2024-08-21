@@ -23,6 +23,10 @@
   "de": "German",
   "ru": "Russian",
   "or": "Or continue with",
+  "leave_wg": "Leave shared apartment",
+  "leave_wg_t": "Are you sure you want to leave the shared apartment?",
+  "wg_settings": "Shared apartment options",
+  "select_wg": "Select shared apartment",
 
 
   "garbage": "Garbage Master",

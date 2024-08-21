@@ -23,6 +23,10 @@
   "de": "Deutsch",
   "ru": "Russisch",
   "or": "Oder weiter mit",
+  "leave_wg": "WG verlassen",
+  "leave_wg_t": "Möchtest du die WG wirklich verlassen?",
+  "wg_settings": "WG Einstellungen",
+  "select_wg": "WG auswählen",
 
 
   "garbage": "Müllmeister",

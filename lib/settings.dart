@@ -4,6 +4,7 @@ import 'package:chores/user_auth/authentication_provider.dart';
 import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/utils/notification_service.dart';
 import 'package:chores/utils/userprefs.dart';
+import 'package:chores/wg_selection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -597,6 +598,56 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  Future openLeaveDialog() => showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            AppLocalizations.of(context)!.leave_wg_t,
+            style: const TextStyle(fontSize: 20),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(AppLocalizations.of(context)!.cancel)),
+            TextButton(
+                onPressed: () async {
+
+                  showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  );
+
+                  FirebaseFirestore db = FirebaseFirestore.instance;
+                  MemberManager manager = MemberManager.instance;
+                  await db.collection("wgs").doc(manager.currentWgID).collection("members").doc(manager.user?.uid).delete();
+                  await db.collection("wgs").doc(manager.currentWgID).update({
+                    "count": FieldValue.increment(-1),
+                  });
+                  await db.collection("users").doc(manager.user?.uid).update({
+                    "wg": -1,
+                  });
+
+                  Navigator.pop(context);
+
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) => WGSelection(username: FirebaseAuth.instance.currentUser!.displayName!),
+                      ), (route) => false
+                  );
+                },
+                child: Text(AppLocalizations.of(context)!.confirm)),
+          ],
+        );
+      });
+
   List<int> getNotificationWeekday(Intervals interval) {
     List<int> weekdays = [];
     switch (interval) {
@@ -746,6 +797,20 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Title(
                   color: Colors.grey,
                   child: Text(AppLocalizations.of(context)!.info, style: TextStyle(color: Theme.of(context).colorScheme.primary))),
+              tiles: <SettingsTile>[
+                SettingsTile.navigation(
+                  leading: const Icon(Icons.logout),
+                  title: Text(AppLocalizations.of(context)!.leave_wg),
+                  onPressed: (context) {
+                    openLeaveDialog();
+                  },
+                )
+              ]
+          ),
+          SettingsSection(
+              title: Title(
+                  color: Colors.grey,
+                  child: Text(AppLocalizations.of(context)!.wg_settings, style: TextStyle(color: Theme.of(context).colorScheme.primary))),
               tiles: <SettingsTile>[
                 SettingsTile.navigation(
                   leading: const Icon(Icons.info_outline),
