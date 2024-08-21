@@ -12,16 +12,9 @@ class AuthButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.white),
-          color: Colors.grey[200],
+          border: Border.all(color: Theme.of(context).colorScheme.primary),
+          color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: Offset(0, 5),
-            ),
-          ],
         ),
         child: Image.asset(
           imagePath,
