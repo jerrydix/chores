@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/user_auth/authentication_provider.dart';
 import 'package:chores/user_auth/pages/login.dart';
@@ -10,6 +11,7 @@ import 'package:keybinder/keybinder.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../wg_selection.dart';
+import '../../widgets/navigationbar.dart';
 import '../widgets/AuthButton.dart';
 
 
@@ -148,7 +150,7 @@ class _SignUpPageState extends State<SignUpPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  AuthButton(imagePath: "assets/logos/google_logo.png", onTap: () => AuthenticationProvider(FirebaseAuth.instance).signInWithGoogle(),),
+                  AuthButton(imagePath: "assets/google_logo.png", onTap: _signUpWithGoogle),
                   //const SizedBox(width: 25,),
                   //AuthButton(imagePath: "", onTap: (){},),
                 ],
@@ -181,11 +183,22 @@ class _SignUpPageState extends State<SignUpPage> {
 
     FirebaseAuth auth = FirebaseAuth.instance;
     FirebaseFirestore db = FirebaseFirestore.instance;
-    const CircularProgressIndicator();
+
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
     String? message = await AuthenticationProvider(auth).signUp(email: email, password: password);
     User? user = auth.currentUser;
 
     if (message != null) {
+      Navigator.pop(context);
       return Fluttertoast.showToast(
         msg: message,
         textColor: Theme.of(context).colorScheme.error,
@@ -193,6 +206,9 @@ class _SignUpPageState extends State<SignUpPage> {
         toastLength: Toast.LENGTH_SHORT,
       );
     }
+
+    Navigator.pop(context);
+
     Keybinder.remove(enterButton, onPressed);
 
     if (user != null) {
@@ -209,6 +225,44 @@ class _SignUpPageState extends State<SignUpPage> {
           builder: (context) => WGSelection(username: username),
         ), (route) => false
     );
+
+    return null;
+  }
+
+  Future<dynamic> _signUpWithGoogle() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseFirestore db = FirebaseFirestore.instance;
+
+    await AuthenticationProvider(auth).signInWithGoogle();
+
+    User? user = auth.currentUser;
+
+    dynamic currentWgID;
+    await db.collection("users").doc(auth.currentUser?.uid).get().then((snap) => {
+      if (snap.exists) {
+        currentWgID = snap["wg"]
+      } else {
+        db.collection("users").doc(auth.currentUser?.uid).set({
+          "username": user?.displayName,
+          "wg": -1,
+        }),
+        currentWgID = -1
+      }
+    });
+
+    if (currentWgID == -1) {
+      return Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (context) => WGSelection(
+                  username: FirebaseAuth.instance.currentUser!.displayName!)
+          ), (route) => false);
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const NavBar(),
+          ), (route) => false
+      );
+    }
 
     return null;
   }

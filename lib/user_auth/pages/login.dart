@@ -132,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  AuthButton(imagePath: "assets/logos/google_logo.png", onTap: () => AuthenticationProvider(FirebaseAuth.instance).signInWithGoogle(),),
+                  AuthButton(imagePath: "assets/google_logo.png", onTap: _signUpWithGoogle),
                   //const SizedBox(width: 25,),
                   //AuthButton(imagePath: "", onTap: (){},),
                 ],
@@ -162,11 +162,20 @@ class _LoginPageState extends State<LoginPage> {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    const CircularProgressIndicator();
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
 
     String? message = await AuthenticationProvider(FirebaseAuth.instance).signIn(email: email, password: password);
 
     if (message != null) {
+      Navigator.pop(context);
       return Fluttertoast.showToast(
         msg: message,
         textColor: Theme.of(context).colorScheme.error,
@@ -174,11 +183,52 @@ class _LoginPageState extends State<LoginPage> {
         toastLength: Toast.LENGTH_SHORT,
       );
     }
+
+    Navigator.pop(context);
+
     Keybinder.remove(enterButton, onPressed);
 
     dynamic currentWgID;
     await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) {
       currentWgID = value["wg"];
+    });
+
+    if (currentWgID == -1) {
+      return Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (context) => WGSelection(
+                  username: FirebaseAuth.instance.currentUser!.displayName!)
+          ), (route) => false);
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const NavBar(),
+          ), (route) => false
+      );
+    }
+
+    return null;
+  }
+
+  Future<dynamic> _signUpWithGoogle() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseFirestore db = FirebaseFirestore.instance;
+
+    await AuthenticationProvider(auth).signInWithGoogle();
+
+    User? user = auth.currentUser;
+
+    dynamic currentWgID;
+    await db.collection("users").doc(auth.currentUser?.uid).get().then((snap) => {
+      if (snap.exists) {
+        currentWgID = snap["wg"]
+      } else {
+        db.collection("users").doc(auth.currentUser?.uid).set({
+          "username": user?.displayName,
+          "wg": -1,
+        }),
+        currentWgID = -1
+      }
     });
 
     if (currentWgID == -1) {

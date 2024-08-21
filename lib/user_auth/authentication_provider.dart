@@ -30,15 +30,21 @@ class AuthenticationProvider {
   }
 
   signInWithGoogle() async {
-    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+    print("test");
+    try {
+      final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+      final GoogleSignInAuthentication gAuth = await gUser!.authentication;
 
-    final credential = GoogleAuthProvider.credential(
-      idToken: gAuth.idToken,
-      accessToken: gAuth.accessToken
-    );
+      final credential = GoogleAuthProvider.credential(
+          idToken: gAuth.idToken,
+          accessToken: gAuth.accessToken
+      );
 
-    return await firebaseAuth.signInWithCredential(credential);
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (error) {
+      print("error: $error");
+    }
+
   }
 
 }
