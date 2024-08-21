@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "173688729888",
+    "firebase_url": "https://chores-4725c-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "chores-4725c",
     "storage_bucket": "chores-4725c.appspot.com"
   },
@@ -14,7 +15,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "173688729888-5tv8aafq2eoi8c6m299l9ntedc4jkker.apps.googleusercontent.com",
+          "client_id": "173688729888-vntah4dv3vn4svhmjsvvv4pvm0vhocj1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chores",
+            "certificate_hash": "111b3f952cc492b00781b76a82352253342039e2"
+          }
+        },
+        {
+          "client_id": "173688729888-6dbdlbqtinkdtqh1dp2dugml754pf320.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -29,6 +38,13 @@
             {
               "client_id": "173688729888-5tv8aafq2eoi8c6m299l9ntedc4jkker.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "173688729888-p0kiaemtugiu7smd9ouodcoqbvuvnbeh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.chores"
+              }
             }
           ]
         }
