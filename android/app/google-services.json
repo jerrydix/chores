@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "173688729888-nn0hejlukm9cu14n9n380ecr3bojcrbj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chores",
+            "certificate_hash": "9a285e6d4090a35c699dead93164f257a5a6cdd8"
+          }
+        },
+        {
           "client_id": "173688729888-vntah4dv3vn4svhmjsvvv4pvm0vhocj1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
