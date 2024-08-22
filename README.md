@@ -1,9 +1,7 @@
 # chores
-A flutter app for managing household chores in shared apartments.
+A Flutter app for managing household chores in shared apartments. 
+Chores are divided into roles (e.g., Kitchen, Bath) and assigned to household members weekly. 
+Users can customize roles, tasks, and the rotation algorithm to suit their specific apartment needs.
 
-## Roadmap
-This roadmap lists upcoming features of the app.
-
-### Coming shortly
-- Google OAuth 2.0
-- Rotation algorithm settings
+# Link
+[Chores Web-Client](chores.jeremydix.com)
