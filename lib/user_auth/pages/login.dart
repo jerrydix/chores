@@ -216,7 +216,21 @@ class _LoginPageState extends State<LoginPage> {
 
     await AuthenticationProvider(auth).signInWithGoogle();
 
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
     User? user = auth.currentUser;
+
+    if (user == null) {
+      return;
+    }
 
     dynamic currentWgID;
     await db.collection("users").doc(auth.currentUser?.uid).get().then((snap) => {
@@ -230,6 +244,8 @@ class _LoginPageState extends State<LoginPage> {
         currentWgID = -1
       }
     });
+
+    Navigator.pop(context);
 
     if (currentWgID == -1) {
       return Navigator.of(context).pushAndRemoveUntil(
