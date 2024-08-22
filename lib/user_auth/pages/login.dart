@@ -217,7 +217,6 @@ class _LoginPageState extends State<LoginPage> {
     await AuthenticationProvider(auth).signInWithGoogle();
 
     User? user = auth.currentUser;
-    print("USERRRRRRRRRRRRRRRRR: " + user.toString());
 
     dynamic currentWgID;
     await db.collection("users").doc(auth.currentUser?.uid).get().then((snap) => {
