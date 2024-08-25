@@ -150,8 +150,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   AuthButton(imagePath: "assets/google_logo.png", onTap: _signUpWithGoogle),
-                  //const SizedBox(width: 25,),
-                  //AuthButton(imagePath: "", onTap: (){},),
+                  const SizedBox(width: 25,),
+                  AuthButton(imagePath: "assets/github-mark.png", onTap: _signUpWithGithub),
                 ],
               ),
               const SizedBox(height: 20,),
@@ -236,18 +236,94 @@ class _SignUpPageState extends State<SignUpPage> {
 
     User? user = auth.currentUser;
 
+    if (user == null) {
+      Navigator.pop(context);
+      return Fluttertoast.showToast(
+        msg: "Error signing in with Google. The email may already be linked to another account.",
+        textColor: Theme.of(context).colorScheme.error,
+        gravity: ToastGravity.CENTER,
+        toastLength: Toast.LENGTH_LONG,
+      );
+    }
+
     dynamic currentWgID;
     await db.collection("users").doc(auth.currentUser?.uid).get().then((snap) => {
       if (snap.exists) {
         currentWgID = snap["wg"]
       } else {
         db.collection("users").doc(auth.currentUser?.uid).set({
-          "username": user?.displayName,
+          "username": user.displayName,
           "wg": -1,
         }),
         currentWgID = -1
       }
     });
+
+    if (currentWgID == -1) {
+      return Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (context) => WGSelection(
+                  username: FirebaseAuth.instance.currentUser!.displayName!)
+          ), (route) => false);
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const NavBar(),
+          ), (route) => false
+      );
+    }
+
+    return null;
+  }
+
+  Future<dynamic> _signUpWithGithub() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseFirestore db = FirebaseFirestore.instance;
+
+    GithubAuthProvider githubProvider = GithubAuthProvider();
+
+    try {
+      await auth.signInWithPopup(githubProvider);
+    } catch (e) {
+      print(e);
+    }
+
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    User? user = auth.currentUser;
+
+    if (user == null) {
+      Navigator.pop(context);
+      return Fluttertoast.showToast(
+        msg: "Error signing in with GitHub. The email may already be linked to another account.",
+        textColor: Theme.of(context).colorScheme.error,
+        gravity: ToastGravity.CENTER,
+        toastLength: Toast.LENGTH_LONG,
+      );
+    }
+
+    dynamic currentWgID;
+    await db.collection("users").doc(auth.currentUser?.uid).get().then((snap) => {
+      if (snap.exists) {
+        currentWgID = snap["wg"]
+      } else {
+        db.collection("users").doc(auth.currentUser?.uid).set({
+          "username": user.displayName,
+          "wg": -1,
+        }),
+        currentWgID = -1
+      }
+    });
+
+    Navigator.pop(context);
 
     if (currentWgID == -1) {
       return Navigator.of(context).pushAndRemoveUntil(

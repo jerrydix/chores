@@ -35,11 +35,9 @@ class _FormContainerState extends State<FormContainer> {
 
   bool _obscureText = true;
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(maxWidth: 400),
       width: double.infinity,
       height: 50,
       child: TextFormField(

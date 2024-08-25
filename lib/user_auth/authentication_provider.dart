@@ -30,7 +30,6 @@ class AuthenticationProvider {
   }
 
   signInWithGoogle() async {
-    print("test");
     try {
       final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
       final GoogleSignInAuthentication gAuth = await gUser!.authentication;
@@ -44,7 +43,14 @@ class AuthenticationProvider {
     } catch (error) {
       print("error: $error");
     }
+  }
 
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await firebaseAuth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      print(e.message);
+    }
   }
 
 }
