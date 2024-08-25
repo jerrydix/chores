@@ -27,6 +27,10 @@
   "leave_wg_t": "Are you sure you want to leave the shared apartment?",
   "wg_settings": "Shared apartment options",
   "select_wg": "Select shared apartment",
+  "forgot_pw": "Forgot password?",
+  "reset_pw": "Reset password",
+  "reset_pw_t": "Enter your email address to receive a password reset link.",
+  "reset_pw_b": "Send reset link",
 
 
   "garbage": "Garbage Master",

@@ -27,6 +27,10 @@
   "leave_wg_t": "Möchtest du die WG wirklich verlassen?",
   "wg_settings": "WG Einstellungen",
   "select_wg": "WG auswählen",
+  "forgot_pw": "Passwort vergessen?",
+  "reset_pw": "Passwort zurücksetzen",
+  "reset_pw_t": "Gib deine E-Mail-Adresse ein, um einen Link zum Zurücksetzen des Passworts zu erhalten.",
+  "reset_pw_b": "Link senden",
 
 
   "garbage": "Müllmeister",

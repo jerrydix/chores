@@ -1,3 +1,4 @@
+import 'package:chores/user_auth/pages/forgot_password.dart';
 import 'package:chores/user_auth/widgets/AuthButton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,6 +24,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
 
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailResetController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final enterButton = Keybinding.from({LogicalKeyboardKey.enter});
 
@@ -39,9 +41,60 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void dispose() {
     _emailController.dispose();
+    _emailResetController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
+
+  Future _resetPassword() async {
+    String email = _emailResetController.text;
+    await AuthenticationProvider(FirebaseAuth.instance).sendPasswordResetEmail(email.trim());
+  }
+
+  Future openForgotPasswordDialog() async {
+    return showDialog(
+        barrierDismissible: true,
+        //animationType: DialogTransitionType.fade,
+        //duration: const Duration(milliseconds: 300),
+        context: context,
+        builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text(AppLocalizations.of(context)!.reset_pw),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(AppLocalizations.of(context)!.reset_pw_t),
+                  const SizedBox(height: 20),
+                  TextField(
+                    controller: _emailResetController,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.email,
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      _emailResetController.clear();
+                      Navigator.pop(context);
+                    },
+                    child: Text(AppLocalizations.of(context)!.cancel)),
+                TextButton(
+                    onPressed: () {
+                      _resetPassword();
+                      _emailResetController.clear();
+                      Navigator.pop(context);
+                    },
+                    child: Text(AppLocalizations.of(context)!.reset_pw_b)),
+              ],
+            );
+        }
+    );}).then((value) => _emailResetController.clear());
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +102,8 @@ class _LoginPageState extends State<LoginPage> {
 
     return SelectionArea(child: Scaffold(
       body: Center(
-        child: Padding(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 400),
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -83,7 +137,21 @@ class _LoginPageState extends State<LoginPage> {
                 hintText: loc.pw,
                 isPasswordField: true,
               ),
-              const SizedBox(height: 30,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2.5, right: 2),
+                    child: InkWell(
+                        onTap: () {
+                          openForgotPasswordDialog();
+                        },
+                        borderRadius: BorderRadius.circular(5),
+                        child: Text(loc.forgot_pw, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold,), textAlign: TextAlign.right,)),
+                  ),
+                  ]
+              ),
+              const SizedBox(height: 20,),
               Material(
                 color: Theme.of(context).colorScheme.secondary,
                 borderRadius: BorderRadius.circular(30),
@@ -133,8 +201,8 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   AuthButton(imagePath: "assets/google_logo.png", onTap: _signUpWithGoogle),
-                  //const SizedBox(width: 25,),
-                  //AuthButton(imagePath: "", onTap: (){},),
+                  const SizedBox(width: 25,),
+                  AuthButton(imagePath: "assets/github-mark.png", onTap: _signUpWithGithub),
                 ],
               ),
               const SizedBox(height: 20,),
@@ -229,7 +297,13 @@ class _LoginPageState extends State<LoginPage> {
     User? user = auth.currentUser;
 
     if (user == null) {
-      return;
+      Navigator.pop(context);
+      return Fluttertoast.showToast(
+        msg: "Error signing in with Google. The email may already be linked to another account.",
+        textColor: Theme.of(context).colorScheme.error,
+        gravity: ToastGravity.CENTER,
+        toastLength: Toast.LENGTH_LONG,
+      );
     }
 
     dynamic currentWgID;
@@ -238,7 +312,7 @@ class _LoginPageState extends State<LoginPage> {
         currentWgID = snap["wg"]
       } else {
         db.collection("users").doc(auth.currentUser?.uid).set({
-          "username": user?.displayName,
+          "username": user.displayName,
           "wg": -1,
         }),
         currentWgID = -1
@@ -263,4 +337,71 @@ class _LoginPageState extends State<LoginPage> {
 
     return null;
   }
+
+  Future<dynamic> _signUpWithGithub() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseFirestore db = FirebaseFirestore.instance;
+
+    GithubAuthProvider githubProvider = GithubAuthProvider();
+
+    try {
+      await auth.signInWithPopup(githubProvider);
+    } catch (e) {
+      print(e);
+    }
+
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    User? user = auth.currentUser;
+
+    if (user == null) {
+      Navigator.pop(context);
+      return Fluttertoast.showToast(
+        msg: "Error signing in with GitHub. The email may already be linked to another account.",
+        textColor: Theme.of(context).colorScheme.error,
+        gravity: ToastGravity.CENTER,
+        toastLength: Toast.LENGTH_LONG,
+      );
+    }
+
+    dynamic currentWgID;
+    await db.collection("users").doc(auth.currentUser?.uid).get().then((snap) => {
+      if (snap.exists) {
+        currentWgID = snap["wg"]
+      } else {
+        db.collection("users").doc(auth.currentUser?.uid).set({
+          "username": user.displayName,
+          "wg": -1,
+        }),
+        currentWgID = -1
+      }
+    });
+
+    Navigator.pop(context);
+
+    if (currentWgID == -1) {
+      return Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (context) => WGSelection(
+                  username: FirebaseAuth.instance.currentUser!.displayName!)
+          ), (route) => false);
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const NavBar(),
+          ), (route) => false
+      );
+    }
+
+    return null;
+  }
+
 }
