@@ -1,4 +1,3 @@
-import 'package:chores/user_auth/pages/forgot_password.dart';
 import 'package:chores/user_auth/widgets/AuthButton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -69,8 +68,12 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 20),
                   TextField(
                     controller: _emailResetController,
+                    autofocus: true,
                     decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.email,
+                      hintText: AppLocalizations.of(context)!.email,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                   ),
                 ],

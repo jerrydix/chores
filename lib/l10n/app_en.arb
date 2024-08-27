@@ -31,7 +31,10 @@
   "reset_pw": "Reset password",
   "reset_pw_t": "Enter your email address to receive a password reset link.",
   "reset_pw_b": "Send reset link",
-
+  "new_wg": "Create new shared apartment",
+  "wg_name": "Name",
+  "wg_use_template": "Use chores template",
+  "wg_exists": "This name is already taken. Please choose another one.",
 
   "garbage": "Garbage Master",
   "g100plastic": "Plastic waste",

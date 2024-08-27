@@ -31,6 +31,10 @@
   "reset_pw": "Passwort zurücksetzen",
   "reset_pw_t": "Gib deine E-Mail-Adresse ein, um einen Link zum Zurücksetzen des Passworts zu erhalten.",
   "reset_pw_b": "Link senden",
+  "new_wg": "Neue WG erstellen",
+  "wg_name": "Name",
+  "wg_use_template": "Aufgabenvorlage verwenden",
+  "wg_exists": "Dieser Name ist bereits vergeben. Bitte wähle einen anderen.",
 
 
   "garbage": "Müllmeister",
