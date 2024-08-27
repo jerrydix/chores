@@ -635,6 +635,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     "wg": -1,
                   });
 
+                  if (manager.memberCount == 1) {
+                    await db.collection("wgs").doc(manager.currentWgID).delete();
+                  }
+
                   Navigator.pop(context);
 
                   Navigator.of(context).pushAndRemoveUntil(
@@ -692,6 +696,14 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
       ),
       body: SettingsList(
+        darkTheme: SettingsThemeData(
+          settingsListBackground: Theme.of(context).colorScheme.surface,
+          settingsSectionBackground: Theme.of(context).colorScheme.surfaceContainer,
+        ),
+        lightTheme: SettingsThemeData(
+          settingsListBackground: Theme.of(context).colorScheme.surface,
+          settingsSectionBackground: Theme.of(context).colorScheme.surfaceContainer,
+        ),
         sections: [
           SettingsSection(
             title: Title(
