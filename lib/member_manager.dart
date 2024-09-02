@@ -16,20 +16,20 @@ class MemberManager with ChangeNotifier{
   int memberCount = -1;
   String wgName= "-1";
   String username = "-1";
-  List<int> primaryRoles = [];
   int primaryIndex = -1;
-  List<List<int>> otherRoles = [];
+  Map<String, Map<String, bool>> tasks = {};
+  List<String> primaryRoles = [];
+  List<List<String>> otherRoles = [];
   List<String> otherNames = [];
-  List<bool> tasks = [];
   Future<void> dataFuture = Future(() => null);
   bool active = true;
-  
+
+
   MemberManager._internal();
 
   Future<void> fetchWGData() async {
     user = FirebaseAuth.instance.currentUser;
     userID = user!.uid;
-    print("CURRENT USER: ${user?.displayName}");
 
     await db.collection("users").doc(userID).get().then((value) {
       currentWgID = value["wg"];
@@ -40,16 +40,29 @@ class MemberManager with ChangeNotifier{
       wgName = value["name"];
     });
 
+
+    Map<String, Map<String, bool>> taskMaps = {};
+    await db.collection("wgs").doc(currentWgID).get().then((value) {
+      var unsortedMaps = value as Map<String, Map<String, bool>>;
+      taskMaps = Map.fromEntries(unsortedMaps.entries.toList()..sort((a, b) => a.key.compareTo(b.key)));
+    });
+
+    //task reset
     if (wgCW != DateTime.now().weekOfYear) {
+      taskMaps.forEach((key, value) {
+        value.forEach((key, value) {
+          value = false;
+        });
+      });
+
       await db.collection("wgs").doc(currentWgID).update({
         "cw": DateTime.now().weekOfYear,
-        "tasks": List.filled(24, false),
+        "tasks": taskMaps
       });
     }
 
-    await db.collection("wgs").doc(currentWgID).get().then((value) {
-      tasks = value["tasks"].cast<bool>();
-    });
+    tasks = taskMaps;
+    //
 
     await db.collection("wgs").doc(currentWgID).collection("members").orderBy("memberID").get().then((value) {
       otherNames = [];
@@ -85,16 +98,8 @@ class MemberManager with ChangeNotifier{
     return -1;
   }
 
-  List<bool> getTasksList() {
-    db.collection("wgs").doc(currentWgID).get().then((value) {
-      tasks = value["tasks"].cast<bool>();
-      return tasks;
-    });
-    return [];
-  }
-
   List<List<int>> setRoles(int cw, bool overwrite) {
-    List<List<int>> allRoles = [];
+    List<List<String>> allRoles = [];
 
     switch (memberCount) {
       case 1: {
@@ -174,6 +179,11 @@ class MemberManager with ChangeNotifier{
         // 4-rotation
         int mod4 = cw % 4;
         allRoles = [[mod4],[mod4 + 1 > 3 ? mod4 + 1 - 4 : mod4 + 1],[mod4 + 2 > 3 ? mod4 + 2 - 4 : mod4 + 2],[mod4 + 3 > 3 ? mod4 + 3 - 4 : mod4 + 3]];
+        break;
+      }
+      default: {
+        //TODO: finish generic algorithm(s)
+        allRoles = List.generate(memberCount, (index) => []);
       }
     }
 
