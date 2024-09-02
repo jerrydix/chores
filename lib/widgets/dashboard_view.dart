@@ -11,15 +11,14 @@ import '../widgets/secondary_card.dart';
 import 'navigationbar.dart' as navBar;
 
 class DashboardView extends StatefulWidget {
-  List<bool> tasks;
-  List<int> primaryRoles;
+  Map<String, Map<String, bool>> tasks;
+  List<String> primaryRoles;
   String username;
-  List<List<int>> otherRoles;
+  List<List<String>> otherRoles;
   List<String> otherNames;
   bool active;
 
   final ValueNotifier<bool> allTasksDone = ValueNotifier<bool>(false);
-
 
   DashboardView(
       {super.key,
@@ -34,11 +33,11 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
-  List<TextStyle> styles = [];
+  Map<String, Map<String, TextStyle>> styles = {};
+
   List<String> primaryRoleNames = [];
   LinkedHashMap<int, int> indexCounters = LinkedHashMap<int, int>();
   int taskLength = -1;
-  List<LinkedHashMap<String, Icon>> taskMaps = [];
 
   List<LinkedHashMap<String, Icon>> otherTaskMapList = [];
   List<List<bool>> otherCheckedLists = [];
@@ -52,17 +51,15 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
   Future<void> init() async {
-    for (int i = 0; i < widget.tasks.length; i++) {
-      if (!widget.tasks[i]) {
-        styles.add(const TextStyle(
-          decoration: TextDecoration.none,
-        ));
-      } else {
-        styles.add(const TextStyle(
-          decoration: TextDecoration.lineThrough,
-        ));
-      }
-    }
+    widget.tasks.forEach((k, v) {
+      Map<String, TextStyle> currentMap = {};
+      v.forEach((key, val) {
+        currentMap[key] = TextStyle(
+            decoration: val ? TextDecoration.lineThrough : TextDecoration.none);
+      });
+      styles[k] = currentMap;
+    });
+
   }
 
   @override
@@ -123,7 +120,6 @@ class _DashboardViewState extends State<DashboardView> {
         widget.username = MemberManager.instance.username;
         widget.active = MemberManager.instance.active;
         indexCounters.clear();
-        taskMaps.clear();
         otherCheckedLists.clear();
         otherTaskMapList.clear();
         otherWidths.clear();
@@ -184,15 +180,15 @@ class _DashboardViewState extends State<DashboardView> {
     );
   }
 
-  void styleSwitcher(int i, bool value) {
+  void styleSwitcher(String role, String name, bool value) {
     if (value) {
-      styles[i] = TextStyle(
+      styles[role]?[name] = TextStyle(
           decoration: TextDecoration.lineThrough,
-          color: styles[i].color?.withOpacity(0.75));
+          color: styles[role]?[name]?.color?.withOpacity(0.75));
     } else {
-      styles[i] = TextStyle(
+      styles[role]?[name] = TextStyle(
           decoration: TextDecoration.none,
-          color: styles[i].color?.withOpacity(1));
+          color: styles[role]?[name]?.color?.withOpacity(1));
     }
   }
 
@@ -326,6 +322,7 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
   List<Widget> createPrimaryTasks() {
+    //change to roles
     taskMaps = createTaskMap(widget.primaryRoles, true);
 
     List<Widget> currentTasks = [];

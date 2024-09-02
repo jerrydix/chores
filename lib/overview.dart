@@ -2,6 +2,7 @@ import 'package:chores/member_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:quiver/time.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:week_of_year/date_week_extensions.dart';
@@ -175,22 +176,22 @@ class _OverviewState extends State<Overview> {
           switch (role) {
             case 0:
               {
-                currentIcons.add(const Icon(Icons.delete_outlined));
+                currentIcons.add(const Icon(Symbols.delete_rounded));
                 break;
               }
             case 1:
               {
-                currentIcons.add(const Icon(Icons.clean_hands_outlined));
+                currentIcons.add(const Icon(Symbols.bathroom_rounded));
                 break;
               }
             case 2:
               {
-                currentIcons.add(const Icon(Icons.countertops_outlined));
+                currentIcons.add(const Icon(Symbols.countertops_rounded));
                 break;
               }
             case 3:
               {
-                currentIcons.add(const Icon(Icons.cleaning_services_outlined));
+                currentIcons.add(const Icon(Symbols.vacuum_rounded));
                 break;
               }
           }
@@ -234,7 +235,7 @@ class _OverviewState extends State<Overview> {
   }
 
   Future _scrollToCurrentWeek() async {
-    await /*manager.dataFuture.then((value) => */Future.delayed(const Duration(seconds: 1), () {
+    await Future.delayed(const Duration(seconds: 1), () {
       controller.animateTo(rowHeight * scrollOffset,
           duration: const Duration(seconds: 1), curve: Curves.ease);
     });

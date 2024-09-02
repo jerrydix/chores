@@ -18,10 +18,10 @@ class _DashboardState extends State<Dashboard> {
   String wgName = "-1";
   String wgID = "-1";
   String username = "-1";
-  List<int> primaryRoles = [];
-  List<List<int>> otherRoles = [];
+  List<String> primaryRoles = [];
+  List<List<String>> otherRoles = [];
   List<String> otherNames = [];
-  List<bool> tasks = [];
+  Map<String, Map<String, bool>> tasks = {};
   MemberManager manager = MemberManager.instance;
   bool active = true;
 
