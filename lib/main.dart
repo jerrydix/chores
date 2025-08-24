@@ -1,5 +1,5 @@
 import 'package:chores/user_auth/wrapper.dart';
-import 'package:chores/utils/notification_service.dart';
+import 'package:chores/utils/notification_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

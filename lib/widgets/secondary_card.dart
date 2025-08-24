@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/foundation.dart';
 import 'checklist.dart';
-import 'navigationbar.dart' as navBar;
+import 'navigation_bar.dart' as navBar;
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
 class SecondaryCardData {

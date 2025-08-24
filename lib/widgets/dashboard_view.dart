@@ -8,7 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../widgets/secondary_card.dart';
 
-import 'navigationbar.dart' as navBar;
+import 'navigation_bar.dart' as navBar;
 
 class DashboardView extends StatefulWidget {
   Map<String, Map<String, bool>> tasks;
@@ -74,7 +74,7 @@ class _DashboardViewState extends State<DashboardView> {
 
     createSecondaryData();
     SecondaryCardData data = SecondaryCardData(
-        roles: roleIntToStr(widget.otherRoles),
+        roles: widget.otherRoles,
         taskLists: otherTaskMapList,
         checkedLists: otherCheckedLists,
         edgeInsets: otherEdgeInsets,
@@ -116,7 +116,7 @@ class _DashboardViewState extends State<DashboardView> {
         widget.tasks = MemberManager.instance.tasks;
         widget.primaryRoles = MemberManager.instance.primaryRoles;
         widget.otherRoles = MemberManager.instance.otherRoles;
-        widget.otherNames = MemberManager.instance.otherNames;
+        widget.otherNames = MemberManager.instance.members;
         widget.username = MemberManager.instance.username;
         widget.active = MemberManager.instance.active;
         indexCounters.clear();
@@ -162,7 +162,7 @@ class _DashboardViewState extends State<DashboardView> {
                                 title: Text(AppLocalizations.of(context)!.finAllTasks),
                                 onChanged: (value) {
                                   setState(() {
-                                    doneAllTasks();
+                                    //doneAllTasks();
                                   });
                                   saveSelectionStateToDB();
                                 },
@@ -198,7 +198,7 @@ class _DashboardViewState extends State<DashboardView> {
     otherWidths = [];
 
     for (int i = 0; i < widget.otherRoles.length; i++) {
-      List<int> currentRoles = widget.otherRoles[i];
+      List<String> currentRoles = widget.otherRoles[i];
       List<LinkedHashMap<String, Icon>> currentMaps = createTaskMap(currentRoles, false);
       LinkedHashMap<String, Icon> currentCombinedMap = currentMaps[0];
       if (currentMaps.length > 1) {
@@ -208,37 +208,37 @@ class _DashboardViewState extends State<DashboardView> {
       }
       otherTaskMapList.add(currentCombinedMap);
       List<bool> currentCheckList = [];
-      for (var role in currentRoles) {
-        switch (role) {
-          case 0:
-            {
-              currentCheckList.addAll(createCheckedList(0, 6));
-              break;
-            }
-          case 1:
-            {
-              currentCheckList.addAll(createCheckedList(6, 8));
-              break;
-            }
-          case 2:
-            {
-              currentCheckList.addAll(createCheckedList(14, 4));
-              break;
-            }
-          case 3:
-            {
-              currentCheckList.addAll(createCheckedList(18, 6));
-              break;
-            }
-          default:
-            {
-              if (kDebugMode) {
-                print("ERROR: wrong role id $role");
-              }
-              return;
-            }
-        }
-      }
+      // for (var role in currentRoles) {
+      //   switch (role) {
+      //     case "garbage":
+      //       {
+      //         currentCheckList.addAll(createCheckedList(0, 6));
+      //         break;
+      //       }
+      //     case "bathroom":
+      //       {
+      //         currentCheckList.addAll(createCheckedList(6, 8));
+      //         break;
+      //       }
+      //     case "kitchen":
+      //       {
+      //         currentCheckList.addAll(createCheckedList(14, 4));
+      //         break;
+      //       }
+      //     case "vacuum":
+      //       {
+      //         currentCheckList.addAll(createCheckedList(18, 6));
+      //         break;
+      //       }
+      //     default:
+      //       {
+      //         if (kDebugMode) {
+      //           print("ERROR: wrong role id $role");
+      //         }
+      //         return;
+      //       }
+      //  }
+      //}
       otherCheckedLists.add(currentCheckList);
     }
 
@@ -272,13 +272,13 @@ class _DashboardViewState extends State<DashboardView> {
     }
   }
 
-  List<bool> createCheckedList(int startIndex, int length) {
-    List<bool> result = [];
-    for (int i = startIndex; i < startIndex + length; i++) {
-      result.add(widget.tasks[i]);
-    }
-    return result;
-  }
+  // List<bool> createCheckedList(int startIndex, int length) {
+  //   List<bool> result = [];
+  //   for (int i = startIndex; i < startIndex + length; i++) {
+  //     result.add(widget.tasks[i]);
+  //   }
+  //   return result;
+  // }
 
   List<List<String>> roleIntToStr(List<List<int>> roles) {
     AppLocalizations loc = AppLocalizations.of(context)!;
@@ -323,72 +323,72 @@ class _DashboardViewState extends State<DashboardView> {
 
   List<Widget> createPrimaryTasks() {
     //change to roles
-    taskMaps = createTaskMap(widget.primaryRoles, true);
+    //taskMaps = createTaskMap(widget.primaryRoles, true);
 
     List<Widget> currentTasks = [];
     List<int> offsets = [];
 
     for (int i = 0; i < indexCounters.length; i++) {
       offsets.add(currentTasks.length);
-      taskMaps[i].forEach((name, icon) {
-        currentTasks.add(StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return CheckboxListTile(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  checkboxShape:
-                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                  title: Text(name,
-                      style: styles.elementAt(
-                          indexCounters.keys.elementAt(i) + currentTasks.indexOf(context.widget) - offsets[i])),
-                  value: widget
-                      .tasks[indexCounters.keys.elementAt(i) + currentTasks.indexOf(context.widget) - offsets[i]],
-                  onChanged: (value) {
-                    int indexInList = currentTasks.indexOf(context.widget);
-                    if (!value!) {
-                      widget.allTasksDone.value = false;
-                    }
-                    setState(() {
-                      widget.tasks[indexCounters.keys.elementAt(i) + indexInList - offsets[i]] = value;
-                      styleSwitcher(indexCounters.keys.elementAt(i) + indexInList - offsets[i], value);
-                    });
-                    saveSelectionStateToDB();
-                  },
-                  secondary: icon);
-            }));
-      });
+      // taskMaps[i].forEach((name, icon) {
+      //   currentTasks.add(StatefulBuilder(
+      //       builder: (BuildContext context, StateSetter setState) {
+      //         return CheckboxListTile(
+      //             shape: RoundedRectangleBorder(
+      //               borderRadius: BorderRadius.circular(10),
+      //             ),
+      //             checkboxShape:
+      //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      //             title: Text(name,
+      //                 style: styles.elementAt(
+      //                     indexCounters.keys.elementAt(i) + currentTasks.indexOf(context.widget) - offsets[i])),
+      //             value: widget
+      //                 .tasks[indexCounters.keys.elementAt(i) + currentTasks.indexOf(context.widget) - offsets[i]],
+      //             onChanged: (value) {
+      //               int indexInList = currentTasks.indexOf(context.widget);
+      //               if (!value!) {
+      //                 widget.allTasksDone.value = false;
+      //               }
+      //               setState(() {
+      //                 widget.tasks[indexCounters.keys.elementAt(i) + indexInList - offsets[i]] = value;
+      //                 styleSwitcher(indexCounters.keys.elementAt(i) + indexInList - offsets[i], value);
+      //               });
+      //               saveSelectionStateToDB();
+      //             },
+      //             secondary: icon);
+      //       }));
+      // });
     }
     return currentTasks;
   }
 
-  void doneAllTasks() {
-    widget.allTasksDone.value = !widget.allTasksDone.value;
+  // void doneAllTasks() {
+  //   widget.allTasksDone.value = !widget.allTasksDone.value;
+  //
+  //   for (var val in indexCounters.entries) {
+  //     for (int i = val.key; i <= val.value; i++) {
+  //       widget.tasks[i] = widget.allTasksDone.value;
+  //       if (widget.allTasksDone.value) {
+  //         styles[i] = TextStyle(
+  //             decoration: TextDecoration.lineThrough,
+  //             color: styles[i].color?.withOpacity(0.75));
+  //       } else {
+  //         styles[i] = TextStyle(
+  //             decoration: TextDecoration.none,
+  //             color: styles[i].color?.withOpacity(1));
+  //       }
+  //     }
+  //   }
+  // }
 
-    for (var val in indexCounters.entries) {
-      for (int i = val.key; i <= val.value; i++) {
-        widget.tasks[i] = widget.allTasksDone.value;
-        if (widget.allTasksDone.value) {
-          styles[i] = TextStyle(
-              decoration: TextDecoration.lineThrough,
-              color: styles[i].color?.withOpacity(0.75));
-        } else {
-          styles[i] = TextStyle(
-              decoration: TextDecoration.none,
-              color: styles[i].color?.withOpacity(1));
-        }
-      }
-    }
-  }
-
-  List<LinkedHashMap<String, Icon>> createTaskMap(List<int> roles, bool primary) {
+  List<LinkedHashMap<String, Icon>> createTaskMap(List<String> roles, bool primary) {
     AppLocalizations loc = AppLocalizations.of(context)!;
 
     List<LinkedHashMap<String, Icon>> result = [];
     for (var role in roles) {
       LinkedHashMap<String, Icon> currentResult = LinkedHashMap<String, Icon>();
       switch (role) {
-        case 0:
+        case "garbage":
           {
             if (primary) {
               primaryRoleNames.add(loc.garbage);
@@ -404,7 +404,7 @@ class _DashboardViewState extends State<DashboardView> {
             });
             break;
           }
-        case 1:
+        case "bathroom":
           {
             if (primary) {
               primaryRoleNames.add(loc.bathroom);
@@ -422,7 +422,7 @@ class _DashboardViewState extends State<DashboardView> {
             });
             break;
           }
-        case 2:
+        case "kitchen":
           {
             if (primary) {
               primaryRoleNames.add(loc.kitchen);
@@ -436,7 +436,7 @@ class _DashboardViewState extends State<DashboardView> {
             });
             break;
           }
-        case 3:
+        case "vacuum":
           {
             if (primary) {
               primaryRoleNames.add(loc.vacuum);
@@ -455,7 +455,7 @@ class _DashboardViewState extends State<DashboardView> {
         default:
           {
             if (kDebugMode) {
-              print("ERROR: wrong role id");
+              print("ERROR: wrong role name");
             }
           }
       }
@@ -481,7 +481,7 @@ class _DashboardViewState extends State<DashboardView> {
 
       indexCounters.forEach((start, end) {
         for (int i = start; i < end + 1; i++) {
-          currentTaskList[i] = widget.tasks[i];
+          //currentTaskList[i] = widget.tasks[i];
         }
       });
 

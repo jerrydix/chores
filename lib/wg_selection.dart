@@ -1,8 +1,8 @@
 
 import 'package:chores/user_auth/authentication_provider.dart';
 import 'package:chores/user_auth/pages/login.dart';
-import 'package:chores/widgets/navigationbar.dart';
-import 'package:chores/widgets/wg_listtile.dart';
+import 'package:chores/widgets/navigation_bar.dart';
+import 'package:chores/widgets/wg_list_tile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

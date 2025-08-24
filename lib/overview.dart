@@ -1,4 +1,5 @@
 import 'package:chores/member_manager.dart';
+import 'package:chores/utils/icon_converter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
@@ -53,7 +54,8 @@ class _OverviewState extends State<Overview> {
   late AutoScrollController controller;
   int scrollOffset = DateTime.now().weekOfYear - 2;
   double rowHeight = 50;
-  List<List<int>> allRoles = [];
+  //List<List<int>> allRoles = [];
+  List<Map<String, List<String>>> allRoles = [];
   List<DataRow2> rows = [];
   List<DataColumn2> columns = [];
   MemberManager manager = MemberManager.instance;
@@ -76,7 +78,7 @@ class _OverviewState extends State<Overview> {
     if (manager.active) {
       sortedNames.add(manager.username);
     }
-    sortedNames.addAll(manager.otherNames);
+    sortedNames.addAll(manager.members);
 
     columns.add(DataColumn2(
         label: Container(
@@ -150,7 +152,8 @@ class _OverviewState extends State<Overview> {
       }
       //print(DateTime.now().weekOfYear);
 
-      allRoles = manager.setRoles(i + 1, false);
+      var currentRoles = manager.choreAssigner.assignRoles(i + 1);
+      allRoles.add(currentRoles);
       List<DataCell> cells = [];
       cells.add(DataCell(
           Container(
@@ -170,42 +173,60 @@ class _OverviewState extends State<Overview> {
           onTap: () {})
       );
 
-      for (var roles in allRoles) {
-        List<Icon> currentIcons = [];
-        for (var role in roles) {
-          switch (role) {
-            case 0:
-              {
-                currentIcons.add(const Icon(Symbols.delete_rounded));
-                break;
-              }
-            case 1:
-              {
-                currentIcons.add(const Icon(Symbols.bathroom_rounded));
-                break;
-              }
-            case 2:
-              {
-                currentIcons.add(const Icon(Symbols.countertops_rounded));
-                break;
-              }
-            case 3:
-              {
-                currentIcons.add(const Icon(Symbols.vacuum_rounded));
-                break;
-              }
-          }
-        }
+      List<DataCell> currentCells = currentRoles.entries.map((entry) {
+        List<Icon> icons = entry.value.map((role) {
+          return Icon(IconConverter.stringToIcon(role.split("\$").last));
+        }).toList();
 
-        cells.add(DataCell(
-            Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: currentIcons,
-              ),
-            ), onTap: () {}),
+        return DataCell(
+          Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: icons,
+            ),
+          ), onTap: () {},
         );
-      }
+      }).toList();
+
+      cells.addAll(currentCells);
+
+
+      // for (var roles in allRoles.keys) {
+      //   List<Icon> currentIcons = [];
+      //   for (var role in roles) {
+      //     switch (role) {
+      //       case 0:
+      //         {
+      //           currentIcons.add(const Icon(Symbols.delete_rounded));
+      //           break;
+      //         }
+      //       case 1:
+      //         {
+      //           currentIcons.add(const Icon(Symbols.bathroom_rounded));
+      //           break;
+      //         }
+      //       case 2:
+      //         {
+      //           currentIcons.add(const Icon(Symbols.countertops_rounded));
+      //           break;
+      //         }
+      //       case 3:
+      //         {
+      //           currentIcons.add(const Icon(Symbols.vacuum_rounded));
+      //           break;
+      //         }
+      //     }
+      //   }
+      //
+      //   cells.add(DataCell(
+      //       Center(
+      //         child: Row(
+      //           mainAxisAlignment: MainAxisAlignment.center,
+      //           children: currentIcons,
+      //         ),
+      //       ), onTap: () {}),
+      //   );
+      // }
 
       rows.add(DataRow2(
         color: (() {

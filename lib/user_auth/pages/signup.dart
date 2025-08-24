@@ -10,8 +10,8 @@ import 'package:keybinder/keybinder.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../wg_selection.dart';
-import '../../widgets/navigationbar.dart';
-import '../widgets/AuthButton.dart';
+import '../../widgets/navigation_bar.dart';
+import '../widgets/auth_button.dart';
 
 
 

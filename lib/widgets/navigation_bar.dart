@@ -143,7 +143,7 @@ class _NavBarState extends State<NavBar> {
       return const Text("Chores");
     }
     String text = "Chores (";
-    for (var element in primaryRoleIntToStr(MemberManager.instance.primaryRoles)) {
+    for (var element in MemberManager.instance.primaryRoles) {
       text += "$element, ";
     }
     text = text.substring(0, text.length - 2);
