@@ -10,6 +10,15 @@ String _camelize(String text) {
 
 /// Main class to transform a text to icon data
 class IconConverter {
+
+  static final IconConverter _iconConverter = IconConverter._internal();
+
+  factory IconConverter() {
+    return _iconConverter;
+  }
+
+  IconConverter._internal();
+
   /// Method to transform a text to icon data
   static IconData? stringToIcon(String iconName) {
     String iconNameTransformed = _camelize(iconName.replaceAll('mdi', ''));

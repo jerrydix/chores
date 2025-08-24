@@ -69,7 +69,7 @@ class _DashboardState extends State<Dashboard> {
                   primaryRoles = manager.primaryRoles;
                   otherRoles = manager.otherRoles;
                   username = manager.username;
-                  otherNames = manager.otherNames;
+                  otherNames = manager.members;
                   active = manager.active;
 
                   return DashboardView(tasks: tasks,

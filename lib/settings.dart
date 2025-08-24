@@ -2,7 +2,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:chores/member_manager.dart';
 import 'package:chores/user_auth/authentication_provider.dart';
 import 'package:chores/user_auth/pages/login.dart';
-import 'package:chores/utils/notification_service.dart';
+import 'package:chores/utils/notification_list.dart';
 import 'package:chores/utils/userprefs.dart';
 import 'package:chores/wg_selection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

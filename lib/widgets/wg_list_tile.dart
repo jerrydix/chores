@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
-import 'navigationbar.dart';
+import 'navigation_bar.dart';
 
 class WGListTile extends StatefulWidget {
 
