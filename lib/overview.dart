@@ -5,7 +5,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:quiver/time.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:week_of_year/date_week_extensions.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:chores/l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
