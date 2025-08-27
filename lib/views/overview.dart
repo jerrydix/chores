@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:quiver/time.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:week_of_year/date_week_extensions.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:chores/l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -51,7 +51,8 @@ class Overview extends StatefulWidget {
 }
 
 class _OverviewState extends State<Overview> {
-  late AutoScrollController controller;
+  late AutoScrollController horizontalController;
+  late AutoScrollController verticalController;
   int scrollOffset = DateTime.now().weekOfYear - 2;
   double rowHeight = 50;
   //List<List<int>> allRoles = [];
@@ -65,8 +66,11 @@ class _OverviewState extends State<Overview> {
   void initState() {
     super.initState();
     username = manager.username;
-    controller = AutoScrollController(
-      axis: Axis.vertical,
+    horizontalController = AutoScrollController(
+      axis: Axis.horizontal
+    );
+    verticalController = AutoScrollController(
+      axis: Axis.vertical
     );
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToCurrentWeek());
   }
@@ -116,8 +120,10 @@ class _OverviewState extends State<Overview> {
         break;
       }
       default: {
+        columnSizes = List.generate(manager.memberCount, (index) => ColumnSize.M);
+        columnSizes[manager.memberCount - 1] = ColumnSize.L;
         if (kDebugMode) {
-          print("Member count ${manager.memberCount} invalid!" );
+          print("Member count ${manager.memberCount} bigger than 4, using generic column sizes.");
         }
       }
     }
@@ -257,7 +263,7 @@ class _OverviewState extends State<Overview> {
 
   Future _scrollToCurrentWeek() async {
     await Future.delayed(const Duration(seconds: 1), () {
-      controller.animateTo(rowHeight * scrollOffset,
+      verticalController.animateTo(rowHeight * scrollOffset,
           duration: const Duration(seconds: 1), curve: Curves.ease);
     });
 
@@ -270,8 +276,9 @@ class _OverviewState extends State<Overview> {
       await MemberManager.instance.fetchWGData();
       setState(() {});
     },
-    child:DataTable2(
-      scrollController: controller,
+    child: DataTable2(
+      scrollController: verticalController,
+      horizontalScrollController: horizontalController,
       fixedTopRows: 1,
       columns: _generateColumns(),
       rows: _generateRows(),

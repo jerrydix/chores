@@ -13,8 +13,6 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  var db = FirebaseFirestore.instance;
-  User? user = FirebaseAuth.instance.currentUser;
   String wgName = "-1";
   String wgID = "-1";
   String username = "-1";

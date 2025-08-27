@@ -1,15 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:chores/user_auth/authentication_provider.dart';
+import 'package:chores/data/providers/authentication_provider.dart';
 import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:keybinder/keybinder.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:chores/l10n/app_localizations.dart';
 
-import '../../wg_selection.dart';
+import '../../views/wg_selection.dart';
 import '../../widgets/navigation_bar.dart';
 import '../widgets/auth_button.dart';
 
