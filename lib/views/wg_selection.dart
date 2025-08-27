@@ -1,12 +1,12 @@
 
-import 'package:chores/user_auth/authentication_provider.dart';
+import 'package:chores/data/providers/authentication_provider.dart';
 import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/widgets/navigation_bar.dart';
 import 'package:chores/widgets/wg_list_tile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:chores/l10n/app_localizations.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 
 class WGSelection extends StatefulWidget {

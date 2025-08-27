@@ -1,19 +1,19 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:chores/member_manager.dart';
-import 'package:chores/user_auth/authentication_provider.dart';
+import 'package:chores/data/providers/authentication_provider.dart';
 import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/utils/notification_list.dart';
-import 'package:chores/utils/userprefs.dart';
-import 'package:chores/wg_selection.dart';
+import 'package:chores/data/userprefs.dart';
+import 'package:chores/views/wg_selection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:chores/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'main.dart';
+import '../main.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
