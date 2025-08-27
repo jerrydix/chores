@@ -1,4 +1,3 @@
-import 'package:chores/user_auth/pages/forgot_password.dart';
 import 'package:chores/user_auth/widgets/AuthButton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,7 +9,7 @@ import 'package:chores/widgets/navigationbar.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:keybinder/keybinder.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:chores/l10n/app_localizations.dart';
 import '../../wg_selection.dart';
 
 

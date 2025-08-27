@@ -8,6 +8,9 @@ on:
 
 env:
   SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
+  WEB_API_KEY: ${{ secrets.WEB_API_KEY }}
+  ANDROID_API_KEY: ${{ secrets.ANDROID_API_KEY }}
+  IOS_API_KEY: ${{ secrets.IOS_API_KEY }}
 
 jobs:
   build_deploy_release:
@@ -31,6 +34,12 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+
+      - name: 📚 Create .env File
+        run: |
+          echo "WEB_API_KEY=${{ secrets.WEB_API_KEY }}" >> .env
+          echo "ANDROID_API_KEY=${{ secrets.ANDROID_API_KEY }}" >> .env
+          echo "IOS_API_KEY=${{ secrets.IOS_API_KEY }}" >> .env
 
       - name: 📚 Flutter Pub Get
         run: flutter pub get
