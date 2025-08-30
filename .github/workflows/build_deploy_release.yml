@@ -35,12 +35,6 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: 📚 Create .env File
-        run: |
-          echo "WEB_API_KEY=${{ secrets.WEB_API_KEY }}" >> .env
-          echo "ANDROID_API_KEY=${{ secrets.ANDROID_API_KEY }}" >> .env
-          echo "IOS_API_KEY=${{ secrets.IOS_API_KEY }}" >> .env
-
       - name: 📚 Flutter Pub Get
         run: flutter pub get
 
@@ -53,7 +47,7 @@ jobs:
         id: shorebird-patch
         uses: shorebirdtech/shorebird-patch@v0
         with:
-          args: --release-version=1.0.0+3 --allow-native-diffs
+          args: --release-version=1.0.0+2 --allow-native-diffs
           platform: android
 
       - name: 📝 Output Patch Version
@@ -70,7 +64,10 @@ jobs:
           #token: ${{ secrets.TOKEN }}
 
       - name: 📚 Build Web Version
-        run: flutter build web
+        run: flutter build web \
+          --dart-define=WEB_API_KEY=${{ secrets.WEB_API_KEY }} \
+          --dart-define=ANDROID_API_KEY=${{ secrets.ANDROID_API_KEY }} \
+          --dart-define=IOS_API_KEY=${{ secrets.IOS_API_KEY }}
 
       - name: 🚀 Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
