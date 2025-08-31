@@ -64,7 +64,7 @@ jobs:
           #token: ${{ secrets.TOKEN }}
 
       - name: 📚 Build Web Version
-        run: flutter build web
+        run: flutter build web --web-renderer html
 
       - name: 🚀 Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
