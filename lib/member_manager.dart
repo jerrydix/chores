@@ -82,6 +82,7 @@ class MemberManager with ChangeNotifier{
       currentWgID = value["wg"];
       return currentWgID;
     });
+
     return -1;
   }
 
