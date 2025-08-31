@@ -64,10 +64,7 @@ jobs:
           #token: ${{ secrets.TOKEN }}
 
       - name: 📚 Build Web Version
-        run: flutter build web \
-          --dart-define=WEB_API_KEY=${{ secrets.WEB_API_KEY }} \
-          --dart-define=ANDROID_API_KEY=${{ secrets.ANDROID_API_KEY }} \
-          --dart-define=IOS_API_KEY=${{ secrets.IOS_API_KEY }}
+        run: flutter build web
 
       - name: 🚀 Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
