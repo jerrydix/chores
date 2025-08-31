@@ -1,5 +1,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthenticationProvider {
@@ -32,7 +33,13 @@ class AuthenticationProvider {
   Future<UserCredential> signInWithGoogle() async {
 
     await GoogleSignIn.instance.initialize();
-    final GoogleSignInAccount gUser = await GoogleSignIn.instance.authenticate();
+    late GoogleSignInAccount gUser;
+    if (GoogleSignIn.instance.supportsAuthenticate()) {
+      // Mobile/desktop sign-in
+      gUser = await GoogleSignIn.instance.authenticate();
+    } else if (kIsWeb) {
+      return await firebaseAuth.signInWithPopup(GoogleAuthProvider());
+    }
 
     final GoogleSignInAuthentication gAuth = gUser.authentication;
     final credential = GoogleAuthProvider.credential(idToken: gAuth.idToken);

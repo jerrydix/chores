@@ -1,6 +1,7 @@
 import 'package:chores/user_auth/widgets/AuthButton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
 import 'package:chores/user_auth/pages/signup.dart';
