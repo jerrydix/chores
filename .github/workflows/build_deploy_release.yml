@@ -63,6 +63,7 @@ jobs:
           #name: Chores v0.1.${{ github.run_number }}
           #token: ${{ secrets.TOKEN }}
 
+
       - name: 📚 Build Web Version
         run: flutter build web --wasm
 
