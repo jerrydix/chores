@@ -29,21 +29,16 @@ class AuthenticationProvider {
     await firebaseAuth.signOut();
   }
 
-  signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+  Future<UserCredential> signInWithGoogle() async {
 
-      final credential = GoogleAuthProvider.credential(
-          idToken: gAuth.idToken,
-          accessToken: gAuth.accessToken
-      );
+    await GoogleSignIn.instance.initialize();
+    final GoogleSignInAccount gUser = await GoogleSignIn.instance.authenticate();
 
-      return await FirebaseAuth.instance.signInWithCredential(credential);
-    } catch (error) {
-      print("error: $error");
-    }
+    final GoogleSignInAuthentication gAuth = gUser.authentication;
+    final credential = GoogleAuthProvider.credential(idToken: gAuth.idToken);
+    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
+
 
   Future<void> sendPasswordResetEmail(String email) async {
     try {
