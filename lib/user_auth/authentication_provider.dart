@@ -32,17 +32,26 @@ class AuthenticationProvider {
 
   Future<UserCredential> signInWithGoogle() async {
 
-    await GoogleSignIn.instance.initialize();
+    await GoogleSignIn.instance.initialize(
+        //serverClientId: "173688729888-6dbdlbqtinkdtqh1dp2dugml754pf320.apps.googleusercontent.com"
+    );
 
     if (kIsWeb) {
       return await firebaseAuth.signInWithPopup(GoogleAuthProvider());
     }
 
-    GoogleSignInAccount gUser = await GoogleSignIn.instance.authenticate();
+    final gUser = await GoogleSignIn.instance.authenticate();
 
-    final GoogleSignInAuthentication gAuth = gUser.authentication;
-    final credential = GoogleAuthProvider.credential(idToken: gAuth.idToken);
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    final gAuth = gUser.authentication;
+    if (gAuth.idToken == null) {
+      throw Exception("Google ID Token is null");
+    }
+
+    final credential = GoogleAuthProvider.credential(
+      idToken: gAuth.idToken,
+    );
+
+    return await firebaseAuth.signInWithCredential(credential);
   }
 
   Future<void> sendPasswordResetEmail(String email) async {
