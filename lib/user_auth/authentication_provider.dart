@@ -33,19 +33,17 @@ class AuthenticationProvider {
   Future<UserCredential> signInWithGoogle() async {
 
     await GoogleSignIn.instance.initialize();
-    late GoogleSignInAccount gUser;
-    if (GoogleSignIn.instance.supportsAuthenticate()) {
-      // Mobile/desktop sign-in
-      gUser = await GoogleSignIn.instance.authenticate();
-    } else if (kIsWeb) {
+
+    if (kIsWeb) {
       return await firebaseAuth.signInWithPopup(GoogleAuthProvider());
     }
+
+    GoogleSignInAccount gUser = await GoogleSignIn.instance.authenticate();
 
     final GoogleSignInAuthentication gAuth = gUser.authentication;
     final credential = GoogleAuthProvider.credential(idToken: gAuth.idToken);
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
-
 
   Future<void> sendPasswordResetEmail(String email) async {
     try {
