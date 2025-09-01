@@ -300,6 +300,30 @@ abstract class AppLocalizations {
   /// **'Send reset link'**
   String get reset_pw_b;
 
+  /// No description provided for @new_wg.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new shared apartment'**
+  String get new_wg;
+
+  /// No description provided for @wg_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get wg_name;
+
+  /// No description provided for @wg_use_template.
+  ///
+  /// In en, this message translates to:
+  /// **'Use chores template'**
+  String get wg_use_template;
+
+  /// No description provided for @wg_exists.
+  ///
+  /// In en, this message translates to:
+  /// **'This name is already taken. Please choose another one.'**
+  String get wg_exists;
+
   /// No description provided for @garbage.
   ///
   /// In en, this message translates to:

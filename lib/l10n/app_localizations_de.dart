@@ -109,6 +109,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get reset_pw_b => 'Link senden';
 
   @override
+  String get new_wg => 'Neue WG erstellen';
+
+  @override
+  String get wg_name => 'Name';
+
+  @override
+  String get wg_use_template => 'Aufgabenvorlage verwenden';
+
+  @override
+  String get wg_exists =>
+      'Dieser Name ist bereits vergeben. Bitte wähle einen anderen.';
+
+  @override
   String get garbage => 'Müllmeister';
 
   @override
