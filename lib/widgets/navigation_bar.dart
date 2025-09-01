@@ -3,7 +3,7 @@ import 'package:chores/views/overview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:chores/l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 import '../views/dashboard.dart';
 import '../views/settings.dart';
 

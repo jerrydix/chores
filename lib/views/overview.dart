@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:quiver/time.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:week_of_year/date_week_extensions.dart';
-import 'package:chores/l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

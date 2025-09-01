@@ -12,7 +12,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settings => 'Einstellungen';
 
   @override
-  String get dashboard => 'Dashboard';
+  String get dashboard => 'Aufgaben';
 
   @override
   String get overview => 'Überblick';
@@ -30,7 +30,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get notEnable => 'Benachrichtigungen';
 
   @override
-  String get notInterval => 'Benachrichtigungsintervall';
+  String get notInterval => 'Benachrichtigungsinterval';
 
   @override
   String get sys => 'Systemstandart';
@@ -69,13 +69,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get friday => 'Einmal pro Woche (Mittwoch)';
 
   @override
-  String get en => 'Englisch';
+  String get en => 'English';
 
   @override
   String get de => 'Deutsch';
 
   @override
-  String get ru => 'Russisch';
+  String get ru => 'Русский';
+
+  @override
+  String get el => 'Ελληνικά';
 
   @override
   String get or => 'Oder weiter mit';
@@ -100,23 +103,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get reset_pw_t =>
-      'Gib deine E-Mail-Adresse ein, um einen Link zum Zurücksetzen des Passworts zu erhalten.';
+      'Gib deine E-Mail-Adresse ein, um einen Link zum Zurücksetzen deines Passworts zu erhalten.';
 
   @override
   String get reset_pw_b => 'Link senden';
-
-  @override
-  String get new_wg => 'Neue WG erstellen';
-
-  @override
-  String get wg_name => 'Name';
-
-  @override
-  String get wg_use_template => 'Aufgabenvorlage verwenden';
-
-  @override
-  String get wg_exists =>
-      'Dieser Name ist bereits vergeben. Bitte wähle einen anderen.';
 
   @override
   String get garbage => 'Müllmeister';
@@ -218,13 +208,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get n_text => 'Du hast noch Hausarbeiten zu erledigen.';
 
   @override
-  String get active => 'Aktivitätsstatus';
+  String get active => 'Verfügbar zum Arbeiten';
 
   @override
-  String get noPrimaryRoles => 'Dein Status ist inaktiv.';
+  String get noPrimaryRoles => 'Du bist nicht verfügbar zum Arbeiten.';
 
   @override
-  String get noPrimaryRoles2 => 'Dir wurden keine Hausarbeiten zugewiesen.';
+  String get noPrimaryRoles2 => 'Dir sind keine Hausarbeiten zugewiesen.';
 
   @override
   String get uname => 'Benutzername';

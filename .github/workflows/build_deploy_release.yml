@@ -8,6 +8,9 @@ on:
 
 env:
   SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
+  WEB_API_KEY: ${{ secrets.WEB_API_KEY }}
+  ANDROID_API_KEY: ${{ secrets.ANDROID_API_KEY }}
+  IOS_API_KEY: ${{ secrets.IOS_API_KEY }}
 
 jobs:
   build_deploy_release:
@@ -37,12 +40,14 @@ jobs:
 
       - name: 🐦 Setup Shorebird
         uses: shorebirdtech/setup-shorebird@v1
+        with:
+          cache: true
 
       - name: 🚀 Shorebird Patch
         id: shorebird-patch
         uses: shorebirdtech/shorebird-patch@v0
         with:
-          args: --release-version=1.0.0+1 --allow-native-diffs
+          args: --release-version=1.0.0+2 --allow-native-diffs
           platform: android
 
       - name: 📝 Output Patch Version
@@ -58,8 +63,9 @@ jobs:
           #name: Chores v0.1.${{ github.run_number }}
           #token: ${{ secrets.TOKEN }}
 
+
       - name: 📚 Build Web Version
-        run: flutter build web
+        run: flutter build web --wasm
 
       - name: 🚀 Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0

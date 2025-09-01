@@ -1,5 +1,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthenticationProvider {
@@ -29,20 +30,19 @@ class AuthenticationProvider {
     await firebaseAuth.signOut();
   }
 
-  signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+  Future<UserCredential> signInWithGoogle() async {
 
-      final credential = GoogleAuthProvider.credential(
-          idToken: gAuth.idToken,
-          accessToken: gAuth.accessToken
-      );
+    await GoogleSignIn.instance.initialize();
 
-      return await FirebaseAuth.instance.signInWithCredential(credential);
-    } catch (error) {
-      print("error: $error");
+    if (kIsWeb) {
+      return await firebaseAuth.signInWithPopup(GoogleAuthProvider());
     }
+
+    GoogleSignInAccount gUser = await GoogleSignIn.instance.authenticate();
+
+    final GoogleSignInAuthentication gAuth = gUser.authentication;
+    final credential = GoogleAuthProvider.credential(idToken: gAuth.idToken);
+    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
   Future<void> sendPasswordResetEmail(String email) async {

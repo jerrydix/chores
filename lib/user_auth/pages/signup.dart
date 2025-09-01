@@ -7,8 +7,7 @@ import 'package:chores/user_auth/widgets/form_container.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:keybinder/keybinder.dart';
-import 'package:chores/l10n/app_localizations.dart';
-
+import '../../l10n/app_localizations.dart';
 import '../../views/wg_selection.dart';
 import '../../widgets/navigation_bar.dart';
 import '../widgets/auth_button.dart';
