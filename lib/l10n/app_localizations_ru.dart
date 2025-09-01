@@ -12,7 +12,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settings => 'Настройки';
 
   @override
-  String get dashboard => 'Консоль';
+  String get dashboard => 'Задания';
 
   @override
   String get overview => 'Обзор';
@@ -30,7 +30,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get notEnable => 'Уведомления';
 
   @override
-  String get notInterval => 'Интервал уведомлений';
+  String get notInterval => 'Расписание уведомлений';
 
   @override
   String get sys => 'Системный';
@@ -69,13 +69,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get friday => 'Раз в неделю (среда)';
 
   @override
-  String get en => 'Английский';
+  String get en => 'English';
 
   @override
-  String get de => 'Немецкий';
+  String get de => 'Deutsch';
 
   @override
   String get ru => 'Русский';
+
+  @override
+  String get el => 'Ελληνικά';
 
   @override
   String get or => 'Или продолжить с';
@@ -106,18 +109,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get reset_pw_b => 'Отправить ссылку на сброс';
 
   @override
-  String get new_wg => 'Создать новое общежитие';
-
-  @override
-  String get wg_name => 'Имя';
-
-  @override
-  String get wg_use_template => 'Использовать шаблон заданий';
-
-  @override
-  String get wg_exists => 'Это имя уже занято. Пожалуйста, выберите другое.';
-
-  @override
   String get garbage => 'Мусорщик';
 
   @override
@@ -139,7 +130,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get g105bottles => 'Бутылки';
 
   @override
-  String get bathroom => 'Мастер ванной';
+  String get bathroom => 'Магистр ванной';
 
   @override
   String get b206mirrors => 'Почистить зеркало';
@@ -166,7 +157,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get b213b_waste => 'Вынести мусор';
 
   @override
-  String get kitchen => 'Кухонный мастер';
+  String get kitchen => 'Кухонный шеф';
 
   @override
   String get b314surfaces => 'Почистить (стеклянные) поверхности, включая стол';
@@ -181,7 +172,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get b317cloths => 'Постирать тряпки и ковер';
 
   @override
-  String get vacuum => 'Вакууматор';
+  String get vacuum => 'Пылесоска';
 
   @override
   String get b418v_kitchen => 'Пропылесосить кухню';
@@ -217,13 +208,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get n_text => 'выполнить работу по дому';
 
   @override
-  String get active => 'Я дома';
+  String get active => 'Доступен к работе';
 
   @override
-  String get noPrimaryRoles => 'Ты не дома';
+  String get noPrimaryRoles => 'Вы не доступны для работы';
 
   @override
-  String get noPrimaryRoles2 => 'У тебя нет заданий';
+  String get noPrimaryRoles2 => 'Вам не назначены задания';
 
   @override
   String get uname => 'Имя пользователя';

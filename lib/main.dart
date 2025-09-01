@@ -2,8 +2,7 @@ import 'package:chores/user_auth/wrapper.dart';
 import 'package:chores/utils/notification_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:chores/l10n/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'data/firebase_options.dart';
@@ -111,17 +110,8 @@ class _MyAppState extends State<MyApp> {
         darkTheme: setThemeData(darkDynamic, Brightness.dark),
         themeMode: _themeMode,
         navigatorKey: MyApp.navigatorKey,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('en'),
-          Locale('de'),
-          Locale('ru'),
-        ],
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         locale: _locale,
         home: const Wrapper(), //check if persisted login, then go to home page, if not go to register / login page
       );

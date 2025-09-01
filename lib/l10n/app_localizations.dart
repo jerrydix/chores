@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_de.dart';
+import 'app_localizations_el.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_ru.dart';
 
@@ -96,6 +97,7 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('de'),
+    Locale('el'),
     Locale('en'),
     Locale('ru')
   ];
@@ -109,7 +111,7 @@ abstract class AppLocalizations {
   /// No description provided for @dashboard.
   ///
   /// In en, this message translates to:
-  /// **'Dashboard'**
+  /// **'Tasks'**
   String get dashboard;
 
   /// No description provided for @overview.
@@ -145,7 +147,7 @@ abstract class AppLocalizations {
   /// No description provided for @notInterval.
   ///
   /// In en, this message translates to:
-  /// **'Notification Interval'**
+  /// **'Notification schedule'**
   String get notInterval;
 
   /// No description provided for @sys.
@@ -229,14 +231,20 @@ abstract class AppLocalizations {
   /// No description provided for @de.
   ///
   /// In en, this message translates to:
-  /// **'German'**
+  /// **'Deutsch'**
   String get de;
 
   /// No description provided for @ru.
   ///
   /// In en, this message translates to:
-  /// **'Russian'**
+  /// **'Русский'**
   String get ru;
+
+  /// No description provided for @el.
+  ///
+  /// In en, this message translates to:
+  /// **'Ελληνικά'**
+  String get el;
 
   /// No description provided for @or.
   ///
@@ -283,7 +291,7 @@ abstract class AppLocalizations {
   /// No description provided for @reset_pw_t.
   ///
   /// In en, this message translates to:
-  /// **'Enter your email address to receive a password reset link.'**
+  /// **'Enter your email address and receive a link to reset your password.'**
   String get reset_pw_t;
 
   /// No description provided for @reset_pw_b.
@@ -291,30 +299,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send reset link'**
   String get reset_pw_b;
-
-  /// No description provided for @new_wg.
-  ///
-  /// In en, this message translates to:
-  /// **'Create new shared apartment'**
-  String get new_wg;
-
-  /// No description provided for @wg_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Name'**
-  String get wg_name;
-
-  /// No description provided for @wg_use_template.
-  ///
-  /// In en, this message translates to:
-  /// **'Use chores template'**
-  String get wg_use_template;
-
-  /// No description provided for @wg_exists.
-  ///
-  /// In en, this message translates to:
-  /// **'This name is already taken. Please choose another one.'**
-  String get wg_exists;
 
   /// No description provided for @garbage.
   ///
@@ -517,13 +501,13 @@ abstract class AppLocalizations {
   /// No description provided for @active.
   ///
   /// In en, this message translates to:
-  /// **'Active status'**
+  /// **'Available to work'**
   String get active;
 
   /// No description provided for @noPrimaryRoles.
   ///
   /// In en, this message translates to:
-  /// **'Your status is set inactive.'**
+  /// **'You are not available to work.'**
   String get noPrimaryRoles;
 
   /// No description provided for @noPrimaryRoles2.
@@ -604,7 +588,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['de', 'en', 'ru'].contains(locale.languageCode);
+      <String>['de', 'el', 'en', 'ru'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -615,6 +599,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'de':
       return AppLocalizationsDe();
+    case 'el':
+      return AppLocalizationsEl();
     case 'en':
       return AppLocalizationsEn();
     case 'ru':

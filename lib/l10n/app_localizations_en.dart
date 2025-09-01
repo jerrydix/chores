@@ -12,7 +12,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
-  String get dashboard => 'Dashboard';
+  String get dashboard => 'Tasks';
 
   @override
   String get overview => 'Overview';
@@ -30,7 +30,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notEnable => 'Notifications';
 
   @override
-  String get notInterval => 'Notification Interval';
+  String get notInterval => 'Notification schedule';
 
   @override
   String get sys => 'System';
@@ -72,10 +72,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get en => 'English';
 
   @override
-  String get de => 'German';
+  String get de => 'Deutsch';
 
   @override
-  String get ru => 'Russian';
+  String get ru => 'Русский';
+
+  @override
+  String get el => 'Ελληνικά';
 
   @override
   String get or => 'Or continue with';
@@ -101,23 +104,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reset_pw_t =>
-      'Enter your email address to receive a password reset link.';
+      'Enter your email address and receive a link to reset your password.';
 
   @override
   String get reset_pw_b => 'Send reset link';
-
-  @override
-  String get new_wg => 'Create new shared apartment';
-
-  @override
-  String get wg_name => 'Name';
-
-  @override
-  String get wg_use_template => 'Use chores template';
-
-  @override
-  String get wg_exists =>
-      'This name is already taken. Please choose another one.';
 
   @override
   String get garbage => 'Garbage Master';
@@ -219,10 +209,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get n_text => 'to finish your chores for the week.';
 
   @override
-  String get active => 'Active status';
+  String get active => 'Available to work';
 
   @override
-  String get noPrimaryRoles => 'Your status is set inactive.';
+  String get noPrimaryRoles => 'You are not available to work.';
 
   @override
   String get noPrimaryRoles2 => 'No chores are assigned to you.';

@@ -1,6 +1,7 @@
 import 'package:chores/user_auth/widgets/auth_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
 import 'package:chores/user_auth/pages/signup.dart';
@@ -9,7 +10,7 @@ import 'package:chores/widgets/navigation_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:keybinder/keybinder.dart';
-import 'package:chores/l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
 import '../../views/wg_selection.dart';
 
 
