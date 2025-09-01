@@ -64,6 +64,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   google_sign_in_web: ^1.0.0
+  flutter_material_design_icons: ^1.1.7447
   #flutter_local_notifications: ^8.2.0
 
 dev_dependencies:

@@ -109,6 +109,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get reset_pw_b => 'Отправить ссылку на сброс';
 
   @override
+  String get new_wg => 'Создать новое общежитие';
+
+  @override
+  String get wg_name => 'Имя';
+
+  @override
+  String get wg_use_template => 'Использовать шаблон заданий';
+
+  @override
+  String get wg_exists => 'Это имя уже занято. Пожалуйста, выберите другое.';
+
+  @override
   String get garbage => 'Мусорщик';
 
   @override

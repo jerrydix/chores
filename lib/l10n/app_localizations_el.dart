@@ -110,6 +110,19 @@ class AppLocalizationsEl extends AppLocalizations {
   String get reset_pw_b => 'Αποστολή συνδέσμου επαναφοράς';
 
   @override
+  String get new_wg => 'Create new shared apartment';
+
+  @override
+  String get wg_name => 'Name';
+
+  @override
+  String get wg_use_template => 'Use chores template';
+
+  @override
+  String get wg_exists =>
+      'This name is already taken. Please choose another one.';
+
+  @override
   String get garbage => 'Μάστρος σκουπιδιών';
 
   @override
