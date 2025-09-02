@@ -49,7 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '173688729888',
     projectId: 'chores-4725c',
     authDomain: 'chores-4725c.firebaseapp.com',
-    storageBucket: 'chores-4725c.appspot.com',
+    storageBucket: 'chores-4725c.firebasestorage.app',
     measurementId: 'G-TYJB66TRBD',
   );
 
@@ -58,7 +58,7 @@ class DefaultFirebaseOptions {
     appId: '1:173688729888:android:5b0273ab6579a100dee745',
     messagingSenderId: '173688729888',
     projectId: 'chores-4725c',
-    storageBucket: 'chores-4725c.appspot.com',
+    storageBucket: 'chores-4725c.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -66,7 +66,7 @@ class DefaultFirebaseOptions {
     appId: '1:173688729888:ios:0ecb072ff84b31e8dee745',
     messagingSenderId: '173688729888',
     projectId: 'chores-4725c',
-    storageBucket: 'chores-4725c.appspot.com',
+    storageBucket: 'chores-4725c.firebasestorage.app',
     iosClientId:
         '173688729888-p0kiaemtugiu7smd9ouodcoqbvuvnbeh.apps.googleusercontent.com',
     iosBundleId: 'com.example.chores',
@@ -77,7 +77,7 @@ class DefaultFirebaseOptions {
     appId: '1:173688729888:ios:0ecb072ff84b31e8dee745',
     messagingSenderId: '173688729888',
     projectId: 'chores-4725c',
-    storageBucket: 'chores-4725c.appspot.com',
+    storageBucket: 'chores-4725c.firebasestorage.app',
     iosClientId:
         '173688729888-p0kiaemtugiu7smd9ouodcoqbvuvnbeh.apps.googleusercontent.com',
     iosBundleId: 'com.example.chores',

@@ -53,7 +53,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
     return SelectionArea(child: Scaffold(
       body: Center(
-        child: Padding(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 400),
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
