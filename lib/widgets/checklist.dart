@@ -8,7 +8,6 @@ class ChecklistPage extends StatefulWidget {
   final LinkedHashMap<String, Icon> tasks;
   final List<bool> checked;
 
-
   const ChecklistPage({super.key, required this.title, required this.roles, required this.tasks, required this.checked});
 
   @override
