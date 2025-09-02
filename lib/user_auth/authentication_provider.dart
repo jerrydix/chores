@@ -27,14 +27,13 @@ class AuthenticationProvider {
   }
 
   Future<void> signOut() async {
+    await GoogleSignIn.instance.disconnect();
     await firebaseAuth.signOut();
   }
 
   Future<UserCredential> signInWithGoogle() async {
 
-    await GoogleSignIn.instance.initialize(
-        //serverClientId: "173688729888-6dbdlbqtinkdtqh1dp2dugml754pf320.apps.googleusercontent.com"
-    );
+    await GoogleSignIn.instance.initialize();
 
     if (kIsWeb) {
       return await firebaseAuth.signInWithPopup(GoogleAuthProvider());
