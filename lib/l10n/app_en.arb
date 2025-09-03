@@ -87,6 +87,7 @@
   "signup_b": "Sign up",
   "noAccount": "Don't have an account?",
   "haveAccount": "Already have an account?",
-  "finAllTasks": "Finished all tasks"
+  "finAllTasks": "Finished all tasks",
 
+  "role_task_settings": "Role and Task Settings"
 }

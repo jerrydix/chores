@@ -599,6 +599,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Finished all tasks'**
   String get finAllTasks;
+
+  /// No description provided for @role_task_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Role and Task Settings'**
+  String get role_task_settings;
 }
 
 class _AppLocalizationsDelegate

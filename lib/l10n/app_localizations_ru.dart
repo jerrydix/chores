@@ -257,4 +257,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get finAllTasks => 'Все задания выполнены';
+
+  @override
+  String get role_task_settings => 'Role and Task Settings';
 }

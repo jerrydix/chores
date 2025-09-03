@@ -26,7 +26,7 @@ class _NavBarState extends State<NavBar> {
   ];
 
   Future<void> openSettings() async {
-    Route route = MaterialPageRoute(builder: (context) => const SettingsPage());
+    Route route = MaterialPageRoute(builder: (context) => const Settings());
     await Navigator.push(context, route);
     setState(() {});
   }
