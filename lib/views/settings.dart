@@ -4,6 +4,7 @@ import 'package:chores/data/providers/authentication_provider.dart';
 import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/utils/notification_list.dart';
 import 'package:chores/data/userprefs.dart';
+import 'package:chores/views/role_task_settings.dart';
 import 'package:chores/views/wg_selection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,11 +16,11 @@ import '../l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../main.dart';
 
-class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+class Settings extends StatefulWidget {
+  const Settings({super.key});
 
   @override
-  State<StatefulWidget> createState() => _SettingsPageState();
+  State<StatefulWidget> createState() => _SettingsState();
 }
 
 enum Intervals { onceBegin, onceMiddle, onceEnd, twice, every }
@@ -28,7 +29,7 @@ enum Themes { system, light, dark }
 
 enum Languages { en, de, ru }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsState extends State<Settings> {
   bool? currentNotificationValue;
   Icon? currentNotificationStatus;
 
@@ -669,15 +670,18 @@ class _SettingsPageState extends State<SettingsPage> {
         weekdays.add(5);
         break;
       case Intervals.every:
-        weekdays.add(1);
-        weekdays.add(2);
-        weekdays.add(3);
-        weekdays.add(4);
-        weekdays.add(5);
-        weekdays.add(6);
+        for (int i = 1; i < 7; i++) {
+          weekdays.add(i);
+        }
         break;
     }
     return weekdays;
+  }
+
+  Future<void> openRoleTaskSettings() async {
+    Route route = MaterialPageRoute(builder: (context) => const RoleTaskSettings());
+    await Navigator.push(context, route);
+    setState(() {});
   }
 
   @override
@@ -808,7 +812,7 @@ class _SettingsPageState extends State<SettingsPage> {
           SettingsSection(
               title: Title(
                   color: Colors.grey,
-                  child: Text(AppLocalizations.of(context)!.info, style: TextStyle(color: Theme.of(context).colorScheme.primary))),
+                  child: Text(AppLocalizations.of(context)!.wg_settings, style: TextStyle(color: Theme.of(context).colorScheme.primary))),
               tiles: <SettingsTile>[
                 SettingsTile.navigation(
                   leading: const Icon(Icons.logout),
@@ -816,13 +820,20 @@ class _SettingsPageState extends State<SettingsPage> {
                   onPressed: (context) {
                     openLeaveDialog();
                   },
+                ),
+                SettingsTile.navigation(
+                  title: Text(AppLocalizations.of(context)!.role_task_settings),
+                  leading: const Icon(Icons.view_list_rounded),
+                  onPressed: (context) {
+                    openRoleTaskSettings();
+                  }
                 )
               ]
           ),
           SettingsSection(
               title: Title(
                   color: Colors.grey,
-                  child: Text(AppLocalizations.of(context)!.wg_settings, style: TextStyle(color: Theme.of(context).colorScheme.primary))),
+                  child: Text(AppLocalizations.of(context)!.info, style: TextStyle(color: Theme.of(context).colorScheme.primary))),
               tiles: <SettingsTile>[
                 SettingsTile.navigation(
                   leading: const Icon(Icons.info_outline),

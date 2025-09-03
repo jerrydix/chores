@@ -260,4 +260,7 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get finAllTasks => 'Ολοκληρώθηκαν όλες οι εργασίες';
+
+  @override
+  String get role_task_settings => 'Role and Task Settings';
 }
