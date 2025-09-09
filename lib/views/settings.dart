@@ -679,7 +679,7 @@ class _SettingsState extends State<Settings> {
   }
 
   Future<void> openRoleTaskSettings() async {
-    Route route = MaterialPageRoute(builder: (context) => const RoleTaskSettings());
+    Route route = MaterialPageRoute(builder: (context) => RoleTaskSettings());
     await Navigator.push(context, route);
     setState(() {});
   }

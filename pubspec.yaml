@@ -67,6 +67,8 @@ dependencies:
   flutter_material_design_icons: ^1.1.7447
   drag_and_drop_lists: ^0.4.2
   flutter_iconpicker: ^3.3.3
+  uuid: ^4.5.1
+  flutter_expandable_fab: ^2.5.2
   #flutter_local_notifications: ^8.2.0
 
 dev_dependencies:

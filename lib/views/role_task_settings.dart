@@ -1,174 +1,283 @@
-import 'package:flutter/material.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
-import '../l10n/app_localizations.dart';
+class TaskItem {
+  final String id;
+  final String label;
+
+  TaskItem(this.label) : id = const Uuid().v4();
+}
+
+class TaskList {
+  final String id;
+  final String title;
+  final List<TaskItem> items;
+  bool isExpanded;
+
+  TaskList({
+    required this.title,
+    List<TaskItem>? items,
+    this.isExpanded = true,
+  })  : id = const Uuid().v4(),
+        items = items ?? [];
+}
 
 class RoleTaskSettings extends StatefulWidget {
   const RoleTaskSettings({super.key});
 
   @override
-  State<StatefulWidget> createState() => _RoleTaskSettingsState();
+  _RoleTaskSettingsState createState() => _RoleTaskSettingsState();
 }
 
 class _RoleTaskSettingsState extends State<RoleTaskSettings> {
-  late List<DragAndDropList> _taskLists;
-  bool _isInitialized = false; // Flag to ensure initialization runs once
-
-  bool? currentNotificationValue;
-  Icon? currentNotificationStatus;
+  final List<TaskList> lists = [];
 
   @override
   void initState() {
     super.initState();
-    // Do not access Theme.of(context) or AppLocalizations.of(context) here
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Initialize here if not already initialized
-    if (!_isInitialized) {
-      // Get AppLocalizations instance
-      final loc = AppLocalizations.of(context)!; // Assuming it's always available here
-
-      _taskLists = List.generate(4, (listIndex) {
-        String headerText;
-        TextStyle? headerTextStyle = Theme.of(context).textTheme.titleLarge; // Get theme here
-
-        switch (listIndex) {
-          case 0:
-            headerText = "test";
-            break;
-          case 1:
-            headerText = "test";
-            break;
-          case 2:
-            headerText = "test";
-            break;
-          case 3:
-            headerText = "test";
-            break;
-          default:
-            headerText = 'List ${listIndex + 1}'; // Fallback
-        }
-
-        return DragAndDropList(
-          header: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              headerText,
-              style: headerTextStyle,
-            ),
-          ),
-          children: List.generate(3, (itemIndex) {
-            return DragAndDropItem(
-              child: ListTile(
-                title: Text('Task ${listIndex * 3 + itemIndex + 1} for $headerText'),
-                leading: Icon(Icons.check_circle_outline),
-              ),
-            );
-          }),
-        );
-      }, growable: false);
-      _isInitialized = true;
-    }
-  }
-
-  void _onItemReorder(int oldItemIndex, int oldListIndex, int newItemIndex, int newListIndex) {
-    setState(() {
-      final DragAndDropItem movedItem = _taskLists[oldListIndex].children.removeAt(oldItemIndex);
-      _taskLists[newListIndex].children.insert(newItemIndex, movedItem);
-    });
-  }
-
-  void _onListReorder(int oldListIndex, int newListIndex) {
-    setState(() {
-      final DragAndDropList movedList = _taskLists.removeAt(oldListIndex);
-      _taskLists.insert(newListIndex, movedList);
-    });
+    lists.addAll([
+      TaskList(title: "List A", items: [
+        TaskItem('Item A1'),
+        TaskItem('Item A2'),
+        TaskItem('Item A3'),
+      ]),
+      TaskList(title: "List B", items: [
+        TaskItem('Item B1'),
+        TaskItem('Item B2'),
+      ]),
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    // If _taskLists might not be initialized yet (e.g. if didChangeDependencies hasn't run),
-    // you might show a loading indicator. However, with the _isInitialized flag,
-    // it should be initialized before the first build after dependencies are available.
-    if (!_isInitialized) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)?.role_task_settings ?? "Settings"),
-        ),
-        body: Center(child: CircularProgressIndicator()), // Loading state
-      );
-    }
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.role_task_settings),
+      appBar: AppBar(title: const Text('Nested Drag-and-Drop Lists')),
+      body:  DragAndDropLists(
+              lastItemTargetHeight: 3,
+              listSizeAnimationDurationMilliseconds: 0,
+              children: List.generate(
+                lists.length,
+                    (listIndex) => DragAndDropList(
+                  key: ValueKey(lists[listIndex].id),
+                  header: _buildCollapsibleHeader(listIndex),
+                  canDrag: false,
+                  contentsWhenEmpty: lists[listIndex].isExpanded ? Container(
+                    padding: const EdgeInsets.all(16),
+                    child: Text('Add a chore to get started', style: TextStyle(color: Theme.of(context).disabledColor),),
+                  ) : SizedBox.shrink(),
+                  decoration: BoxDecoration(
+                    color: Theme
+                        .of(context)
+                        .colorScheme
+                        .surfaceContainer,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 4,
+                        offset: Offset(2, 2),
+                      ),
+                    ],
+                  ),
+                      children: lists[listIndex].isExpanded
+                          ? List.generate(
+                        lists[listIndex].items.length,
+                            (itemIndex) {
+                          final item = lists[listIndex].items[itemIndex];
+                          return DragAndDropItem(
+                            key: ValueKey(item.id),
+                            child: Dismissible(
+                              key: ValueKey("dismiss_${item.id}"),
+                              direction: DismissDirection.endToStart,
+                              background: Container(
+                                color: Colors.red,
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.symmetric(horizontal: 20),
+                                child: const Icon(Icons.delete, color: Colors.white),
+                              ),
+                              onDismissed: (_) {
+                                setState(() {
+                                  lists[listIndex].items.removeAt(itemIndex);
+                                });
+                              },
+                              child: _AnimatedListItem(
+                                key: ValueKey("anim_${item.id}"),
+                                child: ListTile(
+                                  title: Text(item.label),
+                                  trailing: const Icon(Icons.drag_handle),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                          : [],
+                    ),
+              ),
+              onItemReorder: _onItemReorder,
+              itemDragOnLongPress: false,
+              listDragOnLongPress: false,
+              listPadding:
+              const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              contentsWhenEmpty: const Center(
+                child: Text('No lists available. Add a new list!'),
+              ),
+              itemDragHandle: DragHandle(
+                verticalAlignment: DragHandleVerticalAlignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 25),
+                  child: Icon(Icons.drag_handle, color: Colors.white.withValues(alpha: 0.0)),
+                ),
+              ),
+              itemDecorationWhileDragging: BoxDecoration(
+                color: Theme
+                    .of(context)
+                    .colorScheme
+                    .primaryContainer,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    blurRadius: 4,
+                    offset: Offset(2, 2),
+                  ),
+                ],
+              ),
+              onListReorder: (int oldListIndex, int newListIndex) {  },
+            ),
+
+      floatingActionButtonLocation: ExpandableFab.location,
+      floatingActionButton: ExpandableFab(
+        distance: 70,
+        type: ExpandableFabType.up,
+        childrenAnimation: ExpandableFabAnimation.none,
+        overlayStyle: ExpandableFabOverlayStyle(
+          color: Theme.of(context).colorScheme.onInverseSurface.withOpacity(0.5),
+        ),
+        children: [
+          Row(
+            children: [
+              Text('Add Role'),
+              SizedBox(width: 20),
+              FloatingActionButton.small(
+                onPressed: _addList,
+                child: Icon(Icons.person_add_alt_1),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Text('Add Chore'),
+              SizedBox(width: 20),
+              FloatingActionButton.small(
+                onPressed: _addItemToFirstList,
+                child: Icon(Icons.add_task),
+              ),
+            ],
+          ),
+        ],
       ),
-      body: DragAndDropLists(
-        children: _taskLists,
-        onItemReorder: _onItemReorder,
-        onListReorder: _onListReorder,
-        listPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        itemDecorationWhileDragging: BoxDecoration(
-          color: Colors.grey.shade200,
-          boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 4
-          )],
-          borderRadius: BorderRadius.circular(8),
-        ),
-        listInnerDecoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        lastItemTargetHeight: 8,
-        addLastItemTargetHeightToTop: true,
-        lastListTargetSize: 40,
-        listDragHandle: const DragHandle(
-          verticalAlignment: DragHandleVerticalAlignment.top,
-          child: Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Icon(
-              Icons.drag_handle,
-              color: Colors.grey,
-            ),
-          ),
-        ),
-        itemDragHandle: const DragHandle(
-          child: Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Icon(
-              Icons.drag_handle,
-              color: Colors.grey,
-            ),
-          ),
-        ),
-        axis: Axis.vertical,
-        listWidth: 300,
-        listDraggingWidth: 300,
-        itemSizeAnimationDurationMilliseconds: 300,
-        listSizeAnimationDurationMilliseconds: 300,
-        listGhost: const SizedBox(
-          height: 50,
-          width: 300,
-          child: Center(
-            child: Text(
-              'Moving List',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          // You can customize the appearance of the ghost list here
-        ),
-        itemGhost: const SizedBox(
-          height: 50,
-          child: Center(
-            child: Text(
-              'Moving Item',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          // You can customize the appearance of the ghost item here
-        ),
+    );
+  }
+
+  Widget _buildCollapsibleHeader(int index) {
+    final list = lists[index];
+    return ListTile(
+      title: Text(list.title),
+      leading: IconButton(
+        icon: Icon(list.isExpanded ? Icons.expand_less : Icons.expand_more),
+        onPressed: () {
+          setState(() {
+            list.isExpanded = !list.isExpanded;
+          });
+        },
+      ),
+      trailing: IconButton(
+        icon: const Icon(Icons.delete_forever),
+        onPressed: () {
+          setState(() {
+            lists.removeAt(index);
+          });
+        },
+      ),
+    );
+  }
+
+  void _onItemReorder(
+      int oldItemIndex, int oldListIndex, int newItemIndex, int newListIndex) {
+    setState(() {
+      final movedItem = lists[oldListIndex].items.removeAt(oldItemIndex);
+      lists[newListIndex].items.insert(newItemIndex, movedItem);
+    });
+  }
+
+  void _addList() {
+    setState(() {
+      lists.add(TaskList(title: "List ${lists.length + 1}"));
+    });
+  }
+
+  void _addItemToFirstList() {
+    if (lists.isNotEmpty) {
+      setState(() {
+        lists[0].items.add(TaskItem('Item ${lists[0].items.length + 1}'));
+      });
+    }
+  }
+
+  void _removeItem(int listIndex, int itemIndex) {
+    final removedItem = lists[listIndex].items.removeAt(itemIndex);
+    final controller = GlobalKey<_AnimatedListItemState>();
+    setState(() {});
+  }
+}
+
+class _AnimatedListItem extends StatefulWidget {
+  final Widget child;
+
+  const _AnimatedListItem({super.key, required this.child});
+
+  @override
+  State<_AnimatedListItem> createState() => _AnimatedListItemState();
+}
+
+class _AnimatedListItemState extends State<_AnimatedListItem>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
+    _controller.forward();
+  }
+
+  void remove() {
+    _controller.reverse();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizeTransition(
+      sizeFactor: CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeOut,
+        reverseCurve: Curves.easeIn,
+      ),
+      child: FadeTransition(
+        opacity: _controller,
+        child: widget.child,
       ),
     );
   }
