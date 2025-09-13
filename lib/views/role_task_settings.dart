@@ -91,57 +91,54 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> with TickerProvider
                 ),
               ],
             ),
-            children: [
-              DragAndDropItem(
-                child: lists[listIndex].isExpanded
-                      ? Column(
-                    children: List.generate(
-                      lists[listIndex].items.length,
-                          (itemIndex) {
-                        final item = lists[listIndex].items[itemIndex];
-                        return Dismissible(
-                          key: ValueKey("dismiss_${item.id}"),
-                          direction: DismissDirection.endToStart,
-                          background: Container(
-                            color: Colors.red,
-                            alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: const Icon(Icons.delete, color: Colors.white),
-                          ),
-                          onDismissed: (_) {
-                            setState(() {
-                              lists[listIndex].items.removeAt(itemIndex);
-                            });
-                          },
-                          child: _AnimatedListItem(
-                            key: ValueKey("anim_${item.id}"),
-                            child: ListTile(
-                              title: Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Row(
-                                  children: [
-                                    if (item.icon != null) ...[
-                                      item.icon!,
-                                      const SizedBox(width: 10),
-                                    ],
-                                    Text(item.label),
-                                  ],
-                                ),
-                              ),
-                              trailing: const Padding(
-                                padding: EdgeInsets.only(right: 8.0),
-                                child: Icon(Icons.drag_handle),
-                              ),
+            children: lists[listIndex].isExpanded
+              ? List.generate(
+                lists[listIndex].items.length,
+                    (itemIndex) {
+                  final item = lists[listIndex].items[itemIndex];
+                  return DragAndDropItem(
+                    key: ValueKey(item.id),
+                    child: Dismissible(
+                      key: ValueKey("dismiss_${item.id}"),
+                      direction: DismissDirection.endToStart,
+                      background: Container(
+                        color: Colors.red,
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: const Icon(Icons.delete, color: Colors.white),
+                      ),
+                      onDismissed: (_) {
+                        setState(() {
+                          lists[listIndex].items.removeAt(itemIndex);
+                        });
+                      },
+                      child: _AnimatedListItem(
+                        key: ValueKey("anim_${item.id}"),
+                        child: ListTile(
+                          title: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Row(
+                              children: [
+                                if (item.icon != null) ...[
+                                  item.icon!,
+                                  const SizedBox(width: 10),
+                                ],
+                                Text(item.label),
+                              ],
                             ),
                           ),
-                        );
-                      },
+                          trailing: const Padding(
+                            padding: EdgeInsets.only(right: 8.0),
+                            child: Icon(Icons.drag_handle),
+                          ),
+                        ),
+                      ),
                     ),
-                  )
-                      : const SizedBox.shrink(),
-                ),
-            ],
-          ),
+                  );
+                },
+              )
+              : [],
+              ),
         ),
         onItemReorder: _onItemReorder,
         itemDragOnLongPress: false,
@@ -151,7 +148,7 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> with TickerProvider
           child: Text('No lists available. Add a new list!'),
         ),
         itemDragHandle: DragHandle(
-          verticalAlignment: DragHandleVerticalAlignment.center,
+         verticalAlignment: DragHandleVerticalAlignment.center,
           child: Padding(
             padding: const EdgeInsets.only(right: 30),
             child: Icon(Icons.drag_handle,
