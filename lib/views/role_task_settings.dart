@@ -317,10 +317,12 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> with TickerProvider
               onPressed: (choreController.text.trim().isNotEmpty && selectedRoleIndex != null)
                   ? () {
                 setState(() {
+                  localIconData ??= Icons.task;
                   lists[selectedRoleIndex!].items.add(TaskItem(choreController.text.trim(), Icon(localIconData)));
-                  // store the icon in TaskItem if needed
+                  lists[selectedRoleIndex!].isExpanded = true;
                 });
                 Navigator.of(context).pop();
+                setState(() {});
               }
                   : null,
               child: const Text('Add'),
@@ -413,7 +415,9 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> with TickerProvider
               onPressed: choreController.text.trim().isNotEmpty
                   ? () {
                 setState(() {
+                  localIconData ??= Icons.task;
                   lists[listIndex].items.add(TaskItem(choreController.text.trim(), Icon(localIconData)));
+                  lists[listIndex].isExpanded = true;
                 });
                 Navigator.of(context).pop();
               }
