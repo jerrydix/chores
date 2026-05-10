@@ -1,7 +1,6 @@
 import 'package:chores/user_auth/widgets/AuthButton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
 import 'package:chores/user_auth/pages/signup.dart';
@@ -13,7 +12,6 @@ import 'package:keybinder/keybinder.dart';
 import '../../l10n/app_localizations.dart';
 import '../../wg_selection.dart';
 
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -22,7 +20,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _emailResetController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -48,7 +45,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Future _resetPassword() async {
     String email = _emailResetController.text;
-    await AuthenticationProvider(FirebaseAuth.instance).sendPasswordResetEmail(email.trim());
+    await AuthenticationProvider(FirebaseAuth.instance)
+        .sendPasswordResetEmail(email.trim());
   }
 
   Future openForgotPasswordDialog() async {
@@ -58,8 +56,7 @@ class _LoginPageState extends State<LoginPage> {
         //duration: const Duration(milliseconds: 300),
         context: context,
         builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
+          return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               title: Text(AppLocalizations.of(context)!.reset_pw),
               content: Column(
@@ -91,55 +88,57 @@ class _LoginPageState extends State<LoginPage> {
                     child: Text(AppLocalizations.of(context)!.reset_pw_b)),
               ],
             );
-        }
-    );}).then((value) => _emailResetController.clear());
+          });
+        }).then((value) => _emailResetController.clear());
   }
-
 
   @override
   Widget build(BuildContext context) {
     AppLocalizations loc = AppLocalizations.of(context)!;
 
-    return SelectionArea(child: Scaffold(
-      body: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 400),
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.asset(
-                  "assets/logo.png",
-                  width: 125,
-                  height: 125,
-                  fit: BoxFit.cover,),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Text(
-                loc.login,
-                style: const TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              FormContainer(
-                controller: _emailController,
-                hintText: loc.email,
-                isPasswordField: false,
-              ),
-              const SizedBox(height: 10,),
-              FormContainer(
-                controller: _passwordController,
-                hintText: loc.pw,
-                isPasswordField: true,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
+    return SelectionArea(
+      child: Scaffold(
+        body: Center(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 400),
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset(
+                    "assets/logo.png",
+                    width: 125,
+                    height: 125,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  loc.login,
+                  style: const TextStyle(
+                      fontSize: 27, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                FormContainer(
+                  controller: _emailController,
+                  hintText: loc.email,
+                  isPasswordField: false,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                FormContainer(
+                  controller: _passwordController,
+                  hintText: loc.pw,
+                  isPasswordField: true,
+                ),
+                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 2.5, right: 2),
                     child: InkWell(
@@ -147,86 +146,140 @@ class _LoginPageState extends State<LoginPage> {
                           openForgotPasswordDialog();
                         },
                         borderRadius: BorderRadius.circular(5),
-                        child: Text(loc.forgot_pw, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold,), textAlign: TextAlign.right,)),
+                        child: Text(
+                          loc.forgot_pw,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.right,
+                        )),
                   ),
-                  ]
-              ),
-              const SizedBox(height: 20,),
-              Material(
-                color: Theme.of(context).colorScheme.secondary,
-                borderRadius: BorderRadius.circular(30),
-                child: InkWell(
+                ]),
+                const SizedBox(
+                  height: 20,
+                ),
+                Material(
+                  color: Theme.of(context).colorScheme.secondary,
                   borderRadius: BorderRadius.circular(30),
-                  splashColor: Theme.of(context).colorScheme.surfaceTint.withOpacity(0.75),
-                  enableFeedback: true,
-                  onTap: _signIn,
-                  child: Container(
-                    constraints: const BoxConstraints(maxWidth: 400),
-                    width: double.infinity,
-                    height: 45,
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(30),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(30),
+                    splashColor: Theme.of(context)
+                        .colorScheme
+                        .surfaceTint
+                        .withOpacity(0.75),
+                    enableFeedback: true,
+                    onTap: _signIn,
+                    child: Container(
+                      constraints: const BoxConstraints(maxWidth: 400),
+                      width: double.infinity,
+                      height: 45,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Center(
+                          child: Text(
+                        loc.login_b,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.surface,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17),
+                      )),
                     ),
-                    child: Center(child: Text(loc.login_b, style: TextStyle(color: Theme.of(context).colorScheme.surface, fontWeight: FontWeight.bold, fontSize: 17),)),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20,),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
+                const SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Divider(
+                            thickness: 0.5,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withOpacity(0.5),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            loc.or,
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withOpacity(0.5)),
+                          ),
+                        ),
+                        Expanded(
+                          child: Divider(
+                            thickness: 0.5,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withOpacity(0.5),
+                          ),
+                        ),
+                      ],
+                    )),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: Divider(
-                        thickness: 0.5,
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                      ),
+                    AuthButton(
+                        imagePath: "assets/google_logo.png",
+                        onTap: _signUpWithGoogle),
+                    const SizedBox(
+                      width: 25,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(loc.or, style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        thickness: 0.5,
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                      ),
-                    ),
+                    AuthButton(
+                        imagePath: "assets/github-mark.png",
+                        onTap: _signUpWithGithub),
                   ],
-                )
-              ),
-              const SizedBox(height: 20,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AuthButton(imagePath: "assets/google_logo.png", onTap: _signUpWithGoogle),
-                  const SizedBox(width: 25,),
-                  AuthButton(imagePath: "assets/github-mark.png", onTap: _signUpWithGithub),
-                ],
-              ),
-              const SizedBox(height: 20,),
-              Row(mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(loc.noAccount),
-                  const SizedBox(width: 5,),
-                  InkWell(
-                      onTap: (){
-                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const SignUpPage()), (route) => false);
-                      },
-                      borderRadius: BorderRadius.circular(5),
-                      child: Text(loc.signup_b, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),))
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(loc.noAccount),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    InkWell(
+                        onTap: () {
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SignUpPage()),
+                              (route) => false);
+                        },
+                        borderRadius: BorderRadius.circular(5),
+                        child: Text(
+                          loc.signup_b,
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.bold),
+                        ))
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ),);
+    );
   }
 
   Future<dynamic> _signIn() async {
-
     String email = _emailController.text;
     String password = _passwordController.text;
 
@@ -240,7 +293,8 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
 
-    String? message = await AuthenticationProvider(FirebaseAuth.instance).signIn(email: email, password: password);
+    String? message = await AuthenticationProvider(FirebaseAuth.instance)
+        .signIn(email: email, password: password);
 
     if (message != null) {
       Navigator.pop(context);
@@ -257,7 +311,11 @@ class _LoginPageState extends State<LoginPage> {
     Keybinder.remove(enterButton, onPressed);
 
     dynamic currentWgID;
-    await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser?.uid).get().then((value) {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .get()
+        .then((value) {
       currentWgID = value["wg"];
     });
 
@@ -265,14 +323,14 @@ class _LoginPageState extends State<LoginPage> {
       return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (context) => WGSelection(
-                  username: FirebaseAuth.instance.currentUser!.displayName!)
-          ), (route) => false);
+                  username: FirebaseAuth.instance.currentUser!.displayName!)),
+          (route) => false);
     } else {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (context) => const NavBar(),
-          ), (route) => false
-      );
+          ),
+          (route) => false);
     }
 
     return null;
@@ -299,7 +357,8 @@ class _LoginPageState extends State<LoginPage> {
     if (user == null) {
       Navigator.pop(context);
       return Fluttertoast.showToast(
-        msg: "Error signing in with Google. The email may already be linked to another account.",
+        msg:
+            "Error signing in with Google. The email may already be linked to another account.",
         textColor: Theme.of(context).colorScheme.error,
         gravity: ToastGravity.CENTER,
         toastLength: Toast.LENGTH_LONG,
@@ -307,17 +366,22 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     dynamic currentWgID;
-    await db.collection("users").doc(auth.currentUser?.uid).get().then((snap) => {
-      if (snap.exists) {
-        currentWgID = snap["wg"]
-      } else {
-        db.collection("users").doc(auth.currentUser?.uid).set({
-          "username": user.displayName,
-          "wg": -1,
-        }),
-        currentWgID = -1
-      }
-    });
+    await db
+        .collection("users")
+        .doc(auth.currentUser?.uid)
+        .get()
+        .then((snap) => {
+              if (snap.exists)
+                {currentWgID = snap["wg"]}
+              else
+                {
+                  db.collection("users").doc(auth.currentUser?.uid).set({
+                    "username": user.displayName,
+                    "wg": -1,
+                  }),
+                  currentWgID = -1
+                }
+            });
 
     Navigator.pop(context);
 
@@ -325,14 +389,14 @@ class _LoginPageState extends State<LoginPage> {
       return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (context) => WGSelection(
-                  username: FirebaseAuth.instance.currentUser!.displayName!)
-          ), (route) => false);
+                  username: FirebaseAuth.instance.currentUser!.displayName!)),
+          (route) => false);
     } else {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (context) => const NavBar(),
-          ), (route) => false
-      );
+          ),
+          (route) => false);
     }
 
     return null;
@@ -365,7 +429,8 @@ class _LoginPageState extends State<LoginPage> {
     if (user == null) {
       Navigator.pop(context);
       return Fluttertoast.showToast(
-        msg: "Error signing in with GitHub. The email may already be linked to another account.",
+        msg:
+            "Error signing in with GitHub. The email may already be linked to another account.",
         textColor: Theme.of(context).colorScheme.error,
         gravity: ToastGravity.CENTER,
         toastLength: Toast.LENGTH_LONG,
@@ -373,17 +438,22 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     dynamic currentWgID;
-    await db.collection("users").doc(auth.currentUser?.uid).get().then((snap) => {
-      if (snap.exists) {
-        currentWgID = snap["wg"]
-      } else {
-        db.collection("users").doc(auth.currentUser?.uid).set({
-          "username": user.displayName,
-          "wg": -1,
-        }),
-        currentWgID = -1
-      }
-    });
+    await db
+        .collection("users")
+        .doc(auth.currentUser?.uid)
+        .get()
+        .then((snap) => {
+              if (snap.exists)
+                {currentWgID = snap["wg"]}
+              else
+                {
+                  db.collection("users").doc(auth.currentUser?.uid).set({
+                    "username": user.displayName,
+                    "wg": -1,
+                  }),
+                  currentWgID = -1
+                }
+            });
 
     Navigator.pop(context);
 
@@ -391,17 +461,16 @@ class _LoginPageState extends State<LoginPage> {
       return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (context) => WGSelection(
-                  username: FirebaseAuth.instance.currentUser!.displayName!)
-          ), (route) => false);
+                  username: FirebaseAuth.instance.currentUser!.displayName!)),
+          (route) => false);
     } else {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (context) => const NavBar(),
-          ), (route) => false
-      );
+          ),
+          (route) => false);
     }
 
     return null;
   }
-
 }
