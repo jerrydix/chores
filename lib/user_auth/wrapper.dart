@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-
 class Wrapper extends StatefulWidget {
   const Wrapper({super.key});
 
@@ -28,7 +27,7 @@ class _WrapperState extends State<Wrapper> {
         .listen((event) => updateUserState(event));
   }
 
-  updateUserState(event) {
+  void updateUserState(event) {
     if (firstRun) {
       firstRun = false;
       setState(() {
@@ -39,7 +38,6 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
-
     if (user == null) {
       return const LoginPage();
     }
@@ -73,5 +71,4 @@ class _WrapperState extends State<Wrapper> {
       currentWgID = value["wg"];
     });
   }
-
 }
