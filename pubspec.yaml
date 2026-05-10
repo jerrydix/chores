@@ -36,8 +36,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   data_table_2: ^2.4.1
-  google_fonts: ^6.1.0
-  settings_ui: 2.0.2
+  google_fonts: ^8.1.0
+  settings_ui: ^3.0.1
   shared_preferences: ^2.0.20
   intl: any
   url_launcher: ^6.1.10
@@ -54,11 +54,11 @@ dependencies:
   week_of_year: ^2.2.0
   scroll_to_index: ^3.0.1
   keybinder: ^1.0.1
-  awesome_notifications: 0.10.1
+  awesome_notifications: ^0.11.0
   simple_circular_progress_bar: ^1.0.2
   tuple: ^2.0.2
   quiver: ^3.2.1
-  fluttertoast: ^8.2.8
+  fluttertoast: ^9.0.0
   google_sign_in: ^7.1.1
   flutter_dotenv: ^6.0.0
   flutter_localizations:
