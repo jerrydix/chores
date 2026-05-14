@@ -406,10 +406,8 @@ class _LoginPageState extends State<LoginPage> {
     FirebaseAuth auth = FirebaseAuth.instance;
     FirebaseFirestore db = FirebaseFirestore.instance;
 
-    GithubAuthProvider githubProvider = GithubAuthProvider();
-
     try {
-      await auth.signInWithPopup(githubProvider);
+      await AuthenticationProvider(auth).signInWithGitHub();
     } catch (e) {
       print(e);
     }
