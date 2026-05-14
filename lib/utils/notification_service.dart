@@ -2,13 +2,15 @@ import 'dart:math';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:chores/widgets/navigationbar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/main.dart';
+import 'dart:io';
 
 class NotificationService {
   static Future<void> initializeNotifications() async {
     await AwesomeNotifications().initialize(
-        'resource://drawable/res_app_icon',
+        kIsWeb || Platform.isIOS ? null : 'resource://drawable/res_app_icon',
         [
           NotificationChannel(
               channelGroupKey: "reminder_channel_group",
@@ -103,7 +105,7 @@ class NotificationService {
         category: NotificationCategory.Reminder,
         wakeUpScreen: true,
         backgroundColor: Colors.transparent,
-        icon: 'resource://drawable/res_app_icon',
+        icon: kIsWeb || Platform.isIOS ? null : 'resource://drawable/res_app_icon',
       ),
       schedule: NotificationCalendar(
         minute: 0,

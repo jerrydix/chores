@@ -340,8 +340,6 @@ class _LoginPageState extends State<LoginPage> {
     FirebaseAuth auth = FirebaseAuth.instance;
     FirebaseFirestore db = FirebaseFirestore.instance;
 
-    await AuthenticationProvider(auth).signInWithGoogle();
-
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -351,6 +349,13 @@ class _LoginPageState extends State<LoginPage> {
         );
       },
     );
+
+    try {
+      await AuthenticationProvider(auth).signInWithGoogle();
+    } catch (e) {
+      if (mounted) Navigator.pop(context);
+      return;
+    }
 
     User? user = auth.currentUser;
 
@@ -406,12 +411,6 @@ class _LoginPageState extends State<LoginPage> {
     FirebaseAuth auth = FirebaseAuth.instance;
     FirebaseFirestore db = FirebaseFirestore.instance;
 
-    try {
-      await AuthenticationProvider(auth).signInWithGitHub();
-    } catch (e) {
-      print(e);
-    }
-
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -421,6 +420,13 @@ class _LoginPageState extends State<LoginPage> {
         );
       },
     );
+
+    try {
+      await AuthenticationProvider(auth).signInWithGitHub();
+    } catch (e) {
+      if (mounted) Navigator.pop(context);
+      return;
+    }
 
     User? user = auth.currentUser;
 
