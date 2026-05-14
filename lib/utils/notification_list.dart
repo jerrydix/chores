@@ -2,28 +2,30 @@ import 'dart:math';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:chores/widgets/navigation_bar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/main.dart';
+import 'dart:io';
 
 class NotificationService {
   static Future<void> initializeNotifications() async {
     await AwesomeNotifications().initialize(
-        'resource://drawable/res_app_icon',
+        kIsWeb || Platform.isIOS ? null : 'resource://drawable/res_app_icon',
         [
           NotificationChannel(
-              channelGroupKey: "reminder_channel_group",
-              channelKey: "reminder_channel",
-              channelName: "Chores Reminder",
-              channelDescription: "Reminder channel",
-              defaultColor: Colors.transparent,
-              ledColor: Colors.white,
-              importance: NotificationImportance.Default,
-              defaultPrivacy: NotificationPrivacy.Public,
-              defaultRingtoneType: DefaultRingtoneType.Notification,
-              locked: true,
-              enableVibration: true,
-              playSound: true,
-              criticalAlerts: false,
+            channelGroupKey: "reminder_channel_group",
+            channelKey: "reminder_channel",
+            channelName: "Chores Reminder",
+            channelDescription: "Reminder channel",
+            defaultColor: Colors.transparent,
+            ledColor: Colors.white,
+            importance: NotificationImportance.Default,
+            defaultPrivacy: NotificationPrivacy.Public,
+            defaultRingtoneType: DefaultRingtoneType.Notification,
+            locked: true,
+            enableVibration: true,
+            playSound: true,
+            criticalAlerts: false,
           )
         ],
         channelGroups: [
@@ -103,7 +105,9 @@ class NotificationService {
         category: NotificationCategory.Reminder,
         wakeUpScreen: true,
         backgroundColor: Colors.transparent,
-        icon: 'resource://drawable/res_app_icon',
+        icon: kIsWeb || Platform.isIOS
+            ? null
+            : 'resource://drawable/res_app_icon',
       ),
       schedule: NotificationCalendar(
         minute: 0,

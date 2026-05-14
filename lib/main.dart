@@ -1,6 +1,5 @@
 import 'package:chores/user_auth/wrapper.dart';
 import 'package:chores/utils/notification_list.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'l10n/app_localizations.dart';
@@ -13,7 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationService.initializeNotifications();
   await Firebase.initializeApp(
-    options: kIsWeb ? DefaultFirebaseOptions.currentPlatform : null,
+    options: DefaultFirebaseOptions.currentPlatform,
   );
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((value) => runApp(const MyApp()));
@@ -21,7 +20,8 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
 
   @override
   State<StatefulWidget> createState() => _MyAppState();
@@ -114,7 +114,8 @@ class _MyAppState extends State<MyApp> {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: _locale,
-        home: const Wrapper(), //check if persisted login, then go to home page, if not go to register / login page
+        home:
+            const Wrapper(), //check if persisted login, then go to home page, if not go to register / login page
       );
     });
   }
