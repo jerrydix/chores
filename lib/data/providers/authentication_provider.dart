@@ -32,12 +32,13 @@ class AuthenticationProvider {
   }
 
   Future<UserCredential> signInWithGoogle() async {
-
-    await GoogleSignIn.instance.initialize();
-
     if (kIsWeb) {
       return await firebaseAuth.signInWithPopup(GoogleAuthProvider());
     }
+
+    await GoogleSignIn.instance.initialize(
+      clientId: '173688729888-p0kiaemtugiu7smd9ouodcoqbvuvnbeh.apps.googleusercontent.com',
+    );
 
     final gUser = await GoogleSignIn.instance.authenticate();
 
@@ -51,6 +52,14 @@ class AuthenticationProvider {
     );
 
     return await firebaseAuth.signInWithCredential(credential);
+  }
+
+  Future<UserCredential> signInWithGitHub() async {
+    final githubProvider = GithubAuthProvider();
+    if (kIsWeb) {
+      return await firebaseAuth.signInWithPopup(githubProvider);
+    }
+    return await firebaseAuth.signInWithProvider(githubProvider);
   }
 
   Future<void> sendPasswordResetEmail(String email) async {
