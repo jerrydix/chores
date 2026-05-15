@@ -1,5 +1,6 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
+import 'package:flutter_iconpicker/Models/configuration.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -288,19 +289,21 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> with TickerProvider
                   IconButton(
                     icon: localIconData != null ? Icon(localIconData) : const Icon(Icons.image),
                     onPressed: () async {
-                      IconData? icon = await showIconPicker(
+                      IconPickerIcon? icon = await showIconPicker(
                         context,
-                        iconPackModes: [IconPack.material, IconPack.cupertino, IconPack.fontAwesomeIcons],
-                        title: const Text('Pick an icon'),
-                        closeChild: const Text('Close'),
-                        searchHintText: 'Search icon...',
-                        noResultsText: 'No results found',
-                        iconSize: 50,
-                        adaptiveDialog: true,
-                        iconPickerShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        configuration: SinglePickerConfiguration(
+                          iconPackModes: [IconPack.material, IconPack.cupertino, IconPack.fontAwesomeIcons],
+                          title: const Text('Pick an icon'),
+                          closeChild: const Text('Close'),
+                          searchHintText: 'Search icon...',
+                          noResultsText: 'No results found',
+                          iconSize: 50,
+                          adaptiveDialog: true,
+                          iconPickerShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
                       );
                       setDialogState(() {
-                        localIconData = icon;
+                        localIconData = icon?.data;
                       });
                     },
                   ),
@@ -388,19 +391,21 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> with TickerProvider
               IconButton(
                 icon: localIconData != null ? Icon(localIconData) : const Icon(Icons.image),
                 onPressed: () async {
-                  IconData? icon = await showIconPicker(
+                  IconPickerIcon? icon = await showIconPicker(
                     context,
-                    iconPackModes: [IconPack.material, IconPack.cupertino, IconPack.fontAwesomeIcons],
-                    title: const Text('Pick an icon'),
-                    closeChild: const Text('Close'),
-                    searchHintText: 'Search icon...',
-                    noResultsText: 'No results found',
-                    iconSize: 50,
-                    adaptiveDialog: true,
-                    iconPickerShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    configuration: SinglePickerConfiguration(
+                      iconPackModes: [IconPack.material, IconPack.cupertino, IconPack.fontAwesomeIcons],
+                      title: const Text('Pick an icon'),
+                      closeChild: const Text('Close'),
+                      searchHintText: 'Search icon...',
+                      noResultsText: 'No results found',
+                      iconSize: 50,
+                      adaptiveDialog: true,
+                      iconPickerShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
                   );
                   setDialogState(() {
-                    localIconData = icon;
+                    localIconData = icon?.data;
                   });
                 },
               ),
