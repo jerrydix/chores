@@ -64,9 +64,9 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
     setState(() {
       if (newIndex > oldIndex) newIndex--;
       lists[listIndex].items.insert(
-        newIndex,
-        lists[listIndex].items.removeAt(oldIndex),
-      );
+            newIndex,
+            lists[listIndex].items.removeAt(oldIndex),
+          );
     });
   }
 
@@ -155,8 +155,8 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
             TextButton(
               onPressed: controller.text.trim().isNotEmpty
                   ? () {
-                      setState(
-                          () => lists.add(TaskList(title: controller.text.trim())));
+                      setState(() =>
+                          lists.add(TaskList(title: controller.text.trim())));
                       Navigator.of(ctx).pop();
                     }
                   : null,
@@ -210,9 +210,9 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
                       ? () {
                           setState(() {
                             lists[selectedRoleIndex!].items.add(
-                              TaskItem(controller.text.trim(),
-                                  pickedIcon ?? Icons.task),
-                            );
+                                  TaskItem(controller.text.trim(),
+                                      pickedIcon ?? Icons.task),
+                                );
                             lists[selectedRoleIndex!].isExpanded = true;
                           });
                           Navigator.of(ctx).pop();
@@ -251,9 +251,9 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
                   ? () {
                       setState(() {
                         lists[listIndex].items.add(
-                          TaskItem(controller.text.trim(),
-                              pickedIcon ?? Icons.task),
-                        );
+                              TaskItem(controller.text.trim(),
+                                  pickedIcon ?? Icons.task),
+                            );
                         lists[listIndex].isExpanded = true;
                       });
                       Navigator.of(ctx).pop();
@@ -301,6 +301,8 @@ class _RoleCard extends StatelessWidget {
         children: [
           ListTile(
             leading: IconButton(
+              constraints: const BoxConstraints(),
+              padding: const EdgeInsets.all(8),
               icon: AnimatedRotation(
                 turns: list.isExpanded ? 0.0 : 0.5,
                 duration: const Duration(milliseconds: 200),
@@ -316,21 +318,25 @@ class _RoleCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
+                  constraints: const BoxConstraints(),
+                  padding: const EdgeInsets.all(8),
                   icon: const Icon(Icons.add),
                   tooltip: 'Add Chore',
                   onPressed: onAddChore,
                 ),
                 IconButton(
+                  constraints: const BoxConstraints(),
+                  padding: const EdgeInsets.all(8),
                   icon: const Icon(Icons.delete_outline),
                   tooltip: 'Delete Role',
                   onPressed: onRoleDelete,
                 ),
-                // Drag handle last in trailing so inner task handles align with it.
+                // 40×40 matches icon(24) + padding(8) on each side — aligns
+                // horizontally with the inner task drag handles.
                 ReorderableDragStartListener(
                   index: roleIndex,
-                  child: const SizedBox(
-                    width: 48,
-                    height: 48,
+                  child: const Padding(
+                    padding: EdgeInsets.all(8),
                     child: Icon(Icons.drag_indicator),
                   ),
                 ),
@@ -406,11 +412,12 @@ class _TaskList extends StatelessWidget {
           child: ListTile(
             leading: item.iconData != null ? Icon(item.iconData) : null,
             title: Text(item.label),
-            // Drag handle scoped to the inner ReorderableListView — does not
-            // conflict with the role-level drag handle above.
             trailing: ReorderableDragStartListener(
               index: i,
-              child: const Icon(Icons.drag_handle),
+              child: const Padding(
+                padding: EdgeInsets.all(8),
+                child: Icon(Icons.drag_handle),
+              ),
             ),
           ),
         );
