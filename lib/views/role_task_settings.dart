@@ -76,6 +76,7 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
       appBar: AppBar(title: const Text('Role & Task Settings')),
       body: ReorderableListView.builder(
         onReorder: _onRoleReorder,
+        buildDefaultDragHandles: false,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         itemCount: lists.length,
         itemBuilder: (context, roleIndex) {
