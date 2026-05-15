@@ -313,7 +313,7 @@ class _RoleCard extends StatelessWidget {
                 ),
                 IconButton(
                   icon: AnimatedRotation(
-                    turns: list.isExpanded ? 0.0 : -0.25,
+                    turns: list.isExpanded ? 0.0 : 0.5,
                     duration: const Duration(milliseconds: 200),
                     child: const Icon(Icons.expand_less),
                   ),
@@ -370,6 +370,9 @@ class _TaskList extends StatelessWidget {
       shrinkWrap: true,
       // Disable scrolling — the outer Scaffold/body handles it.
       physics: const NeverScrollableScrollPhysics(),
+      // Suppress the default handle so our explicit ReorderableDragStartListener
+      // is the only one, avoiding the double-burger appearance.
+      buildDefaultDragHandles: false,
       onReorder: onReorder,
       itemCount: items.length,
       itemBuilder: (context, i) {
