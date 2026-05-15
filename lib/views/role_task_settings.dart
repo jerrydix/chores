@@ -300,10 +300,13 @@ class _RoleCard extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
-            // Drag handle scoped to the outer ReorderableListView.
-            leading: ReorderableDragStartListener(
-              index: roleIndex,
-              child: const Icon(Icons.drag_indicator),
+            leading: IconButton(
+              icon: AnimatedRotation(
+                turns: list.isExpanded ? 0.0 : 0.5,
+                duration: const Duration(milliseconds: 200),
+                child: const Icon(Icons.expand_less),
+              ),
+              onPressed: onToggleExpand,
             ),
             title: Text(
               list.title,
@@ -322,14 +325,14 @@ class _RoleCard extends StatelessWidget {
                   tooltip: 'Delete Role',
                   onPressed: onRoleDelete,
                 ),
-                IconButton(
-                  icon: AnimatedRotation(
-                    // 0.0 = up (expanded), 0.5 = down (collapsed, half turn).
-                    turns: list.isExpanded ? 0.0 : 0.5,
-                    duration: const Duration(milliseconds: 200),
-                    child: const Icon(Icons.expand_less),
+                // Drag handle last in trailing so inner task handles align with it.
+                ReorderableDragStartListener(
+                  index: roleIndex,
+                  child: const SizedBox(
+                    width: 48,
+                    height: 48,
+                    child: Icon(Icons.drag_indicator),
                   ),
-                  onPressed: onToggleExpand,
                 ),
               ],
             ),
