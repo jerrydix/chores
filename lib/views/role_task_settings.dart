@@ -1,3 +1,4 @@
+import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:flutter_iconpicker/Models/configuration.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
@@ -6,15 +7,15 @@ import 'package:uuid/uuid.dart';
 
 class TaskItem {
   final String id;
-  final IconData? iconData;
+  final Icon? icon;
   final String label;
 
-  TaskItem(this.label, this.iconData) : id = const Uuid().v4();
+  TaskItem(this.label, this.icon) : id = const Uuid().v4();
 }
 
 class TaskList {
   final String id;
-  String title;
+  final String title;
   final List<TaskItem> items;
   bool isExpanded;
 
@@ -30,68 +31,146 @@ class RoleTaskSettings extends StatefulWidget {
   const RoleTaskSettings({super.key});
 
   @override
-  State<RoleTaskSettings> createState() => _RoleTaskSettingsState();
+  _RoleTaskSettingsState createState() => _RoleTaskSettingsState();
 }
 
-class _RoleTaskSettingsState extends State<RoleTaskSettings> {
+class _RoleTaskSettingsState extends State<RoleTaskSettings>
+    with TickerProviderStateMixin {
   final List<TaskList> lists = [];
 
   @override
   void initState() {
     super.initState();
-    // TODO: initialise from MemberManager / Firestore
     lists.addAll([
-      TaskList(title: 'List A', items: [
-        TaskItem('Item A1', Icons.delete_outlined),
-        TaskItem('Item A2', Icons.clean_hands_outlined),
-        TaskItem('Item A3', Icons.countertops_outlined),
+      TaskList(title: "List A", items: [
+        TaskItem('Item A1', null),
+        TaskItem('Item A2', null),
+        TaskItem('Item A3', null),
       ]),
-      TaskList(title: 'List B', items: [
-        TaskItem('Item B1', Icons.cleaning_services_outlined),
-        TaskItem('Item B2', Icons.recycling),
+      TaskList(title: "List B", items: [
+        TaskItem('Item B1', null),
+        TaskItem('Item B2', null),
       ]),
     ]);
-  }
-
-  void _onRoleReorder(int oldIndex, int newIndex) {
-    setState(() {
-      if (newIndex > oldIndex) newIndex--;
-      lists.insert(newIndex, lists.removeAt(oldIndex));
-    });
-  }
-
-  void _onTaskReorder(int listIndex, int oldIndex, int newIndex) {
-    setState(() {
-      if (newIndex > oldIndex) newIndex--;
-      lists[listIndex].items.insert(
-        newIndex,
-        lists[listIndex].items.removeAt(oldIndex),
-      );
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Role & Task Settings')),
-      body: ReorderableListView.builder(
-        onReorder: _onRoleReorder,
-        buildDefaultDragHandles: false,
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        itemCount: lists.length,
-        itemBuilder: (context, roleIndex) {
-          final list = lists[roleIndex];
-          return _RoleCard(
-            key: ValueKey(list.id),
-            list: list,
-            roleIndex: roleIndex,
-            onTaskReorder: (o, n) => _onTaskReorder(roleIndex, o, n),
-            onTaskDelete: (i) => setState(() => list.items.removeAt(i)),
-            onRoleDelete: () => setState(() => lists.removeAt(roleIndex)),
-            onAddChore: () => _openChoreDialogForList(roleIndex),
-            onToggleExpand: () => setState(() => list.isExpanded = !list.isExpanded),
-          );
-        },
+      body: DragAndDropLists(
+        listSizeAnimationDurationMilliseconds: 0,
+        children: List.generate(
+          lists.length,
+          (listIndex) => DragAndDropList(
+            key: ValueKey(lists[listIndex].id),
+            header: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: _buildCollapsibleHeader(listIndex),
+            ),
+            canDrag: false,
+            contentsWhenEmpty: lists[listIndex].isExpanded
+                ? Container(
+                    padding: const EdgeInsets.all(16),
+                    child: Text(
+                      'No chores for this role',
+                      style: TextStyle(color: Theme.of(context).disabledColor),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+            lastTarget: Container(
+              height: 8,
+              alignment: Alignment.center,
+            ),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainer,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 4,
+                  offset: Offset(2, 2),
+                ),
+              ],
+            ),
+            children: lists[listIndex].isExpanded
+                ? List.generate(
+                    lists[listIndex].items.length,
+                    (itemIndex) {
+                      final item = lists[listIndex].items[itemIndex];
+                      return DragAndDropItem(
+                        key: ValueKey(item.id),
+                        child: Dismissible(
+                          key: ValueKey("dismiss_${item.id}"),
+                          direction: DismissDirection.endToStart,
+                          background: Container(
+                            color: Colors.red,
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child:
+                                const Icon(Icons.delete, color: Colors.white),
+                          ),
+                          onDismissed: (_) {
+                            setState(() {
+                              lists[listIndex].items.removeAt(itemIndex);
+                            });
+                          },
+                          child: _AnimatedListItem(
+                            key: ValueKey("anim_${item.id}"),
+                            child: ListTile(
+                              title: Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Row(
+                                  children: [
+                                    if (item.icon != null) ...[
+                                      item.icon!,
+                                      const SizedBox(width: 10),
+                                    ],
+                                    Text(item.label),
+                                  ],
+                                ),
+                              ),
+                              trailing: const Padding(
+                                padding: EdgeInsets.only(right: 8.0),
+                                child: Icon(Icons.drag_handle),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                : [],
+          ),
+        ),
+        onItemReorder: _onItemReorder,
+        itemDragOnLongPress: false,
+        listDragOnLongPress: false,
+        listPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        contentsWhenEmpty: const Center(
+          child: Text('No lists available. Add a new list!'),
+        ),
+        itemDragHandle: DragHandle(
+          verticalAlignment: DragHandleVerticalAlignment.center,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 30),
+            child: Icon(Icons.drag_handle,
+                color: Colors.white.withValues(alpha: 0.0)),
+          ),
+        ),
+        itemDecorationWhileDragging: BoxDecoration(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.2),
+              blurRadius: 4,
+              offset: Offset(2, 2),
+            ),
+          ],
+        ),
+        onListReorder: (int oldListIndex, int newListIndex) {},
+        // 👇 dynamic height depending on dragging
       ),
       floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: ExpandableFab(
@@ -99,58 +178,70 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
         type: ExpandableFabType.up,
         childrenAnimation: ExpandableFabAnimation.none,
         overlayStyle: ExpandableFabOverlayStyle(
-          color: Theme.of(context).colorScheme.onInverseSurface.withValues(alpha: 0.4),
+          color:
+              Theme.of(context).colorScheme.onInverseSurface.withOpacity(0.4),
         ),
         children: [
-          Row(children: [
-            const Text('Add Role'),
-            const SizedBox(width: 20),
-            FloatingActionButton.small(
-              onPressed: _openRoleDialog,
-              child: const Icon(Icons.person_add_alt_1),
-            ),
-          ]),
-          Row(children: [
-            const Text('Add Chore'),
-            const SizedBox(width: 20),
-            FloatingActionButton.small(
-              onPressed: _openChoreDialog,
-              child: const Icon(Icons.add_task),
-            ),
-          ]),
+          Row(
+            children: [
+              const Text('Add Role'),
+              const SizedBox(width: 20),
+              FloatingActionButton.small(
+                heroTag: 'fab_add_role',
+                onPressed: _openRoleDialog,
+                child: const Icon(Icons.person_add_alt_1),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              const Text('Add Chore'),
+              const SizedBox(width: 20),
+              FloatingActionButton.small(
+                heroTag: 'fab_add_chore',
+                onPressed: _openChoreDialog,
+                child: const Icon(Icons.add_task),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  Future<void> _openRoleDialog() async {
-    final controller = TextEditingController();
-    await showDialog<void>(
+  Future _openRoleDialog() {
+    final TextEditingController roleController = TextEditingController();
+
+    return showDialog(
       context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDialog) => AlertDialog(
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
           title: const Text('Add Role'),
           content: TextField(
-            controller: controller,
+            controller: roleController,
             decoration: const InputDecoration(hintText: 'Role Name'),
-            onChanged: (_) => setDialog(() {}),
-            onSubmitted: (v) {
-              if (v.trim().isNotEmpty) {
-                setState(() => lists.add(TaskList(title: v.trim())));
-                Navigator.of(ctx).pop();
+            onChanged: (value) => setDialogState(() {}),
+            onSubmitted: (value) {
+              if (value.trim().isNotEmpty) {
+                setState(() {
+                  lists.add(TaskList(title: value.trim()));
+                });
+                Navigator.of(context).pop();
               }
             },
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: controller.text.trim().isNotEmpty
+              onPressed: roleController.text.trim().isNotEmpty
                   ? () {
-                      setState(() => lists.add(TaskList(title: controller.text.trim())));
-                      Navigator.of(ctx).pop();
+                      setState(() {
+                        lists.add(TaskList(title: roleController.text.trim()));
+                      });
+                      Navigator.of(context).pop();
                     }
                   : null,
               child: const Text('Add'),
@@ -161,52 +252,94 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
     );
   }
 
-  Future<void> _openChoreDialog() async {
-    final controller = TextEditingController();
+  Future _openChoreDialog() {
+    final TextEditingController choreController = TextEditingController();
     int? selectedRoleIndex;
-    IconData? pickedIcon;
+    IconData? localIconData;
 
-    await showDialog<void>(
+    return showDialog(
       context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDialog) => AlertDialog(
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
           title: const Text('Add Chore'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               DropdownButtonFormField<int>(
                 decoration: const InputDecoration(labelText: 'Select Role'),
-                initialValue: selectedRoleIndex,
-                items: [
-                  for (int i = 0; i < lists.length; i++)
-                    DropdownMenuItem(value: i, child: Text(lists[i].title)),
-                ],
-                onChanged: (v) => setDialog(() => selectedRoleIndex = v),
+                value: selectedRoleIndex,
+                items: List.generate(
+                  lists.length,
+                  (index) => DropdownMenuItem(
+                    value: index,
+                    child: Text(lists[index].title),
+                  ),
+                ),
+                onChanged: (value) {
+                  setDialogState(() {
+                    selectedRoleIndex = value;
+                  });
+                },
               ),
               const SizedBox(height: 20),
-              _ChoreInputRow(
-                controller: controller,
-                iconData: pickedIcon,
-                onChanged: (_) => setDialog(() {}),
-                onIconPicked: (d) => setDialog(() => pickedIcon = d),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: choreController,
+                      decoration: const InputDecoration(hintText: 'Chore Name'),
+                      onChanged: (value) => setDialogState(() {}),
+                    ),
+                  ),
+                  IconButton(
+                    icon: localIconData != null
+                        ? Icon(localIconData)
+                        : const Icon(Icons.image),
+                    onPressed: () async {
+                      IconPickerIcon? icon = await showIconPicker(
+                        context,
+                        configuration: SinglePickerConfiguration(
+                          iconPackModes: [
+                            IconPack.material,
+                            IconPack.cupertino,
+                            IconPack.fontAwesomeIcons
+                          ],
+                          title: const Text('Pick an icon'),
+                          closeChild: const Text('Close'),
+                          searchHintText: 'Search icon...',
+                          noResultsText: 'No results found',
+                          iconSize: 50,
+                          adaptiveDialog: true,
+                          iconPickerShape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                      );
+                      setDialogState(() {
+                        localIconData = icon?.data;
+                      });
+                    },
+                  ),
+                ],
               ),
             ],
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: controller.text.trim().isNotEmpty && selectedRoleIndex != null
+              onPressed: (choreController.text.trim().isNotEmpty &&
+                      selectedRoleIndex != null)
                   ? () {
                       setState(() {
-                        lists[selectedRoleIndex!].items.add(
-                          TaskItem(controller.text.trim(), pickedIcon ?? Icons.task),
-                        );
+                        localIconData ??= Icons.task;
+                        lists[selectedRoleIndex!].items.add(TaskItem(
+                            choreController.text.trim(), Icon(localIconData)));
                         lists[selectedRoleIndex!].isExpanded = true;
                       });
-                      Navigator.of(ctx).pop();
+                      Navigator.of(context).pop();
+                      setState(() {});
                     }
                   : null,
               child: const Text('Add'),
@@ -217,246 +350,186 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
     );
   }
 
-  Future<void> _openChoreDialogForList(int listIndex) async {
-    final controller = TextEditingController();
-    IconData? pickedIcon;
-
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDialog) => AlertDialog(
-          title: Text('Add Chore to ${lists[listIndex].title}'),
-          content: _ChoreInputRow(
-            controller: controller,
-            iconData: pickedIcon,
-            onChanged: (_) => setDialog(() {}),
-            onIconPicked: (d) => setDialog(() => pickedIcon = d),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: controller.text.trim().isNotEmpty
-                  ? () {
-                      setState(() {
-                        lists[listIndex].items.add(
-                          TaskItem(controller.text.trim(), pickedIcon ?? Icons.task),
-                        );
-                        lists[listIndex].isExpanded = true;
-                      });
-                      Navigator.of(ctx).pop();
-                    }
-                  : null,
-              child: const Text('Add'),
-            ),
-          ],
-        ),
+  Widget _buildCollapsibleHeader(int index) {
+    final list = lists[index];
+    return ListTile(
+      title: Text(list.title),
+      leading: IconButton(
+        icon: Icon(list.isExpanded ? Icons.expand_less : Icons.expand_more),
+        onPressed: () {
+          setState(() {
+            list.isExpanded = !list.isExpanded;
+          });
+        },
       ),
-    );
-  }
-}
-
-// ─── Role card ───────────────────────────────────────────────────────────────
-
-class _RoleCard extends StatelessWidget {
-  final TaskList list;
-  final int roleIndex;
-  final void Function(int oldIdx, int newIdx) onTaskReorder;
-  final void Function(int taskIdx) onTaskDelete;
-  final VoidCallback onRoleDelete;
-  final VoidCallback onAddChore;
-  final VoidCallback onToggleExpand;
-
-  const _RoleCard({
-    super.key,
-    required this.list,
-    required this.roleIndex,
-    required this.onTaskReorder,
-    required this.onTaskDelete,
-    required this.onRoleDelete,
-    required this.onAddChore,
-    required this.onToggleExpand,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      elevation: 0,
-      color: Theme.of(context).colorScheme.surfaceContainer,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Column(
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          ListTile(
-            // Drag handle for reordering roles — scoped to the outer ReorderableListView.
-            leading: ReorderableDragStartListener(
-              index: roleIndex,
-              child: const Icon(Icons.drag_indicator),
-            ),
-            title: Text(
-              list.title,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  tooltip: 'Add Chore',
-                  onPressed: onAddChore,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete_outline),
-                  tooltip: 'Delete Role',
-                  onPressed: onRoleDelete,
-                ),
-                IconButton(
-                  icon: AnimatedRotation(
-                    turns: list.isExpanded ? 0.0 : 0.5,
-                    duration: const Duration(milliseconds: 200),
-                    child: const Icon(Icons.expand_less),
-                  ),
-                  onPressed: onToggleExpand,
-                ),
-              ],
-            ),
+          IconButton(
+            icon: const Icon(Icons.add),
+            tooltip: 'Add Chore',
+            onPressed: () => _openChoreDialogForList(index),
           ),
-          AnimatedSize(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut,
-            child: list.isExpanded
-                ? _TaskList(
-                    key: ValueKey('tasks_${list.id}'),
-                    items: list.items,
-                    onReorder: onTaskReorder,
-                    onDelete: onTaskDelete,
-                  )
-                : const SizedBox.shrink(),
+          IconButton(
+            icon: const Icon(Icons.delete),
+            tooltip: 'Delete Role',
+            onPressed: () {
+              setState(() {
+                lists.removeAt(index);
+              });
+            },
           ),
         ],
       ),
     );
   }
-}
 
-// ─── Task list ────────────────────────────────────────────────────────────────
+  Future _openChoreDialogForList(int listIndex) {
+    final TextEditingController choreController = TextEditingController();
+    IconData? localIconData;
 
-class _TaskList extends StatelessWidget {
-  final List<TaskItem> items;
-  final void Function(int oldIdx, int newIdx) onReorder;
-  final void Function(int idx) onDelete;
-
-  const _TaskList({
-    super.key,
-    required this.items,
-    required this.onReorder,
-    required this.onDelete,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (items.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.all(16),
-        child: Text(
-          'No chores for this role',
-          style: TextStyle(color: Theme.of(context).disabledColor),
-        ),
-      );
-    }
-
-    return ReorderableListView.builder(
-      shrinkWrap: true,
-      // Disable scrolling — the outer Scaffold/body handles it.
-      physics: const NeverScrollableScrollPhysics(),
-      // Suppress the default handle so our explicit ReorderableDragStartListener
-      // is the only one, avoiding the double-burger appearance.
-      buildDefaultDragHandles: false,
-      onReorder: onReorder,
-      itemCount: items.length,
-      itemBuilder: (context, i) {
-        final item = items[i];
-        return Dismissible(
-          // Dismissible key doubles as the ReorderableListView item key.
-          key: ValueKey(item.id),
-          direction: DismissDirection.endToStart,
-          background: Container(
-            color: Colors.red,
-            alignment: Alignment.centerRight,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: const Icon(Icons.delete, color: Colors.white),
+    return showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: Text('Add Chore to ${lists[listIndex].title}'),
+          content: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: choreController,
+                  decoration: const InputDecoration(hintText: 'Chore Name'),
+                  onChanged: (value) => setDialogState(() {}),
+                ),
+              ),
+              IconButton(
+                icon: localIconData != null
+                    ? Icon(localIconData)
+                    : const Icon(Icons.image),
+                onPressed: () async {
+                  IconPickerIcon? icon = await showIconPicker(
+                    context,
+                    configuration: SinglePickerConfiguration(
+                      iconPackModes: [
+                        IconPack.material,
+                        IconPack.cupertino,
+                        IconPack.fontAwesomeIcons
+                      ],
+                      title: const Text('Pick an icon'),
+                      closeChild: const Text('Close'),
+                      searchHintText: 'Search icon...',
+                      noResultsText: 'No results found',
+                      iconSize: 50,
+                      adaptiveDialog: true,
+                      iconPickerShape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                  );
+                  setDialogState(() {
+                    localIconData = icon?.data;
+                  });
+                },
+              ),
+            ],
           ),
-          onDismissed: (_) => onDelete(i),
-          child: ListTile(
-            leading: item.iconData != null ? Icon(item.iconData) : null,
-            title: Text(item.label),
-            // Drag handle scoped to the inner ReorderableListView — does not
-            // conflict with the role-level drag handle above.
-            trailing: ReorderableDragStartListener(
-              index: i,
-              child: const Icon(Icons.drag_handle),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
             ),
-          ),
-        );
-      },
+            TextButton(
+              onPressed: choreController.text.trim().isNotEmpty
+                  ? () {
+                      setState(() {
+                        localIconData ??= Icons.task;
+                        lists[listIndex].items.add(TaskItem(
+                            choreController.text.trim(), Icon(localIconData)));
+                        lists[listIndex].isExpanded = true;
+                      });
+                      Navigator.of(context).pop();
+                    }
+                  : null,
+              child: const Text('Add'),
+            ),
+          ],
+        ),
+      ),
     );
+  }
+
+  void _onItemReorder(
+      int oldItemIndex, int oldListIndex, int newItemIndex, int newListIndex) {
+    setState(() {
+      final movedItem = lists[oldListIndex].items.removeAt(oldItemIndex);
+      lists[newListIndex].items.insert(newItemIndex, movedItem);
+    });
+  }
+
+  void _addList() {
+    setState(() {
+      lists.add(TaskList(title: "List ${lists.length + 1}"));
+    });
+  }
+
+  void _addItemToFirstList() {
+    if (lists.isNotEmpty) {
+      setState(() {
+        lists[0].items.add(TaskItem('Item ${lists[0].items.length + 1}', null));
+      });
+    }
+  }
+
+  void _removeItem(int listIndex, int itemIndex) {
+    lists[listIndex].items.removeAt(itemIndex);
+    setState(() {});
   }
 }
 
-// ─── Shared chore-input row ───────────────────────────────────────────────────
+class _AnimatedListItem extends StatefulWidget {
+  final Widget child;
 
-class _ChoreInputRow extends StatelessWidget {
-  final TextEditingController controller;
-  final IconData? iconData;
-  final ValueChanged<String> onChanged;
-  final ValueChanged<IconData?> onIconPicked;
+  const _AnimatedListItem({super.key, required this.child});
 
-  const _ChoreInputRow({
-    required this.controller,
-    required this.iconData,
-    required this.onChanged,
-    required this.onIconPicked,
-  });
+  @override
+  State<_AnimatedListItem> createState() => _AnimatedListItemState();
+}
+
+class _AnimatedListItemState extends State<_AnimatedListItem>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
+    _controller.forward();
+  }
+
+  void remove() {
+    _controller.reverse();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: controller,
-            decoration: const InputDecoration(hintText: 'Chore Name'),
-            onChanged: onChanged,
-          ),
-        ),
-        IconButton(
-          icon: Icon(iconData ?? Icons.image),
-          onPressed: () async {
-            final picked = await showIconPicker(
-              context,
-              configuration: SinglePickerConfiguration(
-                iconPackModes: [
-                  IconPack.material,
-                  IconPack.cupertino,
-                  IconPack.fontAwesomeIcons,
-                ],
-                title: const Text('Pick an icon'),
-                closeChild: const Text('Close'),
-                searchHintText: 'Search icon...',
-                noResultsText: 'No results found',
-                iconSize: 50,
-                adaptiveDialog: true,
-                iconPickerShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            );
-            onIconPicked(picked?.data);
-          },
-        ),
-      ],
+    return SizeTransition(
+      sizeFactor: CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeOut,
+        reverseCurve: Curves.easeIn,
+      ),
+      child: FadeTransition(
+        opacity: _controller,
+        child: widget.child,
+      ),
     );
   }
 }
