@@ -1,8 +1,9 @@
-import 'package:flutter_iconpicker/flutter_iconpicker.dart';
-import 'package:flutter_iconpicker/Models/configuration.dart';
+import 'package:chores/utils/icon_picker.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:chores/member_manager.dart';
 
 class TaskItem {
   final String id;
@@ -15,11 +16,13 @@ class TaskItem {
 class TaskList {
   final String id;
   String title;
+  IconData? iconData;
   final List<TaskItem> items;
   bool isExpanded;
 
   TaskList({
     required this.title,
+    this.iconData,
     List<TaskItem>? items,
     this.isExpanded = true,
   })  : id = const Uuid().v4(),
@@ -35,22 +38,100 @@ class RoleTaskSettings extends StatefulWidget {
 
 class _RoleTaskSettingsState extends State<RoleTaskSettings> {
   final List<TaskList> lists = [];
+  bool _loading = true;
 
   @override
   void initState() {
     super.initState();
-    // TODO: initialise from MemberManager / Firestore
-    lists.addAll([
-      TaskList(title: 'List A', items: [
-        TaskItem('Item A1', Icons.delete_outlined),
-        TaskItem('Item A2', Icons.clean_hands_outlined),
-        TaskItem('Item A3', Icons.countertops_outlined),
-      ]),
-      TaskList(title: 'List B', items: [
-        TaskItem('Item B1', Icons.cleaning_services_outlined),
-        TaskItem('Item B2', Icons.recycling),
-      ]),
-    ]);
+    _loadFromFirestore();
+  }
+
+  Future<void> _loadFromFirestore() async {
+    final manager = MemberManager.instance;
+    final wgID = manager.currentWgID;
+    if (wgID == "-1") {
+      setState(() => _loading = false);
+      return;
+    }
+
+    final doc = await FirebaseFirestore.instance
+        .collection("wgs")
+        .doc(wgID)
+        .get();
+    final data = doc.data();
+    final rawConfig = data?["rolesConfig"];
+
+    final loaded = <TaskList>[];
+    if (rawConfig is List) {
+      for (final roleEntry in rawConfig) {
+        final roleName = roleEntry["name"] as String;
+        final rawTasks = roleEntry["tasks"] as List? ?? [];
+        final items = rawTasks.map<TaskItem>((t) {
+          final codePoint = t["codePoint"] as int?;
+          final fontFamily = t["fontFamily"] as String?;
+          final icon = codePoint != null
+              ? IconData(codePoint, fontFamily: fontFamily ?? 'MaterialIcons')
+              : null;
+          return TaskItem(t["name"] as String, icon);
+        }).toList();
+        final roleIconCodePoint = roleEntry["iconCodePoint"] as int?;
+        final roleIconFontFamily = roleEntry["iconFontFamily"] as String?;
+        final roleIcon = roleIconCodePoint != null
+            ? IconData(roleIconCodePoint,
+                fontFamily: roleIconFontFamily ?? 'MaterialIcons')
+            : null;
+        loaded.add(TaskList(title: roleName, iconData: roleIcon, items: items));
+      }
+    }
+
+    setState(() {
+      lists
+        ..clear()
+        ..addAll(loaded);
+      _loading = false;
+    });
+  }
+
+  Future<void> _saveToFirestore() async {
+    final manager = MemberManager.instance;
+    final wgID = manager.currentWgID;
+    if (wgID == "-1") return;
+
+    final rolesConfig = lists.map((role) => {
+          "name": role.title,
+          "iconCodePoint": role.iconData?.codePoint,
+          "iconFontFamily": role.iconData?.fontFamily,
+          "tasks": role.items.map((task) => {
+                "name": task.label,
+                "codePoint": task.iconData?.codePoint,
+                "fontFamily": task.iconData?.fontFamily,
+              }).toList(),
+        }).toList();
+
+    // Rebuild tasks completion map: keep existing values, add new entries as false
+    final existingTasks = Map<String, Map<String, bool>>.from(
+      manager.tasks.map((k, v) => MapEntry(k, Map<String, bool>.from(v))),
+    );
+    final updatedTasks = <String, Map<String, bool>>{};
+    for (final role in lists) {
+      final existing = existingTasks[role.title] ?? {};
+      updatedTasks[role.title] = {
+        for (final task in role.items)
+          task.label: existing[task.label] ?? false,
+      };
+    }
+
+    await FirebaseFirestore.instance.collection("wgs").doc(wgID).update({
+      "rolesConfig": rolesConfig,
+      "tasks": updatedTasks,
+    });
+
+    // Re-fetch so all manager fields (taskIcons, roleIcons, primaryRoles, etc.)
+    // are consistent before listeners rebuild their UI.
+    final fut = manager.fetchWGData();
+    manager.dataFuture = fut;
+    await fut;
+    manager.refresh();
   }
 
   void _onRoleReorder(int oldIndex, int newIndex) {
@@ -58,6 +139,7 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
       if (newIndex > oldIndex) newIndex--;
       lists.insert(newIndex, lists.removeAt(oldIndex));
     });
+    _saveToFirestore();
   }
 
   void _onTaskReorder(int listIndex, int oldIndex, int newIndex) {
@@ -68,13 +150,37 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
             lists[listIndex].items.removeAt(oldIndex),
           );
     });
+    _saveToFirestore();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Scaffold(
       appBar: AppBar(title: const Text('Role & Task Settings')),
-      body: ReorderableListView.builder(
+      body: lists.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.assignment_outlined,
+                      size: 64,
+                      color: Theme.of(context).colorScheme.outlineVariant),
+                  const SizedBox(height: 16),
+                  Text('No roles yet',
+                      style: Theme.of(context).textTheme.titleMedium),
+                  const SizedBox(height: 8),
+                  Text('Tap + to add a role or chore',
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.outline)),
+                ],
+              ),
+            )
+          : ReorderableListView.builder(
         onReorder: _onRoleReorder,
         buildDefaultDragHandles: false,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -86,11 +192,18 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
             list: list,
             roleIndex: roleIndex,
             onTaskReorder: (o, n) => _onTaskReorder(roleIndex, o, n),
-            onTaskDelete: (i) => setState(() => list.items.removeAt(i)),
-            onRoleDelete: () => setState(() => lists.removeAt(roleIndex)),
+            onTaskDelete: (i) {
+              setState(() => list.items.removeAt(i));
+              _saveToFirestore();
+            },
+            onRoleDelete: () {
+              setState(() => lists.removeAt(roleIndex));
+              _saveToFirestore();
+            },
             onAddChore: () => _openChoreDialogForList(roleIndex),
             onToggleExpand: () =>
                 setState(() => list.isExpanded = !list.isExpanded),
+            onIconTap: () => _pickRoleIcon(roleIndex),
           );
         },
       ),
@@ -131,21 +244,40 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
 
   Future<void> _openRoleDialog() async {
     final controller = TextEditingController();
+    IconData? pickedIcon;
     await showDialog<void>(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialog) => AlertDialog(
           title: const Text('Add Role'),
-          content: TextField(
-            controller: controller,
-            decoration: const InputDecoration(hintText: 'Role Name'),
-            onChanged: (_) => setDialog(() {}),
-            onSubmitted: (v) {
-              if (v.trim().isNotEmpty) {
-                setState(() => lists.add(TaskList(title: v.trim())));
-                Navigator.of(ctx).pop();
-              }
-            },
+          content: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  decoration: const InputDecoration(hintText: 'Role Name'),
+                  onChanged: (_) => setDialog(() {}),
+                  onSubmitted: (v) {
+                    if (v.trim().isNotEmpty) {
+                      setState(() => lists.add(
+                          TaskList(title: v.trim(), iconData: pickedIcon)));
+                      _saveToFirestore();
+                      Navigator.of(ctx).pop();
+                    }
+                  },
+                ),
+              ),
+              IconButton(
+                icon: Icon(pickedIcon ?? Icons.image_outlined),
+                onPressed: () async {
+                  final picked = await showMaterialIconPicker(
+                    ctx,
+                    title: 'Pick Role Icon',
+                  );
+                  setDialog(() => pickedIcon = picked);
+                },
+              ),
+            ],
           ),
           actions: [
             TextButton(
@@ -155,8 +287,10 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
             TextButton(
               onPressed: controller.text.trim().isNotEmpty
                   ? () {
-                      setState(() =>
-                          lists.add(TaskList(title: controller.text.trim())));
+                      setState(() => lists.add(TaskList(
+                          title: controller.text.trim(),
+                          iconData: pickedIcon)));
+                      _saveToFirestore();
                       Navigator.of(ctx).pop();
                     }
                   : null,
@@ -166,6 +300,17 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
         ),
       ),
     );
+  }
+
+  Future<void> _pickRoleIcon(int listIndex) async {
+    final picked = await showMaterialIconPicker(
+      context,
+      title: 'Pick Role Icon',
+    );
+    if (picked != null) {
+      setState(() => lists[listIndex].iconData = picked);
+      _saveToFirestore();
+    }
   }
 
   Future<void> _openChoreDialog() async {
@@ -215,6 +360,7 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
                                 );
                             lists[selectedRoleIndex!].isExpanded = true;
                           });
+                          _saveToFirestore();
                           Navigator.of(ctx).pop();
                         }
                       : null,
@@ -256,6 +402,7 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
                             );
                         lists[listIndex].isExpanded = true;
                       });
+                      _saveToFirestore();
                       Navigator.of(ctx).pop();
                     }
                   : null,
@@ -278,6 +425,7 @@ class _RoleCard extends StatelessWidget {
   final VoidCallback onRoleDelete;
   final VoidCallback onAddChore;
   final VoidCallback onToggleExpand;
+  final VoidCallback onIconTap;
 
   const _RoleCard({
     super.key,
@@ -288,6 +436,7 @@ class _RoleCard extends StatelessWidget {
     required this.onRoleDelete,
     required this.onAddChore,
     required this.onToggleExpand,
+    required this.onIconTap,
   });
 
   @override
@@ -296,7 +445,7 @@ class _RoleCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 6),
       elevation: 0,
       color: Theme.of(context).colorScheme.surfaceContainer,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Column(
         children: [
           ListTile(
@@ -310,9 +459,29 @@ class _RoleCard extends StatelessWidget {
               ),
               onPressed: onToggleExpand,
             ),
-            title: Text(
-              list.title,
-              style: const TextStyle(fontWeight: FontWeight.w600),
+            title: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onTap: onIconTap,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Icon(
+                      list.iconData ?? Icons.add_reaction_outlined,
+                      size: 22,
+                      color: list.iconData != null
+                          ? null
+                          : Theme.of(context).colorScheme.outline,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    list.title,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -410,7 +579,12 @@ class _TaskList extends StatelessWidget {
           ),
           onDismissed: (_) => onDelete(i),
           child: ListTile(
-            leading: item.iconData != null ? Icon(item.iconData) : null,
+            leading: item.iconData != null
+                ? Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Icon(item.iconData),
+                  )
+                : null,
             title: Text(item.label),
             trailing: ReorderableDragStartListener(
               index: i,
@@ -455,26 +629,11 @@ class _ChoreInputRow extends StatelessWidget {
         IconButton(
           icon: Icon(iconData ?? Icons.image),
           onPressed: () async {
-            final picked = await showIconPicker(
+            final picked = await showMaterialIconPicker(
               context,
-              configuration: SinglePickerConfiguration(
-                iconPackModes: [
-                  IconPack.material,
-                  IconPack.cupertino,
-                  IconPack.fontAwesomeIcons,
-                ],
-                title: const Text('Pick an icon'),
-                closeChild: const Text('Close'),
-                searchHintText: 'Search icon...',
-                noResultsText: 'No results found',
-                iconSize: 50,
-                adaptiveDialog: true,
-                iconPickerShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+              title: 'Pick an icon',
             );
-            onIconPicked(picked?.data);
+            onIconPicked(picked);
           },
         ),
       ],

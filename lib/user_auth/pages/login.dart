@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: InputDecoration(
                       hintText: AppLocalizations.of(context)!.email,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                     ),
                   ),
@@ -110,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(28),
                   child: Image.asset(
                     "assets/logo.png",
                     width: 125,
@@ -149,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                         onTap: () {
                           openForgotPasswordDialog();
                         },
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(8),
                         child: Text(
                           loc.forgot_pw,
                           style: TextStyle(
@@ -266,7 +266,7 @@ class _LoginPageState extends State<LoginPage> {
                                   builder: (context) => const SignUpPage()),
                               (route) => false);
                         },
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(8),
                         child: Text(
                           loc.signup_b,
                           style: TextStyle(

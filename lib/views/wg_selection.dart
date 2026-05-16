@@ -81,7 +81,7 @@ class _WGSelectionState extends State<WGSelection> {
                   decoration: InputDecoration(
                     hintText: AppLocalizations.of(context)!.wg_name,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                   ),
                 ),
@@ -92,10 +92,10 @@ class _WGSelectionState extends State<WGSelection> {
                       title: Text(AppLocalizations.of(context)!.wg_use_template),
                       //contentPadding: const EdgeInsets.all(5),
                       checkboxShape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(6),
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                       value: useWgTemplate,
                       onChanged: (var value) {
@@ -143,7 +143,8 @@ class _WGSelectionState extends State<WGSelection> {
                         "name": _wgNameController.text,
                         "count": 1,
                         "cw": DateTime.now().weekOfYear,
-                        "tasks": useWgTemplate ? List.filled(24, false) : [],
+                        "tasks": <String, dynamic>{},
+                        "rolesConfig": <dynamic>[],
                       });
 
                       var wgID = "";
@@ -190,45 +191,41 @@ class _WGSelectionState extends State<WGSelection> {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return SelectionArea(
-                child: Scaffold(
-                    appBar: AppBar(
-                      title: Text(AppLocalizations.of(context)!.select_wg),
-                    ),
-                    body: const Center(child: CircularProgressIndicator())));
-          }
-
-          return SelectionArea(
-              child: Scaffold(
+            return Scaffold(
                 appBar: AppBar(
                   title: Text(AppLocalizations.of(context)!.select_wg),
-                  actions: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: ElevatedButton(onPressed: () {
-                        openLogoutDialog();
-                      }, child: Text(AppLocalizations.of(context)!.logout)),
-                    ),
-                  ],
                 ),
-                body: ListView.separated(
-                  //padding: const EdgeInsets.all(8),
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return WGListTile(name: snapshot.data!.docs[index]["name"], count: snapshot.data!.docs[index]["count"], uid: snapshot.data!.docs[index].id, username: widget.username);
-                  },
-                  separatorBuilder: (BuildContext context, int index) => const Divider(
-                    indent: 10,
-                    endIndent: 10,
-                  ),
+                body: const Center(child: CircularProgressIndicator()));
+          }
+
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(AppLocalizations.of(context)!.select_wg),
+              actions: <Widget>[
+                Container(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: ElevatedButton(onPressed: () {
+                    openLogoutDialog();
+                  }, child: Text(AppLocalizations.of(context)!.logout)),
                 ),
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () {
-                    openNewWGDialog();
-                  },
-                  child: const Icon(Icons.add),
-                ),
-              )
+              ],
+            ),
+            body: ListView.separated(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (BuildContext context, int index) {
+                return WGListTile(name: snapshot.data!.docs[index]["name"], count: snapshot.data!.docs[index]["count"], uid: snapshot.data!.docs[index].id, username: widget.username);
+              },
+              separatorBuilder: (BuildContext context, int index) => const Divider(
+                indent: 10,
+                endIndent: 10,
+              ),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                openNewWGDialog();
+              },
+              child: const Icon(Icons.add),
+            ),
           );
         },
       );

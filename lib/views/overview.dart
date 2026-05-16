@@ -1,5 +1,4 @@
 import 'package:chores/member_manager.dart';
-import 'package:chores/utils/icon_converter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
@@ -157,8 +156,14 @@ class _OverviewState extends State<Overview> {
       }
       //print(DateTime.now().weekOfYear);
 
-      var currentRoles = manager.choreAssigner.assignRoles(i + 1);
+      final currentRoles = manager.choreAssigner?.assignRoles(i + 1) ?? {};
       allRoles.add(currentRoles);
+
+      // Build sortedNames the same way _generateColumns() does so cells align
+      final sortedNames = <String>[];
+      if (manager.active) sortedNames.add(manager.username);
+      sortedNames.addAll(manager.members);
+
       List<DataCell> cells = [];
       cells.add(DataCell(
           Container(
@@ -175,25 +180,19 @@ class _OverviewState extends State<Overview> {
                   child: Text((i + 1).toString(),
                       style: const TextStyle(
                           fontWeight: FontWeight.bold)))),
-          onTap: () {})
-      );
+          onTap: () {}));
 
-      List<DataCell> currentCells = currentRoles.entries.map((entry) {
-        List<Icon> icons = entry.value.map((role) {
-          return Icon(IconConverter.stringToIcon(role.split("\$").last));
-        }).toList();
-
-        return DataCell(
-          Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: icons,
-            ),
-          ), onTap: () {},
-        );
-      }).toList();
-
-      cells.addAll(currentCells);
+      for (final name in sortedNames) {
+        final roles = currentRoles[name] ?? [];
+        final icons = roles
+            .map((role) =>
+                Icon(manager.roleIcons[role] ?? Icons.work_outline))
+            .toList();
+        cells.add(DataCell(
+          Center(child: Row(mainAxisAlignment: MainAxisAlignment.center, children: icons)),
+          onTap: () {},
+        ));
+      }
 
 
       // for (var roles in allRoles.keys) {
@@ -262,10 +261,10 @@ class _OverviewState extends State<Overview> {
 
   Future _scrollToCurrentWeek() async {
     await Future.delayed(const Duration(seconds: 1), () {
+      if (!mounted || !verticalController.hasClients) return;
       verticalController.animateTo(rowHeight * scrollOffset,
           duration: const Duration(seconds: 1), curve: Curves.ease);
     });
-
   }
 
   @override
