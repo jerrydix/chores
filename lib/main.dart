@@ -79,6 +79,16 @@ class _MyAppState extends State<MyApp> {
           _locale = const Locale('ru');
           break;
         }
+      case 3:
+        {
+          _locale = const Locale('zh');
+          break;
+        }
+      case 4:
+        {
+          _locale = const Locale('el');
+          break;
+        }
     }
 
     switch (UserPreferences.getTheme()) {

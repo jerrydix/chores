@@ -28,7 +28,7 @@ enum Intervals { onceBegin, onceMiddle, onceEnd, twice, every }
 
 enum Themes { system, light, dark }
 
-enum Languages { en, de, ru }
+enum Languages { en, de, ru, zh, el }
 
 enum AlgorithmChoice { rotating, fixed, random }
 
@@ -169,6 +169,12 @@ class _SettingsState extends State<Settings> {
       if (Intl.getCurrentLocale() == "ru") {
         UserPreferences.setLanguage(2);
       }
+      if (Intl.getCurrentLocale() == "zh") {
+        UserPreferences.setLanguage(3);
+      }
+      if (Intl.getCurrentLocale() == "el") {
+        UserPreferences.setLanguage(4);
+      }
     }
     switch (UserPreferences.getLanguage()) {
       case 0:
@@ -190,6 +196,20 @@ class _SettingsState extends State<Settings> {
           currentLanguage = currentLanguageValue = const Text('Русский');
           currentLocale = const Locale('ru');
           _language = Languages.ru;
+          break;
+        }
+      case 3:
+        {
+          currentLanguage = currentLanguageValue = const Text('中文（简体）');
+          currentLocale = const Locale('zh');
+          _language = Languages.zh;
+          break;
+        }
+      case 4:
+        {
+          currentLanguage = currentLanguageValue = const Text('Ελληνικά');
+          currentLocale = const Locale('el');
+          _language = Languages.el;
           break;
         }
     }
@@ -579,6 +599,34 @@ class _SettingsState extends State<Settings> {
                         _language = value;
                       });
                     }),
+                RadioListTile<Languages>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    title: const Text("中文（简体）"),
+                    value: Languages.zh,
+                    groupValue: _language,
+                    onChanged: (value) {
+                      currentLocale = const Locale('zh');
+                      setState(() {
+                        currentLanguage = const Text("中文（简体）");
+                        _language = value;
+                      });
+                    }),
+                RadioListTile<Languages>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    title: const Text("Ελληνικά"),
+                    value: Languages.el,
+                    groupValue: _language,
+                    onChanged: (value) {
+                      currentLocale = const Locale('el');
+                      setState(() {
+                        currentLanguage = const Text("Ελληνικά");
+                        _language = value;
+                      });
+                    }),
                 TextButton(
                     onPressed: () async {
                       switch (_language) {
@@ -595,6 +643,16 @@ class _SettingsState extends State<Settings> {
                         case Languages.ru:
                           {
                             await UserPreferences.setLanguage(2);
+                            break;
+                          }
+                        case Languages.zh:
+                          {
+                            await UserPreferences.setLanguage(3);
+                            break;
+                          }
+                        case Languages.el:
+                          {
+                            await UserPreferences.setLanguage(4);
                             break;
                           }
                         case null:
