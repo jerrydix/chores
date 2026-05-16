@@ -32,9 +32,16 @@ class _SecondaryCardState extends State<SecondaryCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    final cards = createSecondaryCards(widget.data);
+    if (widget.data.titles.length <= 3) {
+      return Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: createSecondaryCards(widget.data),
+        children: cards,
+      );
+    }
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(children: cards),
     );
   }
 

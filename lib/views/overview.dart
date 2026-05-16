@@ -1,5 +1,4 @@
 import 'package:chores/member_manager.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:quiver/time.dart';
@@ -118,11 +117,7 @@ class _OverviewState extends State<Overview> {
         break;
       }
       default: {
-        columnSizes = List.generate(manager.memberCount, (index) => ColumnSize.M);
-        columnSizes[manager.memberCount - 1] = ColumnSize.L;
-        if (kDebugMode) {
-          print("Member count ${manager.memberCount} bigger than 4, using generic column sizes.");
-        }
+        columnSizes = List.generate(manager.memberCount, (_) => ColumnSize.M);
       }
     }
 

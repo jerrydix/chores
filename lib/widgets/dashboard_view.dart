@@ -252,37 +252,37 @@ class _DashboardViewState extends State<DashboardView> {
     otherEdgeInsets = [];
     otherWidths = [];
 
-    switch (widget.otherRoles.length) {
-      case 1:
-        otherEdgeInsets
-            .add(const EdgeInsets.only(left: 10, right: 10, bottom: 10));
-        otherWidths.add(
-            clampDouble(MediaQuery.of(context).size.width - 20, 0, 500));
-        break;
-      case 2:
-        otherEdgeInsets
-            .add(const EdgeInsets.only(right: 5, left: 10, bottom: 10));
-        otherEdgeInsets
-            .add(const EdgeInsets.only(right: 10, left: 5, bottom: 10));
-        for (int i = 0; i < 2; i++) {
-          otherWidths.add(clampDouble(
-              MediaQuery.of(context).size.width / 2 - 15, 0, 245));
-        }
-        break;
-      case 3:
-        otherEdgeInsets
-            .add(const EdgeInsets.only(left: 10, right: 5, bottom: 10));
-        otherEdgeInsets
-            .add(const EdgeInsets.only(left: 5, right: 5, bottom: 10));
-        otherEdgeInsets
-            .add(const EdgeInsets.only(left: 5, right: 10, bottom: 10));
-        for (int i = 0; i < 3; i++) {
-          otherWidths.add(clampDouble(
-              MediaQuery.of(context).size.width / 3 - (13 + 1 / 3),
-              0,
-              161));
-        }
-        break;
+    final count = widget.otherRoles.length;
+    if (count == 0) return;
+
+    final sw = MediaQuery.of(context).size.width;
+
+    if (count == 1) {
+      otherEdgeInsets.add(const EdgeInsets.only(left: 10, right: 10, bottom: 10));
+      otherWidths.add(clampDouble(sw - 20, 0, 500));
+    } else if (count == 2) {
+      otherEdgeInsets.add(const EdgeInsets.only(left: 10, right: 5, bottom: 10));
+      otherEdgeInsets.add(const EdgeInsets.only(left: 5, right: 10, bottom: 10));
+      for (int i = 0; i < 2; i++) {
+        otherWidths.add(clampDouble(sw / 2 - 15, 0, 245));
+      }
+    } else if (count == 3) {
+      otherEdgeInsets.add(const EdgeInsets.only(left: 10, right: 5, bottom: 10));
+      otherEdgeInsets.add(const EdgeInsets.only(left: 5, right: 5, bottom: 10));
+      otherEdgeInsets.add(const EdgeInsets.only(left: 5, right: 10, bottom: 10));
+      for (int i = 0; i < 3; i++) {
+        otherWidths.add(clampDouble(sw / 3 - (13 + 1 / 3), 0, 161));
+      }
+    } else {
+      // 4+ users: fixed-width cards, SecondaryCard will scroll horizontally
+      for (int i = 0; i < count; i++) {
+        otherEdgeInsets.add(EdgeInsets.only(
+          left: i == 0 ? 10 : 5,
+          right: i == count - 1 ? 10 : 5,
+          bottom: 10,
+        ));
+        otherWidths.add(160.0);
+      }
     }
   }
 
