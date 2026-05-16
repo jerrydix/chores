@@ -302,7 +302,7 @@ class _RoleCard extends StatelessWidget {
           ListTile(
             leading: IconButton(
               constraints: const BoxConstraints(),
-              padding: const EdgeInsets.all(8),
+              //padding: const EdgeInsets.all(8),
               icon: AnimatedRotation(
                 turns: list.isExpanded ? 0.0 : 0.5,
                 duration: const Duration(milliseconds: 200),
