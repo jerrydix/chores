@@ -9,6 +9,7 @@ import 'app_localizations_de.dart';
 import 'app_localizations_el.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_ru.dart';
+import 'app_localizations_zh.dart';
 
 // ignore_for_file: type=lint
 
@@ -99,7 +100,8 @@ abstract class AppLocalizations {
     Locale('de'),
     Locale('el'),
     Locale('en'),
-    Locale('ru')
+    Locale('ru'),
+    Locale('zh')
   ];
 
   /// No description provided for @settings.
@@ -245,6 +247,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ελληνικά'**
   String get el;
+
+  /// No description provided for @zh.
+  ///
+  /// In en, this message translates to:
+  /// **'中文（简体）'**
+  String get zh;
 
   /// No description provided for @or.
   ///
@@ -660,7 +668,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['de', 'el', 'en', 'ru'].contains(locale.languageCode);
+      <String>['de', 'el', 'en', 'ru', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -677,6 +685,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsEn();
     case 'ru':
       return AppLocalizationsRu();
+    case 'zh':
+      return AppLocalizationsZh();
   }
 
   throw FlutterError(
