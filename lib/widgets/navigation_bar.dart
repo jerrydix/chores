@@ -33,11 +33,9 @@ class _NavBarState extends State<NavBar> {
 
   @override
   Widget build(BuildContext context) {
-
     navBarTheme = NavigationBarThemeData(
       labelTextStyle: WidgetStateTextStyle.resolveWith((states) =>
-          GoogleFonts.openSans(
-              fontStyle: FontStyle.normal, fontSize: 13)),
+          GoogleFonts.openSans(fontStyle: FontStyle.normal, fontSize: 13)),
       height: 80,
     );
 
@@ -45,12 +43,16 @@ class _NavBarState extends State<NavBar> {
         appBar: AppBar(
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(8),
+              bottom: Radius.circular(14),
             ),
           ),
-          title: createPrimaryRolesText(),
+          title: Text("Chores"),
           actions: <Widget>[
-            IconButton(onPressed: () {openSettings();}, icon: const Icon(Icons.settings))
+            IconButton(
+                onPressed: () {
+                  openSettings();
+                },
+                icon: const Icon(Icons.settings))
             /*PopupMenuButton<String>(
               onSelected: openSettings,
               itemBuilder: (BuildContext context) {
@@ -75,30 +77,34 @@ class _NavBarState extends State<NavBar> {
           },
         ),
         bottomNavigationBar: ClipRRect(
-            borderRadius: const BorderRadius.only(topLeft: Radius.circular(8.0), topRight: Radius.circular(8.0), ),
-            child: NavigationBarTheme(
-          data: navBarTheme,
-          child: NavigationBar(
-            selectedIndex: _currentIndex,
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-            onDestinationSelected: (int newIndex) {
-              setState(() {
-                _currentIndex = newIndex;
-              });
-            },
-            destinations: [
-              NavigationDestination(
-                  selectedIcon: const Icon(Icons.dashboard),
-                  icon: const Icon(Icons.dashboard_outlined),
-                  label: AppLocalizations.of(context)!.dashboard),
-              NavigationDestination(
-                  selectedIcon: const Icon(Icons.calendar_month),
-                  icon: const Icon(Icons.calendar_month_outlined),
-                  label: AppLocalizations.of(context)!.overview),
-            ],
-          ),),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(14),
+            topRight: Radius.circular(14),
+          ),
+          child: NavigationBarTheme(
+            data: navBarTheme,
+            child: NavigationBar(
+              selectedIndex: _currentIndex,
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+              onDestinationSelected: (int newIndex) {
+                setState(() {
+                  _currentIndex = newIndex;
+                });
+              },
+              destinations: [
+                NavigationDestination(
+                    selectedIcon: const Icon(Icons.dashboard),
+                    icon: const Icon(Icons.dashboard_outlined),
+                    label: AppLocalizations.of(context)!.dashboard),
+                NavigationDestination(
+                    selectedIcon: const Icon(Icons.calendar_month),
+                    icon: const Icon(Icons.calendar_month_outlined),
+                    label: AppLocalizations.of(context)!.overview),
+              ],
+            ),
+          ),
         ));
-    return SelectionArea(child: scaffold);
+    return scaffold;
   }
 
   List<String> primaryRoleIntToStr(List<int> roles) {
@@ -108,47 +114,34 @@ class _NavBarState extends State<NavBar> {
     for (var role in roles) {
       switch (role) {
         case 0:
-        {
-          result.add(loc.garbage);
-          break;
-        }
-        case 1:
-        {
-          result.add(loc.bathroom);
-          break;
-        }
-        case 2:
-        {
-          result.add(loc.kitchen);
-          break;
-        }
-        case 3:
-        {
-          result.add(loc.vacuum);
-          break;
-        }
-        default:
-        {
-          if (kDebugMode) {
-            print("ERROR: wrong role id");
+          {
+            result.add(loc.garbage);
+            break;
           }
-        }
+        case 1:
+          {
+            result.add(loc.bathroom);
+            break;
+          }
+        case 2:
+          {
+            result.add(loc.kitchen);
+            break;
+          }
+        case 3:
+          {
+            result.add(loc.vacuum);
+            break;
+          }
+        default:
+          {
+            if (kDebugMode) {
+              print("ERROR: wrong role id");
+            }
+          }
       }
     }
     return result;
-  }
-
-  Text createPrimaryRolesText() {
-    if (MemberManager.instance.primaryRoles.isEmpty) {
-      return const Text("Chores");
-    }
-    String text = "Chores (";
-    for (var element in MemberManager.instance.primaryRoles) {
-      text += "$element, ";
-    }
-    text = text.substring(0, text.length - 2);
-    text += ")";
-    return Text(text);
   }
 }
 

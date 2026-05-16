@@ -110,17 +110,17 @@ class AppLocalizationsEl extends AppLocalizations {
   String get reset_pw_b => 'Αποστολή συνδέσμου επαναφοράς';
 
   @override
-  String get new_wg => 'Create new shared apartment';
+  String get new_wg => 'Δημιουργία νέου κοινού διαμερίσματος';
 
   @override
-  String get wg_name => 'Name';
+  String get wg_name => 'Όνομα';
 
   @override
-  String get wg_use_template => 'Use chores template';
+  String get wg_use_template => 'Χρήση προτύπου καθηκόντων';
 
   @override
   String get wg_exists =>
-      'This name is already taken. Please choose another one.';
+      'Αυτό το όνομα χρησιμοποιείται ήδη. Παρακαλώ επιλέξτε άλλο.';
 
   @override
   String get garbage => 'Μάστρος σκουπιδιών';
@@ -262,5 +262,5 @@ class AppLocalizationsEl extends AppLocalizations {
   String get finAllTasks => 'Ολοκληρώθηκαν όλες οι εργασίες';
 
   @override
-  String get role_task_settings => 'Role and Task Settings';
+  String get role_task_settings => 'Ρυθμίσεις ρόλων και καθηκόντων';
 }

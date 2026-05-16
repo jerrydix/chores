@@ -197,7 +197,7 @@ class _SettingsState extends State<Settings> {
               actions: [
                 RadioListTile<Intervals>(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(28),
                     ),
                     title: Text(AppLocalizations.of(context)!.monday),
                     value: Intervals.onceBegin,
@@ -211,7 +211,7 @@ class _SettingsState extends State<Settings> {
                     }),
                 RadioListTile<Intervals>(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(28),
                     ),
                     title: Text(AppLocalizations.of(context)!.friday),
                     value: Intervals.onceMiddle,
@@ -225,7 +225,7 @@ class _SettingsState extends State<Settings> {
                     }),
                 RadioListTile<Intervals>(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(28),
                     ),
                     title: Text(AppLocalizations.of(context)!.sunday),
                     value: Intervals.onceEnd,
@@ -239,7 +239,7 @@ class _SettingsState extends State<Settings> {
                     }),
                 RadioListTile<Intervals>(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(28),
                     ),
                     title: Text(AppLocalizations.of(context)!.twice),
                     value: Intervals.twice,
@@ -253,7 +253,7 @@ class _SettingsState extends State<Settings> {
                     }),
                 RadioListTile<Intervals>(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(28),
                     ),
                     title: Text(AppLocalizations.of(context)!.every),
                     value: Intervals.every,
@@ -418,7 +418,7 @@ class _SettingsState extends State<Settings> {
               actions: [
                 RadioListTile<Themes>(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(28),
                     ),
                     title: Text(AppLocalizations.of(context)!.sys),
                     value: Themes.system,
@@ -433,7 +433,7 @@ class _SettingsState extends State<Settings> {
                     }),
                 RadioListTile<Themes>(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(28),
                     ),
                     title: Text(AppLocalizations.of(context)!.light),
                     value: Themes.light,
@@ -448,7 +448,7 @@ class _SettingsState extends State<Settings> {
                     }),
                 RadioListTile<Themes>(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(28),
                     ),
                     title: Text(AppLocalizations.of(context)!.dark),
                     value: Themes.dark,
@@ -523,7 +523,7 @@ class _SettingsState extends State<Settings> {
               actions: [
                 RadioListTile<Languages>(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(28),
                     ),
                     title: const Text("English"),
                     value: Languages.en,
@@ -537,7 +537,7 @@ class _SettingsState extends State<Settings> {
                     }),
                 RadioListTile<Languages>(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(28),
                     ),
                     title: const Text("Deutsch"),
                     value: Languages.de,
@@ -551,7 +551,7 @@ class _SettingsState extends State<Settings> {
                     }),
                 RadioListTile<Languages>(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(28),
                     ),
                     title: const Text("Русский"),
                     value: Languages.ru,

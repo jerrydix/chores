@@ -49,13 +49,13 @@ class _FormContainerState extends State<FormContainer> {
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(16),
             borderSide:
                 BorderSide(color: Theme.of(context).colorScheme.secondary),
           ),
           filled: false,
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(16),
             borderSide:
                 BorderSide(color: Theme.of(context).colorScheme.primary),
           ),

@@ -64,7 +64,7 @@ class _SecondaryCardState extends State<SecondaryCard> {
               openColor: Theme.of(context).colorScheme.surface,
               transitionDuration: const Duration(milliseconds: 350),
               closedShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(16),
               ),
               closedBuilder: (context, action) {
                 return SizedBox(

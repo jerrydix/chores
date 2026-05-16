@@ -1,9 +1,6 @@
 import 'package:chores/widgets/dashboard_view.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/member_manager.dart';
-
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -13,76 +10,40 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  String wgName = "-1";
-  String wgID = "-1";
-  String username = "-1";
-  List<String> primaryRoles = [];
-  List<List<String>> otherRoles = [];
-  List<String> otherNames = [];
-  Map<String, Map<String, bool>> tasks = {};
-  MemberManager manager = MemberManager.instance;
-  bool active = true;
-
-  CheckboxListTile createCheckboxTile(Icon icon, Text text, bool? checked) {
-    return CheckboxListTile(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        checkboxShape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        title: text,
-        value: checked,
-        onChanged: (value) {
-          setState(() {
-            checked = value!;
-          });
-        },
-        secondary: icon);
-  }
+  final MemberManager _manager = MemberManager.instance;
 
   @override
   void initState() {
     super.initState();
+    _manager.dataFuture = _manager.fetchWGData();
   }
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: MemberManager.instance,
-      builder: (BuildContext context, Widget? child) {
-        manager.dataFuture = manager.fetchWGData();
+      listenable: _manager,
+      builder: (context, child) {
         return FutureBuilder<void>(
-            future: manager.dataFuture,
-            builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.waiting:
-                  const Center(child: CircularProgressIndicator());
-                  break;
-                default:
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  }
-
-                  tasks = manager.tasks;
-                  primaryRoles = manager.primaryRoles;
-                  otherRoles = manager.otherRoles;
-                  username = manager.username;
-                  otherNames = manager.members;
-                  active = manager.active;
-
-                  return DashboardView(tasks: tasks,
-                    primaryRoles: primaryRoles,
-                    otherRoles: otherRoles, otherNames: otherNames, username: username, active: active);
-              }
+          future: _manager.dataFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
-            });
+            }
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+            return DashboardView(
+              tasks: _manager.tasks,
+              taskIcons: _manager.taskIcons,
+              primaryRoles: _manager.primaryRoles,
+              otherRoles: _manager.otherRoles,
+              otherNames: _manager.members,
+              username: _manager.username,
+              active: _manager.active,
+            );
+          },
+        );
       },
     );
-  }
-
-  void dashboardStateCallback() {
-    setState(() {
-      username = manager.username;
-    });
   }
 }
