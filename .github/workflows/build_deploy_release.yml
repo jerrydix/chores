@@ -47,7 +47,8 @@ jobs:
         id: shorebird-patch
         uses: shorebirdtech/shorebird-patch@v0
         with:
-          args: --release-version=1.0.0+5 --allow-native-diffs
+          release-version: 1.0.0+5
+          args: --allow-native-diffs -- --no-tree-shake-icons
           platform: android
 
       - name: 📝 Output Patch Version
