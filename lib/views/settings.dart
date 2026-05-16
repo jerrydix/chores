@@ -4,6 +4,7 @@ import 'package:chores/data/providers/authentication_provider.dart';
 import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/utils/notification_list.dart';
 import 'package:chores/data/userprefs.dart';
+import 'package:chores/utils/chore_assigner.dart';
 import 'package:chores/views/role_task_settings.dart';
 import 'package:chores/views/wg_selection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -29,6 +30,8 @@ enum Themes { system, light, dark }
 
 enum Languages { en, de, ru }
 
+enum AlgorithmChoice { rotating, fixed, random }
+
 class _SettingsState extends State<Settings> {
   bool? currentNotificationValue;
   Icon? currentNotificationStatus;
@@ -51,6 +54,7 @@ class _SettingsState extends State<Settings> {
   Intervals? _character;
   Themes? _theme;
   Languages? _language;
+  AlgorithmChoice? _algorithm;
 
   void init() {
     currentNotificationValue = UserPreferences.getNotificationsBool();
@@ -69,6 +73,18 @@ class _SettingsState extends State<Settings> {
     switchCurrentNotificationValue();
     switchCurrentThemeValue();
     switchCurrentLanguageValue();
+    _algorithm = _algorithmChoiceFromManager();
+  }
+
+  AlgorithmChoice _algorithmChoiceFromManager() {
+    switch (MemberManager.instance.algorithm) {
+      case AssignmentAlgorithm.fixed:
+        return AlgorithmChoice.fixed;
+      case AssignmentAlgorithm.random:
+        return AlgorithmChoice.random;
+      default:
+        return AlgorithmChoice.rotating;
+    }
   }
 
   void switchCurrentNotificationValue() {
@@ -678,6 +694,79 @@ class _SettingsState extends State<Settings> {
     return weekdays;
   }
 
+  Future<void> openAlgorithmDialog() async {
+    final loc = AppLocalizations.of(context)!;
+    AlgorithmChoice? selection = _algorithm;
+
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialog) => AlertDialog(
+          title: Text(loc.algo_settings),
+          actions: [
+            RadioListTile<AlgorithmChoice>(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(28)),
+              title: Text(loc.algo_rotating),
+              subtitle: Text(loc.algo_rotating_desc,
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(ctx).colorScheme.outline)),
+              value: AlgorithmChoice.rotating,
+              groupValue: selection,
+              onChanged: (v) => setDialog(() => selection = v),
+            ),
+            RadioListTile<AlgorithmChoice>(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(28)),
+              title: Text(loc.algo_fixed),
+              subtitle: Text(loc.algo_fixed_desc,
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(ctx).colorScheme.outline)),
+              value: AlgorithmChoice.fixed,
+              groupValue: selection,
+              onChanged: (v) => setDialog(() => selection = v),
+            ),
+            RadioListTile<AlgorithmChoice>(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(28)),
+              title: Text(loc.algo_random),
+              subtitle: Text(loc.algo_random_desc,
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(ctx).colorScheme.outline)),
+              value: AlgorithmChoice.random,
+              groupValue: selection,
+              onChanged: (v) => setDialog(() => selection = v),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (selection == null) return;
+                AssignmentAlgorithm algo;
+                switch (selection!) {
+                  case AlgorithmChoice.fixed:
+                    algo = AssignmentAlgorithm.fixed;
+                    break;
+                  case AlgorithmChoice.random:
+                    algo = AssignmentAlgorithm.random;
+                    break;
+                  default:
+                    algo = AssignmentAlgorithm.rotating;
+                }
+                await MemberManager.instance.updateAlgorithm(algo);
+                setState(() => _algorithm = selection);
+                Navigator.of(ctx).pop();
+              },
+              child: Text(loc.confirm),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> openRoleTaskSettings() async {
     Route route = MaterialPageRoute(builder: (context) => RoleTaskSettings());
     await Navigator.push(context, route);
@@ -826,7 +915,21 @@ class _SettingsState extends State<Settings> {
                   leading: const Icon(Icons.view_list_rounded),
                   onPressed: (context) {
                     openRoleTaskSettings();
-                  }
+                  },
+                ),
+                SettingsTile.navigation(
+                  leading: const Icon(Icons.swap_horiz),
+                  title: Text(AppLocalizations.of(context)!.algo_settings),
+                  value: Text(_algorithm == null
+                      ? ''
+                      : _algorithm == AlgorithmChoice.fixed
+                          ? AppLocalizations.of(context)!.algo_fixed
+                          : _algorithm == AlgorithmChoice.random
+                              ? AppLocalizations.of(context)!.algo_random
+                              : AppLocalizations.of(context)!.algo_rotating),
+                  onPressed: (context) {
+                    openAlgorithmDialog();
+                  },
                 )
               ]
           ),

@@ -90,5 +90,13 @@
   "haveAccount": "Besitzt du schon einen Account?",
   "finAllTasks": "Alle Aufgaben erledigt",
 
-  "role_task_settings": "Rollen- und Aufgabeneinstellungen"
+  "role_task_settings": "Rollen- und Aufgabeneinstellungen",
+
+  "algo_settings": "Rollenzuteilung",
+  "algo_rotating": "Wöchentliche Rotation",
+  "algo_rotating_desc": "Rollen rotieren jede Woche, damit alle dran sind",
+  "algo_fixed": "Immer statisch",
+  "algo_fixed_desc": "Dieselben Rollen werden jede Woche denselben Personen zugewiesen",
+  "algo_random": "Zufällig (fair)",
+  "algo_random_desc": "Jede Woche zufällig neu verteilt, langfristig ausgewogen"
 }

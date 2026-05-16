@@ -261,4 +261,28 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get role_task_settings => 'Rollen- und Aufgabeneinstellungen';
+
+  @override
+  String get algo_settings => 'Rollenzuteilung';
+
+  @override
+  String get algo_rotating => 'Wöchentliche Rotation';
+
+  @override
+  String get algo_rotating_desc =>
+      'Rollen rotieren jede Woche, damit alle dran sind';
+
+  @override
+  String get algo_fixed => 'Immer statisch';
+
+  @override
+  String get algo_fixed_desc =>
+      'Dieselben Rollen werden jede Woche denselben Personen zugewiesen';
+
+  @override
+  String get algo_random => 'Zufällig (fair)';
+
+  @override
+  String get algo_random_desc =>
+      'Jede Woche zufällig neu verteilt, langfristig ausgewogen';
 }

@@ -262,4 +262,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get role_task_settings => 'Role and Task Settings';
+
+  @override
+  String get algo_settings => 'Role Assignment';
+
+  @override
+  String get algo_rotating => 'Weekly rotation';
+
+  @override
+  String get algo_rotating_desc =>
+      'Roles rotate each week so everyone takes turns';
+
+  @override
+  String get algo_fixed => 'Always static';
+
+  @override
+  String get algo_fixed_desc =>
+      'Same roles assigned to the same people every week';
+
+  @override
+  String get algo_random => 'Random (fair)';
+
+  @override
+  String get algo_random_desc =>
+      'Randomly shuffled each week, balanced over time';
 }

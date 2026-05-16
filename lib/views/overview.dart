@@ -62,6 +62,7 @@ class _OverviewState extends State<Overview> {
   @override
   void initState() {
     super.initState();
+    manager.addListener(_onManagerChanged);
     username = manager.username;
     horizontalController = AutoScrollController(
       axis: Axis.horizontal
@@ -70,6 +71,16 @@ class _OverviewState extends State<Overview> {
       axis: Axis.vertical
     );
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToCurrentWeek());
+  }
+
+  void _onManagerChanged() => setState(() {});
+
+  @override
+  void dispose() {
+    manager.removeListener(_onManagerChanged);
+    horizontalController.dispose();
+    verticalController.dispose();
+    super.dispose();
   }
 
   List<DataColumn2> _generateColumns() {

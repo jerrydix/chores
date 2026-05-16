@@ -89,5 +89,13 @@
   "haveAccount": "Already have an account?",
   "finAllTasks": "Finished all tasks",
 
-  "role_task_settings": "Role and Task Settings"
+  "role_task_settings": "Role and Task Settings",
+
+  "algo_settings": "Role Assignment",
+  "algo_rotating": "Weekly rotation",
+  "algo_rotating_desc": "Roles rotate each week so everyone takes turns",
+  "algo_fixed": "Always static",
+  "algo_fixed_desc": "Same roles assigned to the same people every week",
+  "algo_random": "Random (fair)",
+  "algo_random_desc": "Randomly shuffled each week, balanced over time"
 }

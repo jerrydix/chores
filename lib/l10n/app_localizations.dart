@@ -605,6 +605,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Role and Task Settings'**
   String get role_task_settings;
+
+  /// No description provided for @algo_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Role Assignment'**
+  String get algo_settings;
+
+  /// No description provided for @algo_rotating.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly rotation'**
+  String get algo_rotating;
+
+  /// No description provided for @algo_rotating_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Roles rotate each week so everyone takes turns'**
+  String get algo_rotating_desc;
+
+  /// No description provided for @algo_fixed.
+  ///
+  /// In en, this message translates to:
+  /// **'Always static'**
+  String get algo_fixed;
+
+  /// No description provided for @algo_fixed_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Same roles assigned to the same people every week'**
+  String get algo_fixed_desc;
+
+  /// No description provided for @algo_random.
+  ///
+  /// In en, this message translates to:
+  /// **'Random (fair)'**
+  String get algo_random;
+
+  /// No description provided for @algo_random_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Randomly shuffled each week, balanced over time'**
+  String get algo_random_desc;
 }
 
 class _AppLocalizationsDelegate
