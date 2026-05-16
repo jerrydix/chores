@@ -260,4 +260,27 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get role_task_settings => 'Настройки ролей и заданий';
+
+  @override
+  String get algo_settings => 'Распределение ролей';
+
+  @override
+  String get algo_rotating => 'Еженедельная ротация';
+
+  @override
+  String get algo_rotating_desc => 'Роли меняются каждую неделю по очереди';
+
+  @override
+  String get algo_fixed => 'Всегда статично';
+
+  @override
+  String get algo_fixed_desc =>
+      'Одни и те же роли назначаются одним и тем же людям каждую неделю';
+
+  @override
+  String get algo_random => 'Случайно (справедливо)';
+
+  @override
+  String get algo_random_desc =>
+      'Каждую неделю перемешивается случайно, но справедливо в долгосрочной перспективе';
 }

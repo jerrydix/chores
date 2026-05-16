@@ -263,4 +263,27 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get role_task_settings => 'Ρυθμίσεις ρόλων και καθηκόντων';
+
+  @override
+  String get algo_settings => 'Ανάθεση ρόλων';
+
+  @override
+  String get algo_rotating => 'Εβδομαδιαία εναλλαγή';
+
+  @override
+  String get algo_rotating_desc => 'Οι ρόλοι εναλλάσσονται κάθε εβδομάδα';
+
+  @override
+  String get algo_fixed => 'Πάντα στατικό';
+
+  @override
+  String get algo_fixed_desc =>
+      'Οι ίδιοι ρόλοι ανατίθενται στα ίδια άτομα κάθε εβδομάδα';
+
+  @override
+  String get algo_random => 'Τυχαίο (δίκαιο)';
+
+  @override
+  String get algo_random_desc =>
+      'Τυχαία κατανομή κάθε εβδομάδα, ισορροπημένη μακροπρόθεσμα';
 }

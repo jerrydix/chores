@@ -28,7 +28,8 @@ class MemberManager with ChangeNotifier {
   Future<void> dataFuture = Future(() => null);
   bool active = true;
   int noRepeatWindow = 1;
-  ChoreAssigner? choreAssigner;
+  AssignmentAlgorithm algorithm = AssignmentAlgorithm.rotating;
+  RoleAssigner? choreAssigner;
 
   MemberManager._internal();
 
@@ -43,6 +44,8 @@ class MemberManager with ChangeNotifier {
     final wgData = wgDoc.data()!;
     wgCW = wgData["cw"] as int;
     wgName = wgData["name"] as String;
+    algorithm = AssignmentAlgorithm.fromString(
+        wgData["algorithmType"] as String?);
 
     // Load role/task definitions and icon data from rolesConfig
     final Map<String, Map<String, IconData?>> iconMaps = {};
@@ -150,8 +153,12 @@ class MemberManager with ChangeNotifier {
         allMembers.insert(primaryIndex, username);
       }
 
-      choreAssigner =
-          ChoreAssigner(allMembers, tasks.keys.toList(), noRepeatWindow);
+      choreAssigner = RoleAssigner.create(
+        algorithm,
+        allMembers,
+        tasks.keys.toList(),
+        noRepeatWindow: noRepeatWindow,
+      );
       final assignments = choreAssigner!.assignRoles(currentWeek);
 
       primaryRoles = active ? (assignments[username] ?? []) : [];
@@ -161,6 +168,26 @@ class MemberManager with ChangeNotifier {
   }
 
   void refresh() => notifyListeners();
+
+  Future<void> updateAlgorithm(AssignmentAlgorithm value) async {
+    algorithm = value;
+    if (tasks.isNotEmpty && memberCount > 0) {
+      final allMembers = List<String>.from(members);
+      if (active && primaryIndex >= 0) {
+        allMembers.insert(primaryIndex, username);
+      }
+      choreAssigner = RoleAssigner.create(
+        algorithm,
+        allMembers,
+        tasks.keys.toList(),
+        noRepeatWindow: noRepeatWindow,
+      );
+    }
+    notifyListeners();
+    db.collection("wgs").doc(currentWgID).update({
+      "algorithmType": value.toFirestoreString(),
+    });
+  }
 
   Future<void> updateActive(bool value) async {
     active = value;
