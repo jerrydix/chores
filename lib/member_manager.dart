@@ -164,12 +164,12 @@ class MemberManager with ChangeNotifier {
 
   Future<void> updateActive(bool value) async {
     active = value;
-    await db
+    notifyListeners();
+    db
         .collection("wgs")
         .doc(currentWgID)
         .collection("members")
         .doc(userID)
         .update({"active": value});
-    notifyListeners();
   }
 }
