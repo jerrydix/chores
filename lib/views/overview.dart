@@ -101,7 +101,7 @@ class _OverviewState extends State<Overview> {
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
-                          .withOpacity(0.2))),
+                          .withValues(alpha: 0.2))),
             ),
             child: Center(
                 child: Text(AppLocalizations.of(context)!.cw,
@@ -181,7 +181,7 @@ class _OverviewState extends State<Overview> {
                               .of(context)
                               .colorScheme
                               .onSurface
-                              .withOpacity(0.2)))),
+                              .withValues(alpha: 0.2)))),
               child: Center(
                   child: Text((i + 1).toString(),
                       style: const TextStyle(
@@ -246,7 +246,7 @@ class _OverviewState extends State<Overview> {
                     .of(context)
                     .colorScheme
                     .primary
-                    .withOpacity(0.15));
+                    .withValues(alpha: 0.15));
           }
           if (wasCurrent) {
             return WidgetStateProperty.all(
@@ -255,7 +255,7 @@ class _OverviewState extends State<Overview> {
                     .colorScheme
                     .surface);
           }
-          return WidgetStateProperty.all(Colors.grey.withOpacity(0.05));
+          return WidgetStateProperty.all(Colors.grey.withValues(alpha: 0.05));
         }()),
         specificRowHeight: rowHeight,
         cells: cells,

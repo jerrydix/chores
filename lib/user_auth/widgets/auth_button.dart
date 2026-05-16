@@ -12,7 +12,7 @@ class AuthButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(22),
       child: InkWell(
         borderRadius: BorderRadius.circular(22),
-        splashColor: Theme.of(context).colorScheme.surfaceTint.withOpacity(0.75),
+        splashColor: Theme.of(context).colorScheme.surfaceTint.withValues(alpha: 0.75),
         enableFeedback: true,
         onTap: onTap,
         child: Container(

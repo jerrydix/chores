@@ -459,8 +459,6 @@ Map<String, IconData> iconDataMap = {
   'arrowBottomRightBoldOutline': MdiIcons.arrowBottomRightBoldOutline,
   'arrowBottomRightThick': MdiIcons.arrowBottomRightThick,
   'arrowBottomRightThin': MdiIcons.arrowBottomRightThin,
-  'arrowBottomRightThinCircleOutline':
-  MdiIcons.arrowBottomRightThinCircleOutline,
   'arrowCollapse': MdiIcons.arrowCollapse,
   'arrowCollapseAll': MdiIcons.arrowCollapseAll,
   'arrowCollapseDown': MdiIcons.arrowCollapseDown,
@@ -1364,8 +1362,6 @@ Map<String, IconData> iconDataMap = {
   'cardsPlayingClubOutline': MdiIcons.cardsPlayingClubOutline,
   'cardsPlayingDiamond': MdiIcons.cardsPlayingDiamond,
   'cardsPlayingDiamondMultiple': MdiIcons.cardsPlayingDiamondMultiple,
-  'cardsPlayingDiamondMultipleOutline':
-  MdiIcons.cardsPlayingDiamondMultipleOutline,
   'cardsPlayingDiamondOutline': MdiIcons.cardsPlayingDiamondOutline,
   'cardsPlayingHeart': MdiIcons.cardsPlayingHeart,
   'cardsPlayingHeartMultiple': MdiIcons.cardsPlayingHeartMultiple,
@@ -1532,13 +1528,9 @@ Map<String, IconData> iconDataMap = {
   'checkboxMarkedOutline': MdiIcons.checkboxMarkedOutline,
   'checkboxMultipleBlank': MdiIcons.checkboxMultipleBlank,
   'checkboxMultipleBlankCircle': MdiIcons.checkboxMultipleBlankCircle,
-  'checkboxMultipleBlankCircleOutline':
-  MdiIcons.checkboxMultipleBlankCircleOutline,
   'checkboxMultipleBlankOutline': MdiIcons.checkboxMultipleBlankOutline,
   'checkboxMultipleMarked': MdiIcons.checkboxMultipleMarked,
   'checkboxMultipleMarkedCircle': MdiIcons.checkboxMultipleMarkedCircle,
-  'checkboxMultipleMarkedCircleOutline':
-  MdiIcons.checkboxMultipleMarkedCircleOutline,
   'checkboxMultipleMarkedOutline': MdiIcons.checkboxMultipleMarkedOutline,
   'checkboxMultipleOutline': MdiIcons.checkboxMultipleOutline,
   'checkboxOutline': MdiIcons.checkboxOutline,
@@ -3468,8 +3460,6 @@ Map<String, IconData> iconDataMap = {
   'imageFilterBlackWhite': MdiIcons.imageFilterBlackWhite,
   'imageFilterCenterFocus': MdiIcons.imageFilterCenterFocus,
   'imageFilterCenterFocusStrong': MdiIcons.imageFilterCenterFocusStrong,
-  'imageFilterCenterFocusStrongOutline':
-  MdiIcons.imageFilterCenterFocusStrongOutline,
   'imageFilterCenterFocusWeak': MdiIcons.imageFilterCenterFocusWeak,
   'imageFilterDrama': MdiIcons.imageFilterDrama,
   'imageFilterFrames': MdiIcons.imageFilterFrames,
@@ -3939,14 +3929,6 @@ Map<String, IconData> iconDataMap = {
   'microphoneVariant': MdiIcons.microphoneVariant,
   'microphoneVariantOff': MdiIcons.microphoneVariantOff,
   'microscope': MdiIcons.microscope,
-  'microsoftXboxControllerBatteryAlert':
-  'microsoftXboxControllerBatteryCharging':
-  'microsoftXboxControllerBatteryEmpty':
-  'microsoftXboxControllerBatteryFull':
-  'microsoftXboxControllerBatteryLow':
-  'microsoftXboxControllerBatteryMedium':
-  'microsoftXboxControllerBatteryUnknown':
-  MdiIcons.microsoftXboxControllerBatteryUnknown,
   'microwave': MdiIcons.microwave,
   'microwaveOff': MdiIcons.microwaveOff,
   'middleware': MdiIcons.middleware,
@@ -4525,8 +4507,6 @@ Map<String, IconData> iconDataMap = {
   'pianoOff': MdiIcons.pianoOff,
   'pickaxe': MdiIcons.pickaxe,
   'pictureInPictureBottomRight': MdiIcons.pictureInPictureBottomRight,
-  'pictureInPictureBottomRightOutline':
-  MdiIcons.pictureInPictureBottomRightOutline,
   'pictureInPictureTopRight': MdiIcons.pictureInPictureTopRight,
   'pictureInPictureTopRightOutline': MdiIcons.pictureInPictureTopRightOutline,
   'pier': MdiIcons.pier,
@@ -5302,8 +5282,6 @@ Map<String, IconData> iconDataMap = {
   'sortAlphabeticalAscending': MdiIcons.sortAlphabeticalAscending,
   'sortAlphabeticalAscendingVariant': MdiIcons.sortAlphabeticalAscendingVariant,
   'sortAlphabeticalDescending': MdiIcons.sortAlphabeticalDescending,
-  'sortAlphabeticalDescendingVariant':
-  MdiIcons.sortAlphabeticalDescendingVariant,
   'sortAlphabeticalVariant': MdiIcons.sortAlphabeticalVariant,
   'sortAscending': MdiIcons.sortAscending,
   'sortBoolAscending': MdiIcons.sortBoolAscending,

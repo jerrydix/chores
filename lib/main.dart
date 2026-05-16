@@ -24,15 +24,45 @@ class MyApp extends StatefulWidget {
       GlobalKey<NavigatorState>();
 
   @override
-  State<StatefulWidget> createState() => _MyAppState();
+  State<StatefulWidget> createState() => MyAppState();
 
-  static _MyAppState of(BuildContext context) =>
-      context.findAncestorStateOfType<_MyAppState>()!;
+  static MyAppState of(BuildContext context) =>
+      context.findAncestorStateOfType<MyAppState>()!;
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> {
   ThemeMode? _themeMode;
   Locale? _locale;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPreferences();
+  }
+
+  Future<void> _loadPreferences() async {
+    await UserPreferences.init();
+    ThemeMode? themeMode;
+    Locale? locale;
+    switch (UserPreferences.getLanguage()) {
+      case 0: locale = const Locale('en'); break;
+      case 1: locale = const Locale('de'); break;
+      case 2: locale = const Locale('ru'); break;
+      case 3: locale = const Locale('zh'); break;
+      case 4: locale = const Locale('el'); break;
+    }
+    switch (UserPreferences.getTheme()) {
+      case 0: themeMode = ThemeMode.system; break;
+      case 1: themeMode = ThemeMode.light; break;
+      case 2: themeMode = ThemeMode.dark; break;
+    }
+    if (mounted) {
+      setState(() {
+        _locale = locale;
+        _themeMode = themeMode;
+      });
+    }
+  }
 
   void setTheme(ThemeMode? themeMode) {
     setState(() {
@@ -61,58 +91,8 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void init() async {
-    await UserPreferences.init();
-    switch (UserPreferences.getLanguage()) {
-      case 0:
-        {
-          _locale = const Locale('en');
-          break;
-        }
-      case 1:
-        {
-          _locale = const Locale('de');
-          break;
-        }
-      case 2:
-        {
-          _locale = const Locale('ru');
-          break;
-        }
-      case 3:
-        {
-          _locale = const Locale('zh');
-          break;
-        }
-      case 4:
-        {
-          _locale = const Locale('el');
-          break;
-        }
-    }
-
-    switch (UserPreferences.getTheme()) {
-      case 0:
-        {
-          _themeMode = ThemeMode.system;
-          break;
-        }
-      case 1:
-        {
-          _themeMode = ThemeMode.light;
-          break;
-        }
-      case 2:
-        {
-          _themeMode = ThemeMode.dark;
-          break;
-        }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    init();
     return DynamicColorBuilder(
         builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
       return MaterialApp(

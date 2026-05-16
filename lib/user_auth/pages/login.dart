@@ -171,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                     splashColor: Theme.of(context)
                         .colorScheme
                         .surfaceTint
-                        .withOpacity(0.75),
+                        .withValues(alpha: 0.75),
                     enableFeedback: true,
                     onTap: _signIn,
                     child: Container(
@@ -206,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
                             color: Theme.of(context)
                                 .colorScheme
                                 .onSurface
-                                .withOpacity(0.5),
+                                .withValues(alpha: 0.5),
                           ),
                         ),
                         Padding(
@@ -217,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Theme.of(context)
                                     .colorScheme
                                     .onSurface
-                                    .withOpacity(0.5)),
+                                    .withValues(alpha: 0.5)),
                           ),
                         ),
                         Expanded(
@@ -226,7 +226,7 @@ class _LoginPageState extends State<LoginPage> {
                             color: Theme.of(context)
                                 .colorScheme
                                 .onSurface
-                                .withOpacity(0.5),
+                                .withValues(alpha: 0.5),
                           ),
                         ),
                       ],
@@ -300,6 +300,7 @@ class _LoginPageState extends State<LoginPage> {
     String? message = await AuthenticationProvider(FirebaseAuth.instance)
         .signIn(email: email, password: password);
 
+    if (!mounted) return null;
     if (message != null) {
       Navigator.pop(context);
       return Fluttertoast.showToast(
@@ -323,6 +324,7 @@ class _LoginPageState extends State<LoginPage> {
       currentWgID = value["wg"];
     });
 
+    if (!mounted) return null;
     if (currentWgID == -1) {
       return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
@@ -361,6 +363,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
+    if (!mounted) return null;
     User? user = auth.currentUser;
 
     if (user == null) {
@@ -392,6 +395,7 @@ class _LoginPageState extends State<LoginPage> {
                 }
             });
 
+    if (!mounted) return null;
     Navigator.pop(context);
 
     if (currentWgID == -1) {
@@ -432,6 +436,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
+    if (!mounted) return null;
     User? user = auth.currentUser;
 
     if (user == null) {
@@ -463,6 +468,7 @@ class _LoginPageState extends State<LoginPage> {
                 }
             });
 
+    if (!mounted) return null;
     Navigator.pop(context);
 
     if (currentWgID == -1) {
