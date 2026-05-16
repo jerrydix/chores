@@ -100,9 +100,7 @@ class _WGSelectionState extends State<WGSelection> {
                       value: useWgTemplate,
                       onChanged: (var value) {
                         setState(() {
-                          print(useWgTemplate);
                           useWgTemplate = value!;
-                          print(useWgTemplate);
                         });
                       },
                     );
@@ -130,14 +128,14 @@ class _WGSelectionState extends State<WGSelection> {
                       },
                     );
 
-                    await FirebaseFirestore.instance.collection("wgs").where("name", isEqualTo: _wgNameController.text).get().then((sp) => {
-                      if (sp.docs.isNotEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(AppLocalizations.of(context)!.wg_exists),
-                          duration: const Duration(seconds: 2),
-                        ))
-                      }
-                    });
+                    final nameCheck = await FirebaseFirestore.instance.collection("wgs").where("name", isEqualTo: _wgNameController.text).get();
+                    if (nameCheck.docs.isNotEmpty) {
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(AppLocalizations.of(context)!.wg_exists),
+                        duration: const Duration(seconds: 2),
+                      ));
+                    }
 
                       await FirebaseFirestore.instance.collection("wgs").add({
                         "name": _wgNameController.text,
@@ -165,9 +163,9 @@ class _WGSelectionState extends State<WGSelection> {
                         "wg": wgID,
                       });
 
+                      if (!context.mounted) return;
                       Navigator.pop(context);
-
-                    Navigator.of(context).pushAndRemoveUntil(
+                      Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                           builder: (context) => const NavBar(),
                         ), (route) => false

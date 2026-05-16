@@ -26,7 +26,7 @@ abstract class RoleAssigner {
 
   RoleAssigner(this.members, this.roles);
 
-  /// Returns Map<member, List<assigned roles>> for the given ISO week [cw].
+  /// Returns a map of member → assigned roles for the given ISO week [cw].
   Map<String, List<String>> assignRoles(int cw);
 
   static RoleAssigner create(

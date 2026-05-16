@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:chores/member_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -8,16 +6,16 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../widgets/secondary_card.dart';
 
-import 'navigation_bar.dart' as navBar;
+import 'navigation_bar.dart' as nav_bar;
 
 class DashboardView extends StatefulWidget {
-  Map<String, Map<String, bool>> tasks;
-  Map<String, Map<String, IconData?>> taskIcons;
-  List<String> primaryRoles;
-  String username;
-  List<List<String>> otherRoles;
-  List<String> otherNames;
-  bool active;
+  final Map<String, Map<String, bool>> tasks;
+  final Map<String, Map<String, IconData?>> taskIcons;
+  final List<String> primaryRoles;
+  final String username;
+  final List<List<String>> otherRoles;
+  final List<String> otherNames;
+  final bool active;
 
   final ValueNotifier<bool> allTasksDone = ValueNotifier<bool>(false);
 
@@ -37,12 +35,36 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
+  late Map<String, Map<String, bool>> tasks;
+  late Map<String, Map<String, IconData?>> taskIcons;
+  late List<String> primaryRoles;
+  late List<List<String>> otherRoles;
+  late List<String> otherNames;
+  late String username;
+  late bool active;
   List<EdgeInsets> otherEdgeInsets = [];
   List<double> otherWidths = [];
 
   @override
   void initState() {
     super.initState();
+    _syncFromWidget();
+  }
+
+  @override
+  void didUpdateWidget(DashboardView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncFromWidget();
+  }
+
+  void _syncFromWidget() {
+    tasks = widget.tasks;
+    taskIcons = widget.taskIcons;
+    primaryRoles = widget.primaryRoles;
+    otherRoles = widget.otherRoles;
+    otherNames = widget.otherNames;
+    username = widget.username;
+    active = widget.active;
   }
 
   @override
@@ -51,10 +73,10 @@ class _DashboardViewState extends State<DashboardView> {
         ? MediaQuery.of(context).size.height -
             MediaQuery.of(context).padding.top -
             MediaQuery.of(context).padding.bottom -
-            navBar.getPaddings()
-        : navBar.bodyHeight;
+            nav_bar.getPaddings()
+        : nav_bar.bodyHeight;
     double primaryHeightMultiplier =
-        widget.otherRoles.isNotEmpty ? (8 / 10) : 1;
+        otherRoles.isNotEmpty ? (8 / 10) : 1;
 
     _computeSecondaryLayout();
     final secondaryData = _buildSecondaryCardData();
@@ -108,22 +130,23 @@ class _DashboardViewState extends State<DashboardView> {
     );
 
     primaryWidget =
-        widget.active ? primaryActiveWidget : primaryInactiveWidget;
+        active ? primaryActiveWidget : primaryInactiveWidget;
 
     return RefreshIndicator(
       onRefresh: () async {
         await MemberManager.instance.fetchWGData();
         final m = MemberManager.instance;
-        widget.tasks = m.tasks;
-        widget.taskIcons = m.taskIcons;
-        widget.primaryRoles = m.primaryRoles;
-        widget.otherRoles = m.otherRoles;
-        widget.otherNames = m.members;
-        widget.username = m.username;
-        widget.active = m.active;
-        otherEdgeInsets.clear();
-        otherWidths.clear();
-        setState(() {});
+        setState(() {
+          tasks = m.tasks;
+          taskIcons = m.taskIcons;
+          primaryRoles = m.primaryRoles;
+          otherRoles = m.otherRoles;
+          otherNames = m.members;
+          username = m.username;
+          active = m.active;
+          otherEdgeInsets.clear();
+          otherWidths.clear();
+        });
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -146,7 +169,7 @@ class _DashboardViewState extends State<DashboardView> {
                         color: Theme.of(context)
                             .colorScheme
                             .onSurface
-                            .withOpacity(0.2),
+                            .withValues(alpha: 0.2),
                         indent: 15,
                         endIndent: 15,
                         height: 20,
@@ -167,11 +190,11 @@ class _DashboardViewState extends State<DashboardView> {
                             onChanged: (value) {
                               if (value == null) return;
                               widget.allTasksDone.value = value;
-                              for (final role in widget.primaryRoles) {
-                                final taskMap = widget.tasks[role];
+                              for (final role in primaryRoles) {
+                                final taskMap = tasks[role];
                                 if (taskMap == null) continue;
                                 for (final taskName in taskMap.keys.toList()) {
-                                  widget.tasks[role]![taskName] = value;
+                                  tasks[role]![taskName] = value;
                                 }
                               }
                               setState(() {});
@@ -197,8 +220,8 @@ class _DashboardViewState extends State<DashboardView> {
   List<Widget> _createPrimaryTasks() {
     final List<Widget> widgets = [];
 
-    for (final role in widget.primaryRoles) {
-      final taskMap = widget.tasks[role];
+    for (final role in primaryRoles) {
+      final taskMap = tasks[role];
       if (taskMap == null || taskMap.isEmpty) continue;
 
       widgets.add(Padding(
@@ -211,11 +234,11 @@ class _DashboardViewState extends State<DashboardView> {
       ));
 
       for (final taskName in taskMap.keys) {
-        final icon = widget.taskIcons[role]?[taskName];
+        final icon = taskIcons[role]?[taskName];
 
         widgets.add(StatefulBuilder(
           builder: (context, setItem) {
-            final done = widget.tasks[role]![taskName] ?? false;
+            final done = tasks[role]![taskName] ?? false;
             return CheckboxListTile(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16)),
@@ -234,7 +257,7 @@ class _DashboardViewState extends State<DashboardView> {
               onChanged: (value) {
                 if (value == null) return;
                 setItem(() {
-                  widget.tasks[role]![taskName] = value;
+                  tasks[role]![taskName] = value;
                 });
                 _syncAllTasksDone();
                 saveSelectionStateToDB();
@@ -252,7 +275,7 @@ class _DashboardViewState extends State<DashboardView> {
     otherEdgeInsets = [];
     otherWidths = [];
 
-    final count = widget.otherRoles.length;
+    final count = otherRoles.length;
     if (count == 0) return;
 
     final sw = MediaQuery.of(context).size.width;
@@ -287,17 +310,17 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
   SecondaryCardData _buildSecondaryCardData() {
-    final List<LinkedHashMap<String, Icon>> taskMaps = [];
+    final List<Map<String, Icon>> taskMaps = [];
     final List<List<bool>> checkedLists = [];
 
-    for (int i = 0; i < widget.otherRoles.length; i++) {
-      final roles = widget.otherRoles[i];
-      final taskMap = LinkedHashMap<String, Icon>();
+    for (int i = 0; i < otherRoles.length; i++) {
+      final roles = otherRoles[i];
+      final taskMap = <String, Icon>{};
       final checked = <bool>[];
 
       for (final role in roles) {
-        final roleTasks = widget.tasks[role] ?? {};
-        final roleIcons = widget.taskIcons[role] ?? {};
+        final roleTasks = tasks[role] ?? {};
+        final roleIcons = taskIcons[role] ?? {};
         for (final entry in roleTasks.entries) {
           final icon = roleIcons[entry.key];
           taskMap[entry.key] =
@@ -311,18 +334,18 @@ class _DashboardViewState extends State<DashboardView> {
     }
 
     return SecondaryCardData(
-      roles: widget.otherRoles,
+      roles: otherRoles,
       taskLists: taskMaps,
       checkedLists: checkedLists,
       edgeInsets: otherEdgeInsets,
       widths: otherWidths,
-      titles: widget.otherNames,
+      titles: otherNames,
     );
   }
 
   void _syncAllTasksDone() {
-    final allDone = widget.primaryRoles.every((role) {
-      final taskMap = widget.tasks[role];
+    final allDone = primaryRoles.every((role) {
+      final taskMap = tasks[role];
       if (taskMap == null || taskMap.isEmpty) return true;
       return taskMap.values.every((done) => done);
     });
@@ -339,6 +362,6 @@ class _DashboardViewState extends State<DashboardView> {
     await FirebaseFirestore.instance
         .collection("wgs")
         .doc(MemberManager.instance.currentWgID)
-        .update({"tasks": widget.tasks});
+        .update({"tasks": tasks});
   }
 }

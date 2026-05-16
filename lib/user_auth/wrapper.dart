@@ -27,7 +27,7 @@ class _WrapperState extends State<Wrapper> {
         .listen((event) => updateUserState(event));
   }
 
-  void updateUserState(event) {
+  void updateUserState(User? event) {
     if (firstRun) {
       firstRun = false;
       setState(() {
