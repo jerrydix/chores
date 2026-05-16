@@ -81,6 +81,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get el => 'Ελληνικά';
 
   @override
+  String get zh => '中文（简体）';
+
+  @override
   String get or => 'Или продолжить с';
 
   @override
