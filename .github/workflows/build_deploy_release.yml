@@ -65,7 +65,7 @@ jobs:
       #token: ${{ secrets.TOKEN }}
 
       - name: 📚 Build Web Version
-        run: flutter build web --wasm
+        run: flutter build web --wasm --no-tree-shake-icons
 
       - name: 🚀 Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
