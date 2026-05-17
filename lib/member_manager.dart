@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:week_of_year/date_week_extensions.dart';
+import 'utils/chore_assigner.dart';
 
-class MemberManager with ChangeNotifier{
+class MemberManager with ChangeNotifier {
   static final MemberManager _instance = MemberManager._internal();
-
   static MemberManager get instance => _instance;
 
   var db = FirebaseFirestore.instance;
@@ -14,200 +14,189 @@ class MemberManager with ChangeNotifier{
   String currentWgID = "-1";
   int wgCW = -1;
   int memberCount = -1;
-  String wgName= "-1";
+  String wgName = "-1";
   String username = "-1";
-  List<int> primaryRoles = [];
   int primaryIndex = -1;
-  List<List<int>> otherRoles = [];
-  List<String> otherNames = [];
-  List<bool> tasks = [];
+  Map<String, Map<String, bool>> tasks = {};
+  // role → task → icon (loaded from rolesConfig)
+  Map<String, Map<String, IconData?>> taskIcons = {};
+  // role → role icon (loaded from rolesConfig)
+  Map<String, IconData?> roleIcons = {};
+  List<String> primaryRoles = [];
+  List<List<String>> otherRoles = [];
+  List<String> members = [];
   Future<void> dataFuture = Future(() => null);
   bool active = true;
-  
+  int noRepeatWindow = 1;
+  AssignmentAlgorithm algorithm = AssignmentAlgorithm.rotating;
+  RoleAssigner? choreAssigner;
+
   MemberManager._internal();
 
   Future<void> fetchWGData() async {
     user = FirebaseAuth.instance.currentUser;
     userID = user!.uid;
-    print("CURRENT USER: ${user?.displayName}");
 
-    await db.collection("users").doc(userID).get().then((value) {
-      currentWgID = value["wg"];
-    });
+    final userDoc = await db.collection("users").doc(userID).get();
+    currentWgID = userDoc["wg"] as String;
 
-    await db.collection("wgs").doc(currentWgID).get().then((value) {
-      wgCW = value["cw"];
-      wgName = value["name"];
-    });
+    final wgDoc = await db.collection("wgs").doc(currentWgID).get();
+    final wgData = wgDoc.data()!;
+    wgCW = wgData["cw"] as int;
+    wgName = wgData["name"] as String;
+    algorithm = AssignmentAlgorithm.fromString(
+        wgData["algorithmType"] as String?);
 
-    if (wgCW != DateTime.now().weekOfYear) {
+    // Load role/task definitions and icon data from rolesConfig
+    final Map<String, Map<String, IconData?>> iconMaps = {};
+    final Map<String, IconData?> roleIconMap = {};
+    final rawConfig = wgData["rolesConfig"];
+    if (rawConfig is List) {
+      for (final roleEntry in rawConfig) {
+        final roleName = roleEntry["name"] as String;
+        final roleIconCodePoint = roleEntry["iconCodePoint"] as int?;
+        final roleIconFontFamily = roleEntry["iconFontFamily"] as String?;
+        roleIconMap[roleName] = roleIconCodePoint != null
+            ? IconData(roleIconCodePoint,
+                fontFamily: roleIconFontFamily ?? 'MaterialIcons')
+            : null;
+        iconMaps[roleName] = {};
+        final rawTasks = roleEntry["tasks"] as List?;
+        if (rawTasks != null) {
+          for (final taskEntry in rawTasks) {
+            final taskName = taskEntry["name"] as String;
+            final codePoint = taskEntry["codePoint"] as int?;
+            final fontFamily = taskEntry["fontFamily"] as String?;
+            iconMaps[roleName]![taskName] = codePoint != null
+                ? IconData(codePoint, fontFamily: fontFamily ?? 'MaterialIcons')
+                : null;
+          }
+        }
+      }
+    }
+    taskIcons = iconMaps;
+    roleIcons = roleIconMap;
+
+    // Parse tasks completion map from Firestore
+    Map<String, Map<String, bool>> taskMaps = {};
+    final rawTasks = wgData["tasks"];
+    if (rawTasks is Map) {
+      for (final roleEntry in rawTasks.entries) {
+        final roleKey = roleEntry.key as String;
+        final roleValue = roleEntry.value;
+        if (roleValue is Map) {
+          taskMaps[roleKey] = {};
+          for (final taskEntry in roleValue.entries) {
+            taskMaps[roleKey]![taskEntry.key as String] =
+                taskEntry.value as bool? ?? false;
+          }
+        }
+      }
+    }
+
+    // Reset task completion if a new week has started
+    final currentWeek = DateTime.now().weekOfYear;
+    if (wgCW != currentWeek) {
+      for (final role in taskMaps.values) {
+        for (final key in role.keys.toList()) {
+          role[key] = false;
+        }
+      }
       await db.collection("wgs").doc(currentWgID).update({
-        "cw": DateTime.now().weekOfYear,
-        "tasks": List.filled(24, false),
+        "cw": currentWeek,
+        "tasks": taskMaps,
       });
+      wgCW = currentWeek;
     }
 
-    await db.collection("wgs").doc(currentWgID).get().then((value) {
-      tasks = value["tasks"].cast<bool>();
-    });
+    tasks = taskMaps;
 
-    await db.collection("wgs").doc(currentWgID).collection("members").orderBy("memberID").get().then((value) {
-      otherNames = [];
-      int j = 0;
-      for (int i = 0; i < value.docs.length; i++) {
-        QueryDocumentSnapshot doc = value.docs[i];
-        var currentID = doc["uid"];
-        var currentName = doc["username"];
+    // Load members ordered by memberID
+    final membersSnapshot = await db
+        .collection("wgs")
+        .doc(currentWgID)
+        .collection("members")
+        .orderBy("memberID")
+        .get();
 
-        if (currentID == userID) {
-          username = currentName;
-          active = doc["active"];
-          if (active) {
-            primaryIndex = j;
-          }
-          continue;
+    members = [];
+    int j = 0;
+    primaryIndex = -1;
+
+    for (final doc in membersSnapshot.docs) {
+      final currentID = doc["uid"] as String;
+      final currentName = doc["username"] as String;
+
+      if (currentID == userID) {
+        username = currentName;
+        active = doc["active"] as bool? ?? true;
+        if (active) {
+          primaryIndex = j;
         }
-        if (doc["active"]) {
-          otherNames.add(currentName);
-          j++;
-        }
+        continue;
       }
-      memberCount = active ? otherNames.length + 1 : otherNames.length;
-      setRoles(DateTime.now().weekOfYear, true);
-    });
+      if (doc["active"] as bool? ?? false) {
+        members.add(currentName);
+        j++;
+      }
+    }
+    memberCount = active ? members.length + 1 : members.length;
+
+    // Assign roles via ChoreAssigner
+    primaryRoles = [];
+    // Always keep otherRoles parallel to members (empty lists when no tasks)
+    otherRoles = List.generate(members.length, (_) => <String>[]);
+
+    if (tasks.isNotEmpty && memberCount > 0) {
+      final allMembers = List<String>.from(members);
+      if (active && primaryIndex >= 0) {
+        allMembers.insert(primaryIndex, username);
+      }
+
+      choreAssigner = RoleAssigner.create(
+        algorithm,
+        allMembers,
+        tasks.keys.toList(),
+        noRepeatWindow: noRepeatWindow,
+      );
+      final assignments = choreAssigner!.assignRoles(currentWeek);
+
+      primaryRoles = active ? (assignments[username] ?? []) : [];
+      otherRoles =
+          members.map((m) => assignments[m] ?? <String>[]).toList();
+    }
   }
 
-  int setCurrentWgID() {
-    db.collection("users").doc(userID).get().then((value) {
-      currentWgID = value["wg"];
-      return currentWgID;
+  void refresh() => notifyListeners();
+
+  Future<void> updateAlgorithm(AssignmentAlgorithm value) async {
+    algorithm = value;
+    if (tasks.isNotEmpty && memberCount > 0) {
+      final allMembers = List<String>.from(members);
+      if (active && primaryIndex >= 0) {
+        allMembers.insert(primaryIndex, username);
+      }
+      choreAssigner = RoleAssigner.create(
+        algorithm,
+        allMembers,
+        tasks.keys.toList(),
+        noRepeatWindow: noRepeatWindow,
+      );
+    }
+    notifyListeners();
+    db.collection("wgs").doc(currentWgID).update({
+      "algorithmType": value.toFirestoreString(),
     });
-
-    return -1;
-  }
-
-  List<bool> getTasksList() {
-    db.collection("wgs").doc(currentWgID).get().then((value) {
-      tasks = value["tasks"].cast<bool>();
-      return tasks;
-    });
-    return [];
-  }
-
-  List<List<int>> setRoles(int cw, bool overwrite) {
-    List<List<int>> allRoles = [];
-
-    switch (memberCount) {
-      case 1: {
-        allRoles = [[0,1,2,3]];
-        break;
-      }
-      case 2: {
-        // all aabb permutations
-        int mod6 = cw % 6;
-        switch (mod6) {
-          case 0: {
-            allRoles = [[0,3],[1,2]];
-            break;
-          }
-          case 1: {
-            allRoles = [[1,2],[0,3]];
-            break;
-          }
-          case 2: {
-            allRoles = [[0,2],[1,3]];
-            break;
-          }
-          case 3: {
-            allRoles = [[1,3],[0,2]];
-            break;
-          }
-          case 4: {
-            allRoles = [[0,1],[2,3]];
-            break;
-          }
-          case 5: {
-            allRoles = [[2,3],[0,1]];
-            break;
-          }
-        }
-        break;
-      }
-      case 3: {
-        List<TaskMemberElement> roleMemberList = [TaskMemberElement(0, "A"),TaskMemberElement(1, "B"),TaskMemberElement(2, "C"),TaskMemberElement(3, "A")];
-        List<String> people = ["A","B","C"];
-
-        int currentPersonIndex = cw % 3;
-        int currentTaskIndex = 3 - cw % 4 + 2;
-
-        if (currentTaskIndex > 3) {
-          currentTaskIndex -= 4;
-        }
-
-        for (var x in roleMemberList) {
-          x.name = people[currentPersonIndex];
-          x.role = currentTaskIndex;
-          currentPersonIndex++;
-          if (currentPersonIndex >= 3) {
-            currentPersonIndex -= 3;
-          }
-          currentTaskIndex++;
-          if (currentTaskIndex > 3) {
-            currentTaskIndex -= 4;
-          }
-        }
-
-        allRoles = [[],[],[]];
-
-        for (var x in roleMemberList) {
-          if (x.name == "A") {
-            allRoles[0].add(x.role);
-          } else if (x.name == "B") {
-            allRoles[1].add(x.role);
-          } else if (x.name == "C") {
-            allRoles[2].add(x.role);
-          }
-        }
-
-        break;
-      }
-      case 4: {
-        // 4-rotation
-        int mod4 = cw % 4;
-        allRoles = [[mod4],[mod4 + 1 > 3 ? mod4 + 1 - 4 : mod4 + 1],[mod4 + 2 > 3 ? mod4 + 2 - 4 : mod4 + 2],[mod4 + 3 > 3 ? mod4 + 3 - 4 : mod4 + 3]];
-      }
-    }
-
-    if (overwrite && active) {
-      primaryRoles = allRoles[primaryIndex];
-    }
-
-    List<int> overviewCurrentPrimaryRoles = [];
-    if (active) {
-      overviewCurrentPrimaryRoles = allRoles[primaryIndex];
-      allRoles.removeAt(primaryIndex);
-    }
-    if (overwrite) {
-      otherRoles = allRoles;
-    }
-    List<List<int>> overviewResult = [];
-    if (active) {
-      overviewResult.add(overviewCurrentPrimaryRoles);
-    }
-    overviewResult.addAll(allRoles);
-    return overviewResult;
   }
 
   Future<void> updateActive(bool value) async {
-    MemberManager.instance.active = value;
+    active = value;
     notifyListeners();
+    db
+        .collection("wgs")
+        .doc(currentWgID)
+        .collection("members")
+        .doc(userID)
+        .update({"active": value});
   }
-
-}
-
-class TaskMemberElement {
-  int role;
-  String name;
-
-  TaskMemberElement(this.role, this.name);
 }

@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
-import 'navigationbar.dart';
+import 'navigation_bar.dart';
 
 class WGListTile extends StatefulWidget {
 
@@ -57,6 +57,7 @@ class _WGListTileState extends State<WGListTile> {
                 return;
               }
               await saveWGMemberToDatabase(uid: widget.uid, username: widget.username);
+              if (!context.mounted) return;
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
                     builder: (context) => const NavBar(),

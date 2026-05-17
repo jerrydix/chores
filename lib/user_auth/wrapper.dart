@@ -1,6 +1,6 @@
 import 'package:chores/user_auth/pages/login.dart';
-import 'package:chores/wg_selection.dart';
-import 'package:chores/widgets/navigationbar.dart';
+import 'package:chores/views/wg_selection.dart';
+import 'package:chores/widgets/navigation_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +27,7 @@ class _WrapperState extends State<Wrapper> {
         .listen((event) => updateUserState(event));
   }
 
-  void updateUserState(event) {
+  void updateUserState(User? event) {
     if (firstRun) {
       firstRun = false;
       setState(() {

@@ -1,11 +1,9 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 
 class ChecklistPage extends StatefulWidget {
   final String title;
   final List<String> roles;
-  final LinkedHashMap<String, Icon> tasks;
+  final Map<String, Icon> tasks;
   final List<bool> checked;
 
   const ChecklistPage({super.key, required this.title, required this.roles, required this.tasks, required this.checked});
@@ -27,7 +25,7 @@ class _ChecklistState extends State<ChecklistPage> {
     );
   }
 
-  List<Widget> createListTiles(LinkedHashMap<String, Icon> tasks, List<bool> checked) {
+  List<Widget> createListTiles(Map<String, Icon> tasks, List<bool> checked) {
     List<Widget> result = [];
     for (int i = 0; i < tasks.length; i++) {
       result.add(ListTile(

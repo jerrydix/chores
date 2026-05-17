@@ -9,6 +9,7 @@ import 'app_localizations_de.dart';
 import 'app_localizations_el.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_ru.dart';
+import 'app_localizations_zh.dart';
 
 // ignore_for_file: type=lint
 
@@ -99,7 +100,8 @@ abstract class AppLocalizations {
     Locale('de'),
     Locale('el'),
     Locale('en'),
-    Locale('ru')
+    Locale('ru'),
+    Locale('zh')
   ];
 
   /// No description provided for @settings.
@@ -246,6 +248,12 @@ abstract class AppLocalizations {
   /// **'Ελληνικά'**
   String get el;
 
+  /// No description provided for @zh.
+  ///
+  /// In en, this message translates to:
+  /// **'中文（简体）'**
+  String get zh;
+
   /// No description provided for @or.
   ///
   /// In en, this message translates to:
@@ -299,6 +307,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send reset link'**
   String get reset_pw_b;
+
+  /// No description provided for @new_wg.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new shared apartment'**
+  String get new_wg;
+
+  /// No description provided for @wg_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get wg_name;
+
+  /// No description provided for @wg_use_template.
+  ///
+  /// In en, this message translates to:
+  /// **'Use chores template'**
+  String get wg_use_template;
+
+  /// No description provided for @wg_exists.
+  ///
+  /// In en, this message translates to:
+  /// **'This name is already taken. Please choose another one.'**
+  String get wg_exists;
 
   /// No description provided for @garbage.
   ///
@@ -575,6 +607,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Finished all tasks'**
   String get finAllTasks;
+
+  /// No description provided for @role_task_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Role and Task Settings'**
+  String get role_task_settings;
+
+  /// No description provided for @algo_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Role Assignment'**
+  String get algo_settings;
+
+  /// No description provided for @algo_rotating.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly rotation'**
+  String get algo_rotating;
+
+  /// No description provided for @algo_rotating_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Roles rotate each week so everyone takes turns'**
+  String get algo_rotating_desc;
+
+  /// No description provided for @algo_fixed.
+  ///
+  /// In en, this message translates to:
+  /// **'Always static'**
+  String get algo_fixed;
+
+  /// No description provided for @algo_fixed_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Same roles assigned to the same people every week'**
+  String get algo_fixed_desc;
+
+  /// No description provided for @algo_random.
+  ///
+  /// In en, this message translates to:
+  /// **'Random (fair)'**
+  String get algo_random;
+
+  /// No description provided for @algo_random_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Randomly shuffled each week, balanced over time'**
+  String get algo_random_desc;
 }
 
 class _AppLocalizationsDelegate
@@ -588,7 +668,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['de', 'el', 'en', 'ru'].contains(locale.languageCode);
+      <String>['de', 'el', 'en', 'ru', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -605,6 +685,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsEn();
     case 'ru':
       return AppLocalizationsRu();
+    case 'zh':
+      return AppLocalizationsZh();
   }
 
   throw FlutterError(

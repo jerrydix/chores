@@ -81,6 +81,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get el => 'Ελληνικά';
 
   @override
+  String get zh => '中文（简体）';
+
+  @override
   String get or => 'Oder weiter mit';
 
   @override
@@ -107,6 +110,19 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get reset_pw_b => 'Link senden';
+
+  @override
+  String get new_wg => 'Neue WG erstellen';
+
+  @override
+  String get wg_name => 'Name';
+
+  @override
+  String get wg_use_template => 'Aufgabenvorlage verwenden';
+
+  @override
+  String get wg_exists =>
+      'Dieser Name ist bereits vergeben. Bitte wähle einen anderen.';
 
   @override
   String get garbage => 'Müllmeister';
@@ -245,4 +261,31 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get finAllTasks => 'Alle Aufgaben erledigt';
+
+  @override
+  String get role_task_settings => 'Rollen- und Aufgabeneinstellungen';
+
+  @override
+  String get algo_settings => 'Rollenzuteilung';
+
+  @override
+  String get algo_rotating => 'Wöchentliche Rotation';
+
+  @override
+  String get algo_rotating_desc =>
+      'Rollen rotieren jede Woche, damit alle dran sind';
+
+  @override
+  String get algo_fixed => 'Immer statisch';
+
+  @override
+  String get algo_fixed_desc =>
+      'Dieselben Rollen werden jede Woche denselben Personen zugewiesen';
+
+  @override
+  String get algo_random => 'Zufällig (fair)';
+
+  @override
+  String get algo_random_desc =>
+      'Jede Woche zufällig neu verteilt, langfristig ausgewogen';
 }

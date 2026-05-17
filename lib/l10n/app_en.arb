@@ -23,6 +23,7 @@
   "de": "Deutsch",
   "ru": "Русский",
   "el": "Ελληνικά",
+  "zh": "中文（简体）",
   "or": "Or continue with",
   "leave_wg": "Leave shared apartment",
   "leave_wg_t": "Are you sure you want to leave the shared apartment?",
@@ -32,7 +33,10 @@
   "reset_pw": "Reset password",
   "reset_pw_t": "Enter your email address and receive a link to reset your password.",
   "reset_pw_b": "Send reset link",
-
+  "new_wg": "Create new shared apartment",
+  "wg_name": "Name",
+  "wg_use_template": "Use chores template",
+  "wg_exists": "This name is already taken. Please choose another one.",
 
   "garbage": "Garbage Master",
   "g100plastic": "Plastic waste",
@@ -84,6 +88,15 @@
   "signup_b": "Sign up",
   "noAccount": "Don't have an account?",
   "haveAccount": "Already have an account?",
-  "finAllTasks": "Finished all tasks"
+  "finAllTasks": "Finished all tasks",
 
+  "role_task_settings": "Role and Task Settings",
+
+  "algo_settings": "Role Assignment",
+  "algo_rotating": "Weekly rotation",
+  "algo_rotating_desc": "Roles rotate each week so everyone takes turns",
+  "algo_fixed": "Always static",
+  "algo_fixed_desc": "Same roles assigned to the same people every week",
+  "algo_random": "Random (fair)",
+  "algo_random_desc": "Randomly shuffled each week, balanced over time"
 }

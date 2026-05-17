@@ -81,6 +81,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get el => 'Ελληνικά';
 
   @override
+  String get zh => '中文（简体）';
+
+  @override
   String get or => 'Ή συνεχίστε με';
 
   @override
@@ -108,6 +111,19 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get reset_pw_b => 'Αποστολή συνδέσμου επαναφοράς';
+
+  @override
+  String get new_wg => 'Δημιουργία νέου κοινού διαμερίσματος';
+
+  @override
+  String get wg_name => 'Όνομα';
+
+  @override
+  String get wg_use_template => 'Χρήση προτύπου καθηκόντων';
+
+  @override
+  String get wg_exists =>
+      'Αυτό το όνομα χρησιμοποιείται ήδη. Παρακαλώ επιλέξτε άλλο.';
 
   @override
   String get garbage => 'Μάστρος σκουπιδιών';
@@ -247,4 +263,30 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get finAllTasks => 'Ολοκληρώθηκαν όλες οι εργασίες';
+
+  @override
+  String get role_task_settings => 'Ρυθμίσεις ρόλων και καθηκόντων';
+
+  @override
+  String get algo_settings => 'Ανάθεση ρόλων';
+
+  @override
+  String get algo_rotating => 'Εβδομαδιαία εναλλαγή';
+
+  @override
+  String get algo_rotating_desc => 'Οι ρόλοι εναλλάσσονται κάθε εβδομάδα';
+
+  @override
+  String get algo_fixed => 'Πάντα στατικό';
+
+  @override
+  String get algo_fixed_desc =>
+      'Οι ίδιοι ρόλοι ανατίθενται στα ίδια άτομα κάθε εβδομάδα';
+
+  @override
+  String get algo_random => 'Τυχαίο (δίκαιο)';
+
+  @override
+  String get algo_random_desc =>
+      'Τυχαία κατανομή κάθε εβδομάδα, ισορροπημένη μακροπρόθεσμα';
 }

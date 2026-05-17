@@ -1,16 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:chores/user_auth/authentication_provider.dart';
+import 'package:chores/data/providers/authentication_provider.dart';
 import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:keybinder/keybinder.dart';
 import '../../l10n/app_localizations.dart';
-import '../../wg_selection.dart';
-import '../../widgets/navigationbar.dart';
-import '../widgets/AuthButton.dart';
+import '../../views/wg_selection.dart';
+import '../../widgets/navigation_bar.dart';
+import '../widgets/auth_button.dart';
 
 
 
@@ -60,7 +60,7 @@ class _SignUpPageState extends State<SignUpPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(28),
                 child: Image.asset(
                   "assets/logo.png",
                   width: 125,
@@ -106,7 +106,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 borderRadius: BorderRadius.circular(30),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(30),
-                  splashColor: Theme.of(context).colorScheme.surfaceTint.withOpacity(0.75),
+                  splashColor: Theme.of(context).colorScheme.surfaceTint.withValues(alpha: 0.75),
                   enableFeedback: true,
                   onTap: _signUp,
                   child: Container(
@@ -129,17 +129,17 @@ class _SignUpPageState extends State<SignUpPage> {
                       Expanded(
                         child: Divider(
                           thickness: 0.5,
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Text(loc.or, style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),),
+                        child: Text(loc.or, style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5)),),
                       ),
                       Expanded(
                         child: Divider(
                           thickness: 0.5,
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                         ),
                       ),
                     ],
@@ -164,7 +164,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         Navigator.pushAndRemoveUntil(
                             context, MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false);
                       },
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(8),
                       child: Text(loc.login_b, style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),))
                 ],
               )
@@ -196,6 +196,7 @@ class _SignUpPageState extends State<SignUpPage> {
     String? message = await AuthenticationProvider(auth).signUp(email: email, password: password);
     User? user = auth.currentUser;
 
+    if (!mounted) return null;
     if (message != null) {
       Navigator.pop(context);
       return Fluttertoast.showToast(
@@ -219,6 +220,7 @@ class _SignUpPageState extends State<SignUpPage> {
       "wg": -1,
     });
 
+    if (!mounted) return null;
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (context) => WGSelection(username: username),
@@ -234,6 +236,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
     await AuthenticationProvider(auth).signInWithGoogle();
 
+    if (!mounted) return null;
     User? user = auth.currentUser;
 
     if (user == null) {
@@ -259,6 +262,7 @@ class _SignUpPageState extends State<SignUpPage> {
       }
     });
 
+    if (!mounted) return null;
     if (currentWgID == -1) {
       return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
@@ -285,9 +289,10 @@ class _SignUpPageState extends State<SignUpPage> {
     try {
       await auth.signInWithPopup(githubProvider);
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
 
+    if (!mounted) return null;
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -323,6 +328,7 @@ class _SignUpPageState extends State<SignUpPage> {
       }
     });
 
+    if (!mounted) return null;
     Navigator.pop(context);
 
     if (currentWgID == -1) {

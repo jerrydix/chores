@@ -81,6 +81,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get el => 'Ελληνικά';
 
   @override
+  String get zh => '中文（简体）';
+
+  @override
   String get or => 'Или продолжить с';
 
   @override
@@ -107,6 +110,18 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get reset_pw_b => 'Отправить ссылку на сброс';
+
+  @override
+  String get new_wg => 'Создать новое общежитие';
+
+  @override
+  String get wg_name => 'Имя';
+
+  @override
+  String get wg_use_template => 'Использовать шаблон заданий';
+
+  @override
+  String get wg_exists => 'Это имя уже занято. Пожалуйста, выберите другое.';
 
   @override
   String get garbage => 'Мусорщик';
@@ -245,4 +260,30 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get finAllTasks => 'Все задания выполнены';
+
+  @override
+  String get role_task_settings => 'Настройки ролей и заданий';
+
+  @override
+  String get algo_settings => 'Распределение ролей';
+
+  @override
+  String get algo_rotating => 'Еженедельная ротация';
+
+  @override
+  String get algo_rotating_desc => 'Роли меняются каждую неделю по очереди';
+
+  @override
+  String get algo_fixed => 'Всегда статично';
+
+  @override
+  String get algo_fixed_desc =>
+      'Одни и те же роли назначаются одним и тем же людям каждую неделю';
+
+  @override
+  String get algo_random => 'Случайно (справедливо)';
+
+  @override
+  String get algo_random_desc =>
+      'Каждую неделю перемешивается случайно, но справедливо в долгосрочной перспективе';
 }

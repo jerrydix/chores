@@ -1,5 +1,4 @@
 import 'package:chores/member_manager.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:quiver/time.dart';
@@ -49,10 +48,12 @@ class Overview extends StatefulWidget {
 }
 
 class _OverviewState extends State<Overview> {
-  late AutoScrollController controller;
+  late AutoScrollController horizontalController;
+  late AutoScrollController verticalController;
   int scrollOffset = DateTime.now().weekOfYear - 2;
   double rowHeight = 50;
-  List<List<int>> allRoles = [];
+  //List<List<int>> allRoles = [];
+  List<Map<String, List<String>>> allRoles = [];
   List<DataRow2> rows = [];
   List<DataColumn2> columns = [];
   MemberManager manager = MemberManager.instance;
@@ -61,11 +62,25 @@ class _OverviewState extends State<Overview> {
   @override
   void initState() {
     super.initState();
+    manager.addListener(_onManagerChanged);
     username = manager.username;
-    controller = AutoScrollController(
-      axis: Axis.vertical,
+    horizontalController = AutoScrollController(
+      axis: Axis.horizontal
+    );
+    verticalController = AutoScrollController(
+      axis: Axis.vertical
     );
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToCurrentWeek());
+  }
+
+  void _onManagerChanged() => setState(() {});
+
+  @override
+  void dispose() {
+    manager.removeListener(_onManagerChanged);
+    horizontalController.dispose();
+    verticalController.dispose();
+    super.dispose();
   }
 
   List<DataColumn2> _generateColumns() {
@@ -75,7 +90,7 @@ class _OverviewState extends State<Overview> {
     if (manager.active) {
       sortedNames.add(manager.username);
     }
-    sortedNames.addAll(manager.otherNames);
+    sortedNames.addAll(manager.members);
 
     columns.add(DataColumn2(
         label: Container(
@@ -86,7 +101,7 @@ class _OverviewState extends State<Overview> {
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
-                          .withOpacity(0.2))),
+                          .withValues(alpha: 0.2))),
             ),
             child: Center(
                 child: Text(AppLocalizations.of(context)!.cw,
@@ -113,9 +128,7 @@ class _OverviewState extends State<Overview> {
         break;
       }
       default: {
-        if (kDebugMode) {
-          print("Member count ${manager.memberCount} invalid!" );
-        }
+        columnSizes = List.generate(manager.memberCount, (_) => ColumnSize.M);
       }
     }
 
@@ -147,9 +160,16 @@ class _OverviewState extends State<Overview> {
       } else {
         current = false;
       }
-      //print(DateTime.now().weekOfYear);//
+      //print(DateTime.now().weekOfYear);
 
-      allRoles = manager.setRoles(i + 1, false);
+      final currentRoles = manager.choreAssigner?.assignRoles(i + 1) ?? {};
+      allRoles.add(currentRoles);
+
+      // Build sortedNames the same way _generateColumns() does so cells align
+      final sortedNames = <String>[];
+      if (manager.active) sortedNames.add(manager.username);
+      sortedNames.addAll(manager.members);
+
       List<DataCell> cells = [];
       cells.add(DataCell(
           Container(
@@ -161,50 +181,62 @@ class _OverviewState extends State<Overview> {
                               .of(context)
                               .colorScheme
                               .onSurface
-                              .withOpacity(0.2)))),
+                              .withValues(alpha: 0.2)))),
               child: Center(
                   child: Text((i + 1).toString(),
                       style: const TextStyle(
                           fontWeight: FontWeight.bold)))),
-          onTap: () {})
-      );
+          onTap: () {}));
 
-      for (var roles in allRoles) {
-        List<Icon> currentIcons = [];
-        for (var role in roles) {
-          switch (role) {
-            case 0:
-              {
-                currentIcons.add(const Icon(Icons.delete_outlined));
-                break;
-              }
-            case 1:
-              {
-                currentIcons.add(const Icon(Icons.clean_hands_outlined));
-                break;
-              }
-            case 2:
-              {
-                currentIcons.add(const Icon(Icons.countertops_outlined));
-                break;
-              }
-            case 3:
-              {
-                currentIcons.add(const Icon(Icons.cleaning_services_outlined));
-                break;
-              }
-          }
-        }
-
+      for (final name in sortedNames) {
+        final roles = currentRoles[name] ?? [];
+        final icons = roles
+            .map((role) =>
+                Icon(manager.roleIcons[role] ?? Icons.work_outline))
+            .toList();
         cells.add(DataCell(
-            Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: currentIcons,
-              ),
-            ), onTap: () {}),
-        );
+          Center(child: Row(mainAxisAlignment: MainAxisAlignment.center, children: icons)),
+          onTap: () {},
+        ));
       }
+
+
+      // for (var roles in allRoles.keys) {
+      //   List<Icon> currentIcons = [];
+      //   for (var role in roles) {
+      //     switch (role) {
+      //       case 0:
+      //         {
+      //           currentIcons.add(const Icon(Symbols.delete_rounded));
+      //           break;
+      //         }
+      //       case 1:
+      //         {
+      //           currentIcons.add(const Icon(Symbols.bathroom_rounded));
+      //           break;
+      //         }
+      //       case 2:
+      //         {
+      //           currentIcons.add(const Icon(Symbols.countertops_rounded));
+      //           break;
+      //         }
+      //       case 3:
+      //         {
+      //           currentIcons.add(const Icon(Symbols.vacuum_rounded));
+      //           break;
+      //         }
+      //     }
+      //   }
+      //
+      //   cells.add(DataCell(
+      //       Center(
+      //         child: Row(
+      //           mainAxisAlignment: MainAxisAlignment.center,
+      //           children: currentIcons,
+      //         ),
+      //       ), onTap: () {}),
+      //   );
+      // }
 
       rows.add(DataRow2(
         color: (() {
@@ -214,7 +246,7 @@ class _OverviewState extends State<Overview> {
                     .of(context)
                     .colorScheme
                     .primary
-                    .withOpacity(0.15));
+                    .withValues(alpha: 0.15));
           }
           if (wasCurrent) {
             return WidgetStateProperty.all(
@@ -223,7 +255,7 @@ class _OverviewState extends State<Overview> {
                     .colorScheme
                     .surface);
           }
-          return WidgetStateProperty.all(Colors.grey.withOpacity(0.05));
+          return WidgetStateProperty.all(Colors.grey.withValues(alpha: 0.05));
         }()),
         specificRowHeight: rowHeight,
         cells: cells,
@@ -234,11 +266,11 @@ class _OverviewState extends State<Overview> {
   }
 
   Future _scrollToCurrentWeek() async {
-    await /*manager.dataFuture.then((value) => */Future.delayed(const Duration(seconds: 1), () {
-      controller.animateTo(rowHeight * scrollOffset,
+    await Future.delayed(const Duration(seconds: 1), () {
+      if (!mounted || !verticalController.hasClients) return;
+      verticalController.animateTo(rowHeight * scrollOffset,
           duration: const Duration(seconds: 1), curve: Curves.ease);
     });
-
   }
 
   @override
@@ -248,8 +280,9 @@ class _OverviewState extends State<Overview> {
       await MemberManager.instance.fetchWGData();
       setState(() {});
     },
-    child:DataTable2(
-      scrollController: controller,
+    child: DataTable2(
+      scrollController: verticalController,
+      horizontalScrollController: horizontalController,
       fixedTopRows: 1,
       columns: _generateColumns(),
       rows: _generateRows(),

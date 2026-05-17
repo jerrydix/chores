@@ -1,10 +1,8 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/foundation.dart';
 import 'checklist.dart';
-import 'navigationbar.dart' as navBar;
+import 'navigation_bar.dart' as nav_bar;
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
 class SecondaryCardData {
@@ -12,7 +10,7 @@ class SecondaryCardData {
   final List<double> widths;
   final List<String> titles;
   final List<List<String>> roles;
-  final List<LinkedHashMap<String, Icon>> taskLists;
+  final List<Map<String, Icon>> taskLists;
   final List<List<bool>> checkedLists;
 
   const SecondaryCardData({required this.roles, required this.taskLists, required this.checkedLists, required this.edgeInsets, required this.widths, required this.titles});
@@ -32,15 +30,22 @@ class _SecondaryCardState extends State<SecondaryCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    final cards = createSecondaryCards(widget.data);
+    if (widget.data.titles.length <= 3) {
+      return Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: createSecondaryCards(widget.data),
+        children: cards,
+      );
+    }
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(children: cards),
     );
   }
 
   List<Widget> createSecondaryCards(SecondaryCardData data) {
 
-    double actualHeight = kIsWeb ? MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom - navBar.getPaddings() : navBar.bodyHeight;
+    double actualHeight = kIsWeb ? MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom - nav_bar.getPaddings() : nav_bar.bodyHeight;
     List<Widget> result = [];
 
     for (int i = 0; i < data.titles.length; i++) {
@@ -64,7 +69,7 @@ class _SecondaryCardState extends State<SecondaryCard> {
               openColor: Theme.of(context).colorScheme.surface,
               transitionDuration: const Duration(milliseconds: 350),
               closedShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(16),
               ),
               closedBuilder: (context, action) {
                 return SizedBox(

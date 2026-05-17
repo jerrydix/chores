@@ -9,10 +9,10 @@ class AuthButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Theme.of(context).colorScheme.secondary,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(22),
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        splashColor: Theme.of(context).colorScheme.surfaceTint.withOpacity(0.75),
+        borderRadius: BorderRadius.circular(22),
+        splashColor: Theme.of(context).colorScheme.surfaceTint.withValues(alpha: 0.75),
         enableFeedback: true,
         onTap: onTap,
         child: Container(
@@ -20,7 +20,7 @@ class AuthButton extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border.all(color: Theme.of(context).colorScheme.primary),
             color: Colors.transparent,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(22),
           ),
           child: Image.asset(
             imagePath,

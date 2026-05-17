@@ -81,6 +81,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get el => 'Ελληνικά';
 
   @override
+  String get zh => '中文（简体）';
+
+  @override
   String get or => 'Or continue with';
 
   @override
@@ -108,6 +111,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reset_pw_b => 'Send reset link';
+
+  @override
+  String get new_wg => 'Create new shared apartment';
+
+  @override
+  String get wg_name => 'Name';
+
+  @override
+  String get wg_use_template => 'Use chores template';
+
+  @override
+  String get wg_exists =>
+      'This name is already taken. Please choose another one.';
 
   @override
   String get garbage => 'Garbage Master';
@@ -246,4 +262,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get finAllTasks => 'Finished all tasks';
+
+  @override
+  String get role_task_settings => 'Role and Task Settings';
+
+  @override
+  String get algo_settings => 'Role Assignment';
+
+  @override
+  String get algo_rotating => 'Weekly rotation';
+
+  @override
+  String get algo_rotating_desc =>
+      'Roles rotate each week so everyone takes turns';
+
+  @override
+  String get algo_fixed => 'Always static';
+
+  @override
+  String get algo_fixed_desc =>
+      'Same roles assigned to the same people every week';
+
+  @override
+  String get algo_random => 'Random (fair)';
+
+  @override
+  String get algo_random_desc =>
+      'Randomly shuffled each week, balanced over time';
 }

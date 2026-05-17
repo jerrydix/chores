@@ -23,6 +23,7 @@
   "de": "Deutsch",
   "ru": "Русский",
   "el": "Ελληνικά",
+  "zh": "中文（简体）",
   "or": "Oder weiter mit",
   "leave_wg": "WG verlassen",
   "leave_wg_t": "Möchtest du die WG wirklich verlassen?",
@@ -32,6 +33,10 @@
   "reset_pw": "Passwort zurücksetzen",
   "reset_pw_t": "Gib deine E-Mail-Adresse ein, um einen Link zum Zurücksetzen deines Passworts zu erhalten.",
   "reset_pw_b": "Link senden",
+  "new_wg": "Neue WG erstellen",
+  "wg_name": "Name",
+  "wg_use_template": "Aufgabenvorlage verwenden",
+  "wg_exists": "Dieser Name ist bereits vergeben. Bitte wähle einen anderen.",
 
 
   "garbage": "Müllmeister",
@@ -84,5 +89,15 @@
   "signup_b": "Registrieren",
   "noAccount": "Noch keinen Account?",
   "haveAccount": "Besitzt du schon einen Account?",
-  "finAllTasks": "Alle Aufgaben erledigt"
+  "finAllTasks": "Alle Aufgaben erledigt",
+
+  "role_task_settings": "Rollen- und Aufgabeneinstellungen",
+
+  "algo_settings": "Rollenzuteilung",
+  "algo_rotating": "Wöchentliche Rotation",
+  "algo_rotating_desc": "Rollen rotieren jede Woche, damit alle dran sind",
+  "algo_fixed": "Immer statisch",
+  "algo_fixed_desc": "Dieselben Rollen werden jede Woche denselben Personen zugewiesen",
+  "algo_random": "Zufällig (fair)",
+  "algo_random_desc": "Jede Woche zufällig neu verteilt, langfristig ausgewogen"
 }

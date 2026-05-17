@@ -1,16 +1,16 @@
-import 'package:chores/user_auth/widgets/AuthButton.dart';
+import 'package:chores/user_auth/widgets/auth_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
 import 'package:chores/user_auth/pages/signup.dart';
-import 'package:chores/user_auth/authentication_provider.dart';
-import 'package:chores/widgets/navigationbar.dart';
+import 'package:chores/data/providers/authentication_provider.dart';
+import 'package:chores/widgets/navigation_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:keybinder/keybinder.dart';
 import '../../l10n/app_localizations.dart';
-import '../../wg_selection.dart';
+import '../../views/wg_selection.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -66,8 +66,12 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 20),
                   TextField(
                     controller: _emailResetController,
+                    autofocus: true,
                     decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.email,
+                      hintText: AppLocalizations.of(context)!.email,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
                   ),
                 ],
@@ -106,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(28),
                   child: Image.asset(
                     "assets/logo.png",
                     width: 125,
@@ -145,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                         onTap: () {
                           openForgotPasswordDialog();
                         },
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(8),
                         child: Text(
                           loc.forgot_pw,
                           style: TextStyle(
@@ -167,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                     splashColor: Theme.of(context)
                         .colorScheme
                         .surfaceTint
-                        .withOpacity(0.75),
+                        .withValues(alpha: 0.75),
                     enableFeedback: true,
                     onTap: _signIn,
                     child: Container(
@@ -202,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
                             color: Theme.of(context)
                                 .colorScheme
                                 .onSurface
-                                .withOpacity(0.5),
+                                .withValues(alpha: 0.5),
                           ),
                         ),
                         Padding(
@@ -213,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Theme.of(context)
                                     .colorScheme
                                     .onSurface
-                                    .withOpacity(0.5)),
+                                    .withValues(alpha: 0.5)),
                           ),
                         ),
                         Expanded(
@@ -222,7 +226,7 @@ class _LoginPageState extends State<LoginPage> {
                             color: Theme.of(context)
                                 .colorScheme
                                 .onSurface
-                                .withOpacity(0.5),
+                                .withValues(alpha: 0.5),
                           ),
                         ),
                       ],
@@ -262,7 +266,7 @@ class _LoginPageState extends State<LoginPage> {
                                   builder: (context) => const SignUpPage()),
                               (route) => false);
                         },
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(8),
                         child: Text(
                           loc.signup_b,
                           style: TextStyle(
@@ -296,6 +300,7 @@ class _LoginPageState extends State<LoginPage> {
     String? message = await AuthenticationProvider(FirebaseAuth.instance)
         .signIn(email: email, password: password);
 
+    if (!mounted) return null;
     if (message != null) {
       Navigator.pop(context);
       return Fluttertoast.showToast(
@@ -319,6 +324,7 @@ class _LoginPageState extends State<LoginPage> {
       currentWgID = value["wg"];
     });
 
+    if (!mounted) return null;
     if (currentWgID == -1) {
       return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
@@ -357,6 +363,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
+    if (!mounted) return null;
     User? user = auth.currentUser;
 
     if (user == null) {
@@ -388,6 +395,7 @@ class _LoginPageState extends State<LoginPage> {
                 }
             });
 
+    if (!mounted) return null;
     Navigator.pop(context);
 
     if (currentWgID == -1) {
@@ -428,6 +436,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
+    if (!mounted) return null;
     User? user = auth.currentUser;
 
     if (user == null) {
@@ -459,6 +468,7 @@ class _LoginPageState extends State<LoginPage> {
                 }
             });
 
+    if (!mounted) return null;
     Navigator.pop(context);
 
     if (currentWgID == -1) {

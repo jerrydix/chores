@@ -66,7 +66,7 @@ class AuthenticationProvider {
     try {
       await firebaseAuth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
-      print(e.message);
+      debugPrint(e.message);
     }
   }
 
