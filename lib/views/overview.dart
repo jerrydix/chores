@@ -5,6 +5,7 @@ import 'package:quiver/time.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 import '../l10n/app_localizations.dart';
+import '../utils/chore_assigner.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -52,8 +53,6 @@ class _OverviewState extends State<Overview> {
   late AutoScrollController verticalController;
   int scrollOffset = DateTime.now().weekOfYear - 2;
   double rowHeight = 50;
-  //List<List<int>> allRoles = [];
-  List<Map<String, List<String>>> allRoles = [];
   List<DataRow2> rows = [];
   List<DataColumn2> columns = [];
   MemberManager manager = MemberManager.instance;
@@ -141,7 +140,6 @@ class _OverviewState extends State<Overview> {
   }
 
   List<DataRow2> _generateRows() {
-
     List<DataRow2> rows = [];
     bool current = false;
     bool wasCurrent = false;
@@ -152,6 +150,22 @@ class _OverviewState extends State<Overview> {
       numberOfWeeks = 53;
     }
 
+    // Build sortedNames once (same logic as _generateColumns)
+    final sortedNames = <String>[];
+    if (manager.active) sortedNames.add(manager.username);
+    sortedNames.addAll(manager.members);
+
+    // Create a fresh local assigner so the shared choreAssigner's state is not mutated
+    RoleAssigner? localAssigner;
+    if (manager.tasks.isNotEmpty && sortedNames.isNotEmpty) {
+      localAssigner = RoleAssigner.create(
+        manager.algorithm,
+        List<String>.from(sortedNames),
+        manager.tasks.keys.toList(),
+        noRepeatWindow: manager.noRepeatWindow,
+      );
+    }
+
     for (int i = 0; i < numberOfWeeks; i++) {
 
       if (DateTime.now().weekOfYear == i + 1 && DateTime.now().weekOfYear != 1 || DateTime.now().weekOfYear == i + 1 && DateTime.now().weekOfYear == 1 && DateTime.now().month != DateTime.december || DateTime.now().weekOfYear == 1 && DateTime.now().month == DateTime.december && numberOfWeeks == 53) {
@@ -160,15 +174,8 @@ class _OverviewState extends State<Overview> {
       } else {
         current = false;
       }
-      //print(DateTime.now().weekOfYear);
 
-      final currentRoles = manager.choreAssigner?.assignRoles(i + 1) ?? {};
-      allRoles.add(currentRoles);
-
-      // Build sortedNames the same way _generateColumns() does so cells align
-      final sortedNames = <String>[];
-      if (manager.active) sortedNames.add(manager.username);
-      sortedNames.addAll(manager.members);
+      final currentRoles = localAssigner?.assignRoles(i + 1) ?? {};
 
       List<DataCell> cells = [];
       cells.add(DataCell(
@@ -200,60 +207,14 @@ class _OverviewState extends State<Overview> {
         ));
       }
 
-
-      // for (var roles in allRoles.keys) {
-      //   List<Icon> currentIcons = [];
-      //   for (var role in roles) {
-      //     switch (role) {
-      //       case 0:
-      //         {
-      //           currentIcons.add(const Icon(Symbols.delete_rounded));
-      //           break;
-      //         }
-      //       case 1:
-      //         {
-      //           currentIcons.add(const Icon(Symbols.bathroom_rounded));
-      //           break;
-      //         }
-      //       case 2:
-      //         {
-      //           currentIcons.add(const Icon(Symbols.countertops_rounded));
-      //           break;
-      //         }
-      //       case 3:
-      //         {
-      //           currentIcons.add(const Icon(Symbols.vacuum_rounded));
-      //           break;
-      //         }
-      //     }
-      //   }
-      //
-      //   cells.add(DataCell(
-      //       Center(
-      //         child: Row(
-      //           mainAxisAlignment: MainAxisAlignment.center,
-      //           children: currentIcons,
-      //         ),
-      //       ), onTap: () {}),
-      //   );
-      // }
-
       rows.add(DataRow2(
         color: (() {
           if (current) {
             return WidgetStateProperty.all(
-                Theme
-                    .of(context)
-                    .colorScheme
-                    .primary
-                    .withValues(alpha: 0.15));
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.15));
           }
           if (wasCurrent) {
-            return WidgetStateProperty.all(
-                Theme
-                    .of(context)
-                    .colorScheme
-                    .surface);
+            return WidgetStateProperty.all(Theme.of(context).colorScheme.surface);
           }
           return WidgetStateProperty.all(Colors.grey.withValues(alpha: 0.05));
         }()),
@@ -266,11 +227,9 @@ class _OverviewState extends State<Overview> {
   }
 
   Future _scrollToCurrentWeek() async {
-    await Future.delayed(const Duration(seconds: 1), () {
-      if (!mounted || !verticalController.hasClients) return;
-      verticalController.animateTo(rowHeight * scrollOffset,
-          duration: const Duration(seconds: 1), curve: Curves.ease);
-    });
+    if (!mounted || !verticalController.hasClients) return;
+    verticalController.animateTo(rowHeight * scrollOffset,
+        duration: const Duration(milliseconds: 500), curve: Curves.ease);
   }
 
   @override

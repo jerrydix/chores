@@ -37,10 +37,21 @@ class MemberManager with ChangeNotifier {
     user = FirebaseAuth.instance.currentUser;
     userID = user!.uid;
 
-    final userDoc = await db.collection("users").doc(userID).get();
-    currentWgID = userDoc["wg"] as String;
+    if (currentWgID == "-1") {
+      final userDoc = await db.collection("users").doc(userID).get();
+      currentWgID = userDoc["wg"] as String;
+    }
 
-    final wgDoc = await db.collection("wgs").doc(currentWgID).get();
+    // Fetch WG doc and members subcollection in parallel
+    final wgFuture = db.collection("wgs").doc(currentWgID).get();
+    final membersFuture = db
+        .collection("wgs")
+        .doc(currentWgID)
+        .collection("members")
+        .orderBy("memberID")
+        .get();
+
+    final wgDoc = await wgFuture;
     final wgData = wgDoc.data()!;
     wgCW = wgData["cw"] as int;
     wgName = wgData["name"] as String;
@@ -111,13 +122,8 @@ class MemberManager with ChangeNotifier {
 
     tasks = taskMaps;
 
-    // Load members ordered by memberID
-    final membersSnapshot = await db
-        .collection("wgs")
-        .doc(currentWgID)
-        .collection("members")
-        .orderBy("memberID")
-        .get();
+    // Await the members fetch that was started in parallel with the WG doc fetch
+    final membersSnapshot = await membersFuture;
 
     members = [];
     int j = 0;

@@ -196,10 +196,7 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
               setState(() => list.items.removeAt(i));
               _saveToFirestore();
             },
-            onRoleDelete: () {
-              setState(() => lists.removeAt(roleIndex));
-              _saveToFirestore();
-            },
+            onRoleDelete: () => _confirmDeleteRole(roleIndex),
             onAddChore: () => _openChoreDialogForList(roleIndex),
             onToggleExpand: () =>
                 setState(() => list.isExpanded = !list.isExpanded),
@@ -240,6 +237,35 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
         ],
       ),
     );
+  }
+
+  Future<void> _confirmDeleteRole(int roleIndex) async {
+    final role = lists[roleIndex];
+    final taskCount = role.items.length;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Delete "${role.title}"?'),
+        content: Text(
+          taskCount > 0
+              ? 'This will also delete all $taskCount chore${taskCount == 1 ? '' : 's'} in this role.'
+              : 'This role has no chores.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    setState(() => lists.removeAt(roleIndex));
+    _saveToFirestore();
   }
 
   Future<void> _openRoleDialog() async {
