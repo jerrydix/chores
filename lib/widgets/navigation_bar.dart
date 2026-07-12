@@ -1,7 +1,6 @@
 import 'package:chores/views/overview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../l10n/app_localizations.dart';
 import '../views/dashboard.dart';
 import '../views/settings.dart';
@@ -33,8 +32,11 @@ class _NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     navBarTheme = NavigationBarThemeData(
+      // Use the bundled default font instead of GoogleFonts.openSans, which
+      // fetched the font from fonts.gstatic.com on every fresh session and
+      // delayed first paint on both web and mobile.
       labelTextStyle: WidgetStateTextStyle.resolveWith((states) =>
-          GoogleFonts.openSans(fontStyle: FontStyle.normal, fontSize: 13)),
+          const TextStyle(fontStyle: FontStyle.normal, fontSize: 13)),
       height: 80,
     );
 

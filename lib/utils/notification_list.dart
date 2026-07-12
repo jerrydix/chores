@@ -33,7 +33,7 @@ class NotificationService {
               channelGroupKey: "reminder_channel_group",
               channelGroupName: "Reminders")
         ],
-        debug: true);
+        debug: kDebugMode);
 
     await AwesomeNotifications().isNotificationAllowed().then((allowed) async {
       if (!allowed) {

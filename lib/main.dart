@@ -1,5 +1,6 @@
 import 'package:chores/user_auth/wrapper.dart';
 import 'package:chores/utils/notification_list.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'l10n/app_localizations.dart';
@@ -10,12 +11,21 @@ import 'data/userprefs.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await NotificationService.initializeNotifications();
+  // Firebase must be ready before the first widget touches Auth/Firestore.
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((value) => runApp(const MyApp()));
+  // Enable the offline cache everywhere (opt-in on web) so repeat screen
+  // loads read from the local cache instead of a network round-trip.
+  FirebaseFirestore.instance.settings = const Settings(
+    persistenceEnabled: true,
+    cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+  );
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  // Notifications are initialised after the first frame (see MyAppState) so
+  // the permission request can never block startup. Awaiting it here — before
+  // runApp — was what left Android stuck on the splash screen.
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -38,6 +48,15 @@ class MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _loadPreferences();
+    // Defer notification setup (and its permission prompt) until after the
+    // UI is on screen, and never let it throw into startup.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        await NotificationService.initializeNotifications();
+      } catch (e) {
+        debugPrint('Notification init failed: $e');
+      }
+    });
   }
 
   Future<void> _loadPreferences() async {
