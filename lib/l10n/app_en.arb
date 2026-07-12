@@ -98,5 +98,41 @@
   "algo_fixed": "Always static",
   "algo_fixed_desc": "Same roles assigned to the same people every week",
   "algo_random": "Random (fair)",
-  "algo_random_desc": "Randomly shuffled each week, balanced over time"
+  "algo_random_desc": "Randomly shuffled each week, balanced over time",
+
+  "no_tasks_yet": "No tasks yet",
+  "add_tasks_hint": "Add roles & chores in Settings",
+  "no_roles_yet": "No roles yet",
+  "add_roles_hint": "Tap + to add a role or chore",
+  "add_role": "Add Role",
+  "add_chore": "Add Chore",
+  "add_chore_to": "Add Chore to {role}",
+  "@add_chore_to": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "role_name": "Role Name",
+  "chore_name": "Chore Name",
+  "add": "Add",
+  "delete": "Delete",
+  "delete_role": "Delete Role",
+  "delete_role_t": "Delete \"{role}\"?",
+  "@delete_role_t": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "delete_role_desc": "This will also delete all chores in this role.",
+  "delete_role_empty": "This role has no chores.",
+  "no_chores_for_role": "No chores for this role",
+  "pick_role_icon": "Pick Role Icon",
+  "pick_icon": "Pick an icon",
+  "select_role": "Select Role",
+  "role_exists": "A role with this name already exists.",
+  "chore_exists": "This chore already exists in this role."
 }

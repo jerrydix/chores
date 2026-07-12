@@ -17,9 +17,7 @@ class DashboardView extends StatefulWidget {
   final List<String> otherNames;
   final bool active;
 
-  final ValueNotifier<bool> allTasksDone = ValueNotifier<bool>(false);
-
-  DashboardView({
+  const DashboardView({
     super.key,
     required this.tasks,
     required this.taskIcons,
@@ -44,6 +42,8 @@ class _DashboardViewState extends State<DashboardView> {
   late bool active;
   List<EdgeInsets> otherEdgeInsets = [];
   List<double> otherWidths = [];
+  final ValueNotifier<bool> _allTasksDone = ValueNotifier<bool>(false);
+  final ScrollController _primaryScrollController = ScrollController();
 
   @override
   void initState() {
@@ -65,6 +65,7 @@ class _DashboardViewState extends State<DashboardView> {
     otherNames = widget.otherNames;
     username = widget.username;
     active = widget.active;
+    _syncAllTasksDone();
   }
 
   @override
@@ -82,7 +83,6 @@ class _DashboardViewState extends State<DashboardView> {
     final secondaryData = _buildSecondaryCardData();
 
     Widget primaryWidget;
-    final scrollController = ScrollController();
     final primaryTasks = _createPrimaryTasks();
 
     Widget primaryActiveWidget = primaryTasks.isEmpty
@@ -95,12 +95,12 @@ class _DashboardViewState extends State<DashboardView> {
                     color: Theme.of(context).colorScheme.outlineVariant),
                 const SizedBox(height: 16),
                 Text(
-                  'No tasks yet',
+                  AppLocalizations.of(context)!.no_tasks_yet,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Add roles & chores in Settings',
+                  AppLocalizations.of(context)!.add_tasks_hint,
                   style: TextStyle(
                       color: Theme.of(context).colorScheme.outline),
                 ),
@@ -112,9 +112,9 @@ class _DashboardViewState extends State<DashboardView> {
             child: Scrollbar(
               radius: const Radius.circular(16),
               thickness: 3,
-              controller: scrollController,
+              controller: _primaryScrollController,
               child: SingleChildScrollView(
-                controller: scrollController,
+                controller: _primaryScrollController,
                 child: Column(children: primaryTasks),
               ),
             ),
@@ -147,6 +147,7 @@ class _DashboardViewState extends State<DashboardView> {
           otherEdgeInsets.clear();
           otherWidths.clear();
         });
+        _syncAllTasksDone();
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -175,7 +176,7 @@ class _DashboardViewState extends State<DashboardView> {
                         height: 20,
                       ),
                       ValueListenableBuilder(
-                        valueListenable: widget.allTasksDone,
+                        valueListenable: _allTasksDone,
                         builder: (context, value, child) => Padding(
                           padding: const EdgeInsets.only(
                               left: 10, right: 10, bottom: 10),
@@ -189,7 +190,7 @@ class _DashboardViewState extends State<DashboardView> {
                                 AppLocalizations.of(context)!.finAllTasks),
                             onChanged: (value) {
                               if (value == null) return;
-                              widget.allTasksDone.value = value;
+                              _allTasksDone.value = value;
                               for (final role in primaryRoles) {
                                 final taskMap = tasks[role];
                                 if (taskMap == null) continue;
@@ -201,7 +202,7 @@ class _DashboardViewState extends State<DashboardView> {
                               saveSelectionStateToDB();
                             },
                             secondary: const Icon(Icons.done_all),
-                            value: widget.allTasksDone.value,
+                            value: value,
                           ),
                         ),
                       ),
@@ -349,19 +350,29 @@ class _DashboardViewState extends State<DashboardView> {
       if (taskMap == null || taskMap.isEmpty) return true;
       return taskMap.values.every((done) => done);
     });
-    widget.allTasksDone.value = allDone;
+    _allTasksDone.value = allDone;
   }
 
   @override
   void dispose() {
     saveSelectionStateToDB();
+    _allTasksDone.dispose();
+    _primaryScrollController.dispose();
     super.dispose();
   }
 
   Future<void> saveSelectionStateToDB() async {
-    await FirebaseFirestore.instance
-        .collection("wgs")
-        .doc(MemberManager.instance.currentWgID)
-        .update({"tasks": tasks});
+    final wgID = MemberManager.instance.currentWgID;
+    // Skip (rather than crash) when the WG no longer exists, e.g. when this
+    // view is disposed right after the user left the WG.
+    if (wgID == "-1") return;
+    try {
+      await FirebaseFirestore.instance
+          .collection("wgs")
+          .doc(wgID)
+          .update({"tasks": tasks});
+    } on FirebaseException catch (e) {
+      debugPrint("Failed to save task state: ${e.message}");
+    }
   }
 }

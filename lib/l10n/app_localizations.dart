@@ -655,6 +655,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Randomly shuffled each week, balanced over time'**
   String get algo_random_desc;
+
+  /// No description provided for @no_tasks_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks yet'**
+  String get no_tasks_yet;
+
+  /// No description provided for @add_tasks_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add roles & chores in Settings'**
+  String get add_tasks_hint;
+
+  /// No description provided for @no_roles_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No roles yet'**
+  String get no_roles_yet;
+
+  /// No description provided for @add_roles_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap + to add a role or chore'**
+  String get add_roles_hint;
+
+  /// No description provided for @add_role.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Role'**
+  String get add_role;
+
+  /// No description provided for @add_chore.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Chore'**
+  String get add_chore;
+
+  /// No description provided for @add_chore_to.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Chore to {role}'**
+  String add_chore_to(String role);
+
+  /// No description provided for @role_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Role Name'**
+  String get role_name;
+
+  /// No description provided for @chore_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Chore Name'**
+  String get chore_name;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @delete_role.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Role'**
+  String get delete_role;
+
+  /// No description provided for @delete_role_t.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{role}\"?'**
+  String delete_role_t(String role);
+
+  /// No description provided for @delete_role_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'This will also delete all chores in this role.'**
+  String get delete_role_desc;
+
+  /// No description provided for @delete_role_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'This role has no chores.'**
+  String get delete_role_empty;
+
+  /// No description provided for @no_chores_for_role.
+  ///
+  /// In en, this message translates to:
+  /// **'No chores for this role'**
+  String get no_chores_for_role;
+
+  /// No description provided for @pick_role_icon.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick Role Icon'**
+  String get pick_role_icon;
+
+  /// No description provided for @pick_icon.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick an icon'**
+  String get pick_icon;
+
+  /// No description provided for @select_role.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Role'**
+  String get select_role;
+
+  /// No description provided for @role_exists.
+  ///
+  /// In en, this message translates to:
+  /// **'A role with this name already exists.'**
+  String get role_exists;
+
+  /// No description provided for @chore_exists.
+  ///
+  /// In en, this message translates to:
+  /// **'This chore already exists in this role.'**
+  String get chore_exists;
 }
 
 class _AppLocalizationsDelegate

@@ -9,6 +9,58 @@ import 'package:flutter/material.dart';
 import 'package:chores/l10n/app_localizations.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 
+/// Default roles & chores seeded into a new WG when "use template" is checked.
+List<Map<String, dynamic>> buildTemplateRolesConfig(AppLocalizations loc) {
+  Map<String, dynamic> task(String name, IconData icon) => {
+        "name": name,
+        "codePoint": icon.codePoint,
+        "fontFamily": icon.fontFamily,
+      };
+  Map<String, dynamic> role(
+          String name, IconData icon, List<Map<String, dynamic>> tasks) =>
+      {
+        "name": name,
+        "iconCodePoint": icon.codePoint,
+        "iconFontFamily": icon.fontFamily,
+        "tasks": tasks,
+      };
+
+  return [
+    role(loc.garbage, Icons.delete, [
+      task(loc.g100plastic, Icons.recycling),
+      task(loc.g101residual, Icons.delete_outline),
+      task(loc.g102organic, Icons.compost),
+      task(loc.g103paper, Icons.newspaper),
+      task(loc.g104glass, Icons.wine_bar),
+      task(loc.g105bottles, Icons.local_drink),
+    ]),
+    role(loc.bathroom, Icons.bathtub, [
+      task(loc.b206mirrors, Icons.cleaning_services),
+      task(loc.b207sink, Icons.wash),
+      task(loc.b208bath, Icons.bathtub),
+      task(loc.b209toilet, Icons.wc),
+      task(loc.b210dust, Icons.cleaning_services),
+      task(loc.b211carpet, Icons.layers),
+      task(loc.b212towel, Icons.dry_cleaning),
+      task(loc.b213b_waste, Icons.delete_outline),
+    ]),
+    role(loc.kitchen, Icons.countertops, [
+      task(loc.b314surfaces, Icons.cleaning_services),
+      task(loc.b315stove, Icons.microwave),
+      task(loc.b316fridge, Icons.kitchen),
+      task(loc.b317cloths, Icons.local_laundry_service),
+    ]),
+    role(loc.vacuum, Icons.cleaning_services, [
+      task(loc.b418v_kitchen, Icons.countertops),
+      task(loc.b419v_bath, Icons.bathtub),
+      task(loc.b420v_living, Icons.weekend),
+      task(loc.b421v_stairs, Icons.stairs),
+      task(loc.b422v_corridor, Icons.meeting_room),
+      task(loc.b423wipe, Icons.water_drop),
+    ]),
+  ];
+}
+
 class WGSelection extends StatefulWidget {
   final String username;
   const WGSelection({super.key, required this.username});
@@ -117,6 +169,9 @@ class _WGSelectionState extends State<WGSelection> {
                   child: Text(AppLocalizations.of(context)!.cancel)),
               TextButton(
                   onPressed: () async {
+                    final loc = AppLocalizations.of(context)!;
+                    final wgName = _wgNameController.text.trim();
+                    if (wgName.isEmpty) return;
 
                     showDialog(
                       barrierDismissible: false,
@@ -128,47 +183,61 @@ class _WGSelectionState extends State<WGSelection> {
                       },
                     );
 
-                    final nameCheck = await FirebaseFirestore.instance.collection("wgs").where("name", isEqualTo: _wgNameController.text).get();
+                    final db = FirebaseFirestore.instance;
+                    final nameCheck = await db
+                        .collection("wgs")
+                        .where("name", isEqualTo: wgName)
+                        .get();
                     if (nameCheck.docs.isNotEmpty) {
                       if (!context.mounted) return;
+                      Navigator.pop(context); // close loading indicator
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(AppLocalizations.of(context)!.wg_exists),
+                        content: Text(loc.wg_exists),
                         duration: const Duration(seconds: 2),
                       ));
+                      return;
                     }
 
-                      await FirebaseFirestore.instance.collection("wgs").add({
-                        "name": _wgNameController.text,
-                        "count": 1,
-                        "cw": DateTime.now().weekOfYear,
-                        "tasks": <String, dynamic>{},
-                        "rolesConfig": <dynamic>[],
-                      });
+                    final rolesConfig = useWgTemplate
+                        ? buildTemplateRolesConfig(loc)
+                        : <Map<String, dynamic>>[];
+                    final tasks = {
+                      for (final role in rolesConfig)
+                        role["name"] as String: {
+                          for (final task in role["tasks"] as List)
+                            task["name"] as String: false,
+                        },
+                    };
 
-                      var wgID = "";
+                    final uid = FirebaseAuth.instance.currentUser?.uid;
+                    final wgRef = await db.collection("wgs").add({
+                      "name": wgName,
+                      "count": 1,
+                      "cw": DateTime.now().weekOfYear,
+                      "tasks": tasks,
+                      "rolesConfig": rolesConfig,
+                      "algorithmType": "rotating",
+                    });
 
-                      await FirebaseFirestore.instance.collection("wgs").where("name", isEqualTo: _wgNameController.text).get().then((value) {
-                        for (var element in value.docs) {
-                          FirebaseFirestore.instance.collection("wgs").doc(element.id).collection("members").add({
-                            "uid": FirebaseAuth.instance.currentUser?.uid,
-                            "username": widget.username,
-                            "active": true,
-                            "memberID": 0,
-                          });
-                          wgID = element.id;
-                        }
-                      });
+                    // Key the member doc by uid so leaving the WG (which
+                    // deletes members/<uid>) also works for the creator.
+                    await wgRef.collection("members").doc(uid).set({
+                      "uid": uid,
+                      "username": widget.username,
+                      "active": true,
+                      "memberID": 0,
+                    });
 
-                      await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser?.uid).update({
-                        "wg": wgID,
-                      });
+                    await db.collection("users").doc(uid).update({
+                      "wg": wgRef.id,
+                    });
 
-                      if (!context.mounted) return;
-                      Navigator.pop(context);
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                          builder: (context) => const NavBar(),
-                        ), (route) => false
+                    if (!context.mounted) return;
+                    Navigator.pop(context);
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) => const NavBar(),
+                      ), (route) => false
                     );
                   },
                   child: Text(AppLocalizations.of(context)!.confirm)),

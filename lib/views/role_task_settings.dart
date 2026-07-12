@@ -5,6 +5,8 @@ import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chores/member_manager.dart';
 
+import '../l10n/app_localizations.dart';
+
 class TaskItem {
   final String id;
   final IconData? iconData;
@@ -160,8 +162,9 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
         body: Center(child: CircularProgressIndicator()),
       );
     }
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Role & Task Settings')),
+      appBar: AppBar(title: Text(loc.role_task_settings)),
       body: lists.isEmpty
           ? Center(
               child: Column(
@@ -171,10 +174,10 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
                       size: 64,
                       color: Theme.of(context).colorScheme.outlineVariant),
                   const SizedBox(height: 16),
-                  Text('No roles yet',
+                  Text(loc.no_roles_yet,
                       style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 8),
-                  Text('Tap + to add a role or chore',
+                  Text(loc.add_roles_hint,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.outline)),
                 ],
@@ -217,7 +220,7 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
         ),
         children: [
           Row(children: [
-            const Text('Add Role'),
+            Text(loc.add_role),
             const SizedBox(width: 20),
             FloatingActionButton.small(
               heroTag: 'fab_add_role',
@@ -226,7 +229,7 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
             ),
           ]),
           Row(children: [
-            const Text('Add Chore'),
+            Text(loc.add_chore),
             const SizedBox(width: 20),
             FloatingActionButton.small(
               heroTag: 'fab_add_chore',
@@ -239,26 +242,38 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
     );
   }
 
+  bool _roleExists(String name) => lists.any((l) => l.title == name);
+
+  bool _choreExists(int listIndex, String name) =>
+      lists[listIndex].items.any((t) => t.label == name);
+
+  void _showSnack(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+      duration: const Duration(seconds: 2),
+    ));
+  }
+
   Future<void> _confirmDeleteRole(int roleIndex) async {
+    final loc = AppLocalizations.of(context)!;
     final role = lists[roleIndex];
-    final taskCount = role.items.length;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Delete "${role.title}"?'),
+        title: Text(loc.delete_role_t(role.title)),
         content: Text(
-          taskCount > 0
-              ? 'This will also delete all $taskCount chore${taskCount == 1 ? '' : 's'} in this role.'
-              : 'This role has no chores.',
+          role.items.isNotEmpty
+              ? loc.delete_role_desc
+              : loc.delete_role_empty,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
+            child: Text(loc.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Delete'),
+            child: Text(loc.delete),
           ),
         ],
       ),
@@ -269,28 +284,35 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
   }
 
   Future<void> _openRoleDialog() async {
+    final loc = AppLocalizations.of(context)!;
     final controller = TextEditingController();
     IconData? pickedIcon;
+
+    void submit(BuildContext ctx) {
+      final name = controller.text.trim();
+      if (name.isEmpty) return;
+      if (_roleExists(name)) {
+        _showSnack(loc.role_exists);
+        return;
+      }
+      setState(() => lists.add(TaskList(title: name, iconData: pickedIcon)));
+      _saveToFirestore();
+      Navigator.of(ctx).pop();
+    }
+
     await showDialog<void>(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialog) => AlertDialog(
-          title: const Text('Add Role'),
+          title: Text(loc.add_role),
           content: Row(
             children: [
               Expanded(
                 child: TextField(
                   controller: controller,
-                  decoration: const InputDecoration(hintText: 'Role Name'),
+                  decoration: InputDecoration(hintText: loc.role_name),
                   onChanged: (_) => setDialog(() {}),
-                  onSubmitted: (v) {
-                    if (v.trim().isNotEmpty) {
-                      setState(() => lists.add(
-                          TaskList(title: v.trim(), iconData: pickedIcon)));
-                      _saveToFirestore();
-                      Navigator.of(ctx).pop();
-                    }
-                  },
+                  onSubmitted: (_) => submit(ctx),
                 ),
               ),
               IconButton(
@@ -298,7 +320,7 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
                 onPressed: () async {
                   final picked = await showMaterialIconPicker(
                     ctx,
-                    title: 'Pick Role Icon',
+                    title: loc.pick_role_icon,
                   );
                   setDialog(() => pickedIcon = picked);
                 },
@@ -308,19 +330,13 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('Cancel'),
+              child: Text(loc.cancel),
             ),
             TextButton(
               onPressed: controller.text.trim().isNotEmpty
-                  ? () {
-                      setState(() => lists.add(TaskList(
-                          title: controller.text.trim(),
-                          iconData: pickedIcon)));
-                      _saveToFirestore();
-                      Navigator.of(ctx).pop();
-                    }
+                  ? () => submit(ctx)
                   : null,
-              child: const Text('Add'),
+              child: Text(loc.add),
             ),
           ],
         ),
@@ -331,7 +347,7 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
   Future<void> _pickRoleIcon(int listIndex) async {
     final picked = await showMaterialIconPicker(
       context,
-      title: 'Pick Role Icon',
+      title: AppLocalizations.of(context)!.pick_role_icon,
     );
     if (picked != null) {
       setState(() => lists[listIndex].iconData = picked);
@@ -339,7 +355,22 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
     }
   }
 
+  void _addChore(BuildContext ctx, int listIndex, String name,
+      IconData? pickedIcon, AppLocalizations loc) {
+    if (_choreExists(listIndex, name)) {
+      _showSnack(loc.chore_exists);
+      return;
+    }
+    setState(() {
+      lists[listIndex].items.add(TaskItem(name, pickedIcon ?? Icons.task));
+      lists[listIndex].isExpanded = true;
+    });
+    _saveToFirestore();
+    Navigator.of(ctx).pop();
+  }
+
   Future<void> _openChoreDialog() async {
+    final loc = AppLocalizations.of(context)!;
     final controller = TextEditingController();
     int? selectedRoleIndex;
     IconData? pickedIcon;
@@ -348,12 +379,12 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialog) => AlertDialog(
-          title: const Text('Add Chore'),
+          title: Text(loc.add_chore),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               DropdownButtonFormField<int>(
-                decoration: const InputDecoration(labelText: 'Select Role'),
+                decoration: InputDecoration(labelText: loc.select_role),
                 initialValue: selectedRoleIndex,
                 items: [
                   for (int i = 0; i < lists.length; i++)
@@ -373,24 +404,15 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('Cancel'),
+              child: Text(loc.cancel),
             ),
             TextButton(
               onPressed:
                   controller.text.trim().isNotEmpty && selectedRoleIndex != null
-                      ? () {
-                          setState(() {
-                            lists[selectedRoleIndex!].items.add(
-                                  TaskItem(controller.text.trim(),
-                                      pickedIcon ?? Icons.task),
-                                );
-                            lists[selectedRoleIndex!].isExpanded = true;
-                          });
-                          _saveToFirestore();
-                          Navigator.of(ctx).pop();
-                        }
+                      ? () => _addChore(ctx, selectedRoleIndex!,
+                          controller.text.trim(), pickedIcon, loc)
                       : null,
-              child: const Text('Add'),
+              child: Text(loc.add),
             ),
           ],
         ),
@@ -399,6 +421,7 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
   }
 
   Future<void> _openChoreDialogForList(int listIndex) async {
+    final loc = AppLocalizations.of(context)!;
     final controller = TextEditingController();
     IconData? pickedIcon;
 
@@ -406,7 +429,7 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialog) => AlertDialog(
-          title: Text('Add Chore to ${lists[listIndex].title}'),
+          title: Text(loc.add_chore_to(lists[listIndex].title)),
           content: _ChoreInputRow(
             controller: controller,
             iconData: pickedIcon,
@@ -416,23 +439,14 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('Cancel'),
+              child: Text(loc.cancel),
             ),
             TextButton(
               onPressed: controller.text.trim().isNotEmpty
-                  ? () {
-                      setState(() {
-                        lists[listIndex].items.add(
-                              TaskItem(controller.text.trim(),
-                                  pickedIcon ?? Icons.task),
-                            );
-                        lists[listIndex].isExpanded = true;
-                      });
-                      _saveToFirestore();
-                      Navigator.of(ctx).pop();
-                    }
+                  ? () => _addChore(ctx, listIndex, controller.text.trim(),
+                      pickedIcon, loc)
                   : null,
-              child: const Text('Add'),
+              child: Text(loc.add),
             ),
           ],
         ),
@@ -516,14 +530,14 @@ class _RoleCard extends StatelessWidget {
                   constraints: const BoxConstraints(),
                   padding: const EdgeInsets.all(8),
                   icon: const Icon(Icons.add),
-                  tooltip: 'Add Chore',
+                  tooltip: AppLocalizations.of(context)!.add_chore,
                   onPressed: onAddChore,
                 ),
                 IconButton(
                   constraints: const BoxConstraints(),
                   padding: const EdgeInsets.all(8),
                   icon: const Icon(Icons.delete_outline),
-                  tooltip: 'Delete Role',
+                  tooltip: AppLocalizations.of(context)!.delete_role,
                   onPressed: onRoleDelete,
                 ),
                 // 40×40 matches icon(24) + padding(8) on each side — aligns
@@ -576,7 +590,7 @@ class _TaskList extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.all(16),
         child: Text(
-          'No chores for this role',
+          AppLocalizations.of(context)!.no_chores_for_role,
           style: TextStyle(color: Theme.of(context).disabledColor),
         ),
       );
@@ -648,7 +662,8 @@ class _ChoreInputRow extends StatelessWidget {
         Expanded(
           child: TextField(
             controller: controller,
-            decoration: const InputDecoration(hintText: 'Chore Name'),
+            decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.chore_name),
             onChanged: onChanged,
           ),
         ),
@@ -657,7 +672,7 @@ class _ChoreInputRow extends StatelessWidget {
           onPressed: () async {
             final picked = await showMaterialIconPicker(
               context,
-              title: 'Pick an icon',
+              title: AppLocalizations.of(context)!.pick_icon,
             );
             onIconPicked(picked);
           },

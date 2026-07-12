@@ -8,6 +8,21 @@ class AuthenticationProvider {
   AuthenticationProvider(this.firebaseAuth);
   Stream<User?> get authState => firebaseAuth.idTokenChanges();
 
+  // OAuth client IDs of this Firebase project.
+  // Android ignores `clientId` (apps are identified by package name +
+  // signing SHA-1) and instead needs the *web* client ID as
+  // `serverClientId` to mint an ID token Firebase accepts.
+  static const String _webServerClientId =
+      '173688729888-6dbdlbqtinkdtqh1dp2dugml754pf320.apps.googleusercontent.com';
+  static const String _iosClientId =
+      '173688729888-p0kiaemtugiu7smd9ouodcoqbvuvnbeh.apps.googleusercontent.com';
+
+  static bool _googleInitialized = false;
+
+  /// OAuth providers (especially GitHub) may not supply a display name.
+  static String usernameOf(User user) =>
+      user.displayName ?? user.email?.split('@').first ?? 'User';
+
   Future<String?> signUp({required String email, required String password}) async {
     try {
       await firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
@@ -27,7 +42,15 @@ class AuthenticationProvider {
   }
 
   Future<void> signOut() async {
-    await GoogleSignIn.instance.disconnect();
+    // There may be no Google session at all (email or GitHub users) —
+    // never let disconnect() failing block the Firebase sign-out.
+    try {
+      if (!kIsWeb && _googleInitialized) {
+        await GoogleSignIn.instance.disconnect();
+      }
+    } catch (e) {
+      debugPrint("Google disconnect failed: $e");
+    }
     await firebaseAuth.signOut();
   }
 
@@ -36,9 +59,15 @@ class AuthenticationProvider {
       return await firebaseAuth.signInWithPopup(GoogleAuthProvider());
     }
 
-    await GoogleSignIn.instance.initialize(
-      clientId: '173688729888-p0kiaemtugiu7smd9ouodcoqbvuvnbeh.apps.googleusercontent.com',
-    );
+    if (!_googleInitialized) {
+      final isApple = defaultTargetPlatform == TargetPlatform.iOS ||
+          defaultTargetPlatform == TargetPlatform.macOS;
+      await GoogleSignIn.instance.initialize(
+        clientId: isApple ? _iosClientId : null,
+        serverClientId: _webServerClientId,
+      );
+      _googleInitialized = true;
+    }
 
     final gUser = await GoogleSignIn.instance.authenticate();
 

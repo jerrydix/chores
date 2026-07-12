@@ -382,7 +382,7 @@ class _SettingsState extends State<Settings> {
             height: 55,
           ),
           applicationName: 'Chores',
-          applicationVersion: '1.0.0',
+          applicationVersion: '2.0.0',
           children: <Widget>[
             RichText(
               text: TextSpan(
@@ -714,24 +714,35 @@ class _SettingsState extends State<Settings> {
 
                   FirebaseFirestore db = FirebaseFirestore.instance;
                   MemberManager manager = MemberManager.instance;
-                  await db.collection("wgs").doc(manager.currentWgID).collection("members").doc(manager.user?.uid).delete();
-                  await db.collection("wgs").doc(manager.currentWgID).update({
+                  final wgRef = db.collection("wgs").doc(manager.currentWgID);
+                  await wgRef.collection("members").doc(manager.user?.uid).delete();
+                  await wgRef.update({
                     "count": FieldValue.increment(-1),
                   });
                   await db.collection("users").doc(manager.user?.uid).update({
                     "wg": -1,
                   });
 
-                  if (manager.memberCount == 1) {
-                    await db.collection("wgs").doc(manager.currentWgID).delete();
+                  // Delete the WG only when nobody is left at all. Checking
+                  // manager.memberCount would miss inactive members and
+                  // delete the WG out from under them.
+                  final wgDoc = await wgRef.get();
+                  final remaining = (wgDoc.data()?["count"] as int?) ?? 0;
+                  if (remaining <= 0) {
+                    await wgRef.delete();
                   }
+
+                  // Reset cached WG state so the next fetch reloads cleanly.
+                  manager.currentWgID = "-1";
 
                   if (!context.mounted) return;
                   Navigator.pop(context);
 
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
-                        builder: (context) => WGSelection(username: FirebaseAuth.instance.currentUser!.displayName!),
+                        builder: (context) => WGSelection(
+                            username: AuthenticationProvider.usernameOf(
+                                FirebaseAuth.instance.currentUser!)),
                       ), (route) => false
                   );
                 },
@@ -888,11 +899,7 @@ class _SettingsState extends State<Settings> {
                 onToggle: (bool value) async {
                   final titleStr = AppLocalizations.of(context)!.n_title;
                   final bodyStr = AppLocalizations.of(context)!.n_text;
-                  FirebaseFirestore db = FirebaseFirestore.instance;
-                  MemberManager manager = MemberManager.instance;
-                  await db.collection("wgs").doc(manager.currentWgID).collection("members").doc(manager.user?.uid).update({
-                    "active": value,
-                  });
+                  await MemberManager.instance.updateActive(value);
                   if (value && currentNotificationValue!) {
                     await AwesomeNotifications().cancelAllSchedules().then((_) async {
                       List<int> weekdays = getNotificationWeekday(_character!);
@@ -909,7 +916,6 @@ class _SettingsState extends State<Settings> {
                     await AwesomeNotifications().cancelAllSchedules();
                   }
                   if (!context.mounted) return;
-                  MemberManager.instance.updateActive(value);
                   setState(() {
                     currentActiveValue = value;
                     if (value) {

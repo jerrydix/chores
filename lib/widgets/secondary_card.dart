@@ -92,7 +92,10 @@ class _SecondaryCardState extends State<SecondaryCard> {
                             size: 50,
                             progressStrokeWidth: 5,
                             backStrokeWidth: 5,
-                            maxValue: data.checkedLists[i].length.toDouble(),
+                            // Guard against 0/0 when a member has no tasks
+                            maxValue: data.checkedLists[i].isEmpty
+                                ? 1
+                                : data.checkedLists[i].length.toDouble(),
                             animationDuration: 4,
                             fullProgressColor: Theme.of(context).colorScheme.error,
                             onGetText: (_) {

@@ -38,12 +38,7 @@ class _ChecklistState extends State<ChecklistPage> {
   }
 
   Text createRolesText() {
-    String text = "${widget.title} (";
-    for (var element in widget.roles) {
-      text += "$element, ";
-    }
-    text = text.substring(0, text.length - 2);
-    text += ")";
-    return Text(text);
+    if (widget.roles.isEmpty) return Text(widget.title);
+    return Text("${widget.title} (${widget.roles.join(", ")})");
   }
 }

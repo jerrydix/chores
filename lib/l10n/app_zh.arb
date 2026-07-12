@@ -97,5 +97,27 @@
   "algo_fixed": "固定不变",
   "algo_fixed_desc": "每周将相同角色分配给相同人员",
   "algo_random": "随机（公平）",
-  "algo_random_desc": "每周随机分配，长期保持平衡"
+  "algo_random_desc": "每周随机分配，长期保持平衡",
+
+  "no_tasks_yet": "暂无任务",
+  "add_tasks_hint": "请在设置中添加角色和家务",
+  "no_roles_yet": "暂无角色",
+  "add_roles_hint": "点击 + 添加角色或家务",
+  "add_role": "添加角色",
+  "add_chore": "添加家务",
+  "add_chore_to": "为{role}添加家务",
+  "role_name": "角色名称",
+  "chore_name": "家务名称",
+  "add": "添加",
+  "delete": "删除",
+  "delete_role": "删除角色",
+  "delete_role_t": "删除“{role}”？",
+  "delete_role_desc": "该角色下的所有家务也将被删除。",
+  "delete_role_empty": "该角色没有家务。",
+  "no_chores_for_role": "该角色暂无家务",
+  "pick_role_icon": "选择角色图标",
+  "pick_icon": "选择图标",
+  "select_role": "选择角色",
+  "role_exists": "已存在同名角色。",
+  "chore_exists": "该角色下已存在此家务。"
 }

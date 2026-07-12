@@ -283,4 +283,71 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get algo_random_desc => '每周随机分配，长期保持平衡';
+
+  @override
+  String get no_tasks_yet => '暂无任务';
+
+  @override
+  String get add_tasks_hint => '请在设置中添加角色和家务';
+
+  @override
+  String get no_roles_yet => '暂无角色';
+
+  @override
+  String get add_roles_hint => '点击 + 添加角色或家务';
+
+  @override
+  String get add_role => '添加角色';
+
+  @override
+  String get add_chore => '添加家务';
+
+  @override
+  String add_chore_to(String role) {
+    return '为$role添加家务';
+  }
+
+  @override
+  String get role_name => '角色名称';
+
+  @override
+  String get chore_name => '家务名称';
+
+  @override
+  String get add => '添加';
+
+  @override
+  String get delete => '删除';
+
+  @override
+  String get delete_role => '删除角色';
+
+  @override
+  String delete_role_t(String role) {
+    return '删除“$role”？';
+  }
+
+  @override
+  String get delete_role_desc => '该角色下的所有家务也将被删除。';
+
+  @override
+  String get delete_role_empty => '该角色没有家务。';
+
+  @override
+  String get no_chores_for_role => '该角色暂无家务';
+
+  @override
+  String get pick_role_icon => '选择角色图标';
+
+  @override
+  String get pick_icon => '选择图标';
+
+  @override
+  String get select_role => '选择角色';
+
+  @override
+  String get role_exists => '已存在同名角色。';
+
+  @override
+  String get chore_exists => '该角色下已存在此家务。';
 }

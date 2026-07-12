@@ -288,4 +288,74 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get algo_random_desc =>
       'Jede Woche zufällig neu verteilt, langfristig ausgewogen';
+
+  @override
+  String get no_tasks_yet => 'Noch keine Aufgaben';
+
+  @override
+  String get add_tasks_hint =>
+      'Rollen & Aufgaben in den Einstellungen hinzufügen';
+
+  @override
+  String get no_roles_yet => 'Noch keine Rollen';
+
+  @override
+  String get add_roles_hint =>
+      'Tippe auf +, um eine Rolle oder Aufgabe hinzuzufügen';
+
+  @override
+  String get add_role => 'Rolle hinzufügen';
+
+  @override
+  String get add_chore => 'Aufgabe hinzufügen';
+
+  @override
+  String add_chore_to(String role) {
+    return 'Aufgabe zu $role hinzufügen';
+  }
+
+  @override
+  String get role_name => 'Rollenname';
+
+  @override
+  String get chore_name => 'Aufgabenname';
+
+  @override
+  String get add => 'Hinzufügen';
+
+  @override
+  String get delete => 'Löschen';
+
+  @override
+  String get delete_role => 'Rolle löschen';
+
+  @override
+  String delete_role_t(String role) {
+    return '\"$role\" löschen?';
+  }
+
+  @override
+  String get delete_role_desc =>
+      'Dadurch werden auch alle Aufgaben dieser Rolle gelöscht.';
+
+  @override
+  String get delete_role_empty => 'Diese Rolle hat keine Aufgaben.';
+
+  @override
+  String get no_chores_for_role => 'Keine Aufgaben für diese Rolle';
+
+  @override
+  String get pick_role_icon => 'Rollen-Icon auswählen';
+
+  @override
+  String get pick_icon => 'Icon auswählen';
+
+  @override
+  String get select_role => 'Rolle auswählen';
+
+  @override
+  String get role_exists => 'Eine Rolle mit diesem Namen existiert bereits.';
+
+  @override
+  String get chore_exists => 'Diese Aufgabe existiert bereits in dieser Rolle.';
 }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chores/member_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
@@ -26,15 +28,13 @@ class _HomePageState extends State<HomePage> {
               builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
-                    const Center(child: CircularProgressIndicator());
-                    break;
+                    return const Center(child: CircularProgressIndicator());
                   default:
                     if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     }
                     return const Overview();
                 }
-                return const Center(child: CircularProgressIndicator());
               });
         });
   }
@@ -51,7 +51,7 @@ class Overview extends StatefulWidget {
 class _OverviewState extends State<Overview> {
   late AutoScrollController horizontalController;
   late AutoScrollController verticalController;
-  int scrollOffset = DateTime.now().weekOfYear - 2;
+  int scrollOffset = max(0, DateTime.now().weekOfYear - 2);
   double rowHeight = 50;
   List<DataRow2> rows = [];
   List<DataColumn2> columns = [];

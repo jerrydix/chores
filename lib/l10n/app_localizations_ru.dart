@@ -286,4 +286,71 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get algo_random_desc =>
       'Каждую неделю перемешивается случайно, но справедливо в долгосрочной перспективе';
+
+  @override
+  String get no_tasks_yet => 'Пока нет заданий';
+
+  @override
+  String get add_tasks_hint => 'Добавьте роли и задания в настройках';
+
+  @override
+  String get no_roles_yet => 'Пока нет ролей';
+
+  @override
+  String get add_roles_hint => 'Нажмите +, чтобы добавить роль или задание';
+
+  @override
+  String get add_role => 'Добавить роль';
+
+  @override
+  String get add_chore => 'Добавить задание';
+
+  @override
+  String add_chore_to(String role) {
+    return 'Добавить задание в «$role»';
+  }
+
+  @override
+  String get role_name => 'Название роли';
+
+  @override
+  String get chore_name => 'Название задания';
+
+  @override
+  String get add => 'Добавить';
+
+  @override
+  String get delete => 'Удалить';
+
+  @override
+  String get delete_role => 'Удалить роль';
+
+  @override
+  String delete_role_t(String role) {
+    return 'Удалить «$role»?';
+  }
+
+  @override
+  String get delete_role_desc => 'Все задания этой роли также будут удалены.';
+
+  @override
+  String get delete_role_empty => 'У этой роли нет заданий.';
+
+  @override
+  String get no_chores_for_role => 'Нет заданий для этой роли';
+
+  @override
+  String get pick_role_icon => 'Выберите значок роли';
+
+  @override
+  String get pick_icon => 'Выберите значок';
+
+  @override
+  String get select_role => 'Выберите роль';
+
+  @override
+  String get role_exists => 'Роль с таким названием уже существует.';
+
+  @override
+  String get chore_exists => 'Такое задание уже есть в этой роли.';
 }

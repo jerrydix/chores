@@ -55,8 +55,8 @@ class MemberManager with ChangeNotifier {
     final wgData = wgDoc.data()!;
     wgCW = wgData["cw"] as int;
     wgName = wgData["name"] as String;
-    algorithm = AssignmentAlgorithm.fromString(
-        wgData["algorithmType"] as String?);
+    algorithm =
+        AssignmentAlgorithm.fromString(wgData["algorithmType"] as String?);
 
     // Load role/task definitions and icon data from rolesConfig
     final Map<String, Map<String, IconData?>> iconMaps = {};
@@ -149,6 +149,10 @@ class MemberManager with ChangeNotifier {
     memberCount = active ? members.length + 1 : members.length;
 
     // Assign roles via ChoreAssigner
+    _recomputeAssignments(currentWeek);
+  }
+
+  void _recomputeAssignments(int week) {
     primaryRoles = [];
     // Always keep otherRoles parallel to members (empty lists when no tasks)
     otherRoles = List.generate(members.length, (_) => <String>[]);
@@ -165,11 +169,10 @@ class MemberManager with ChangeNotifier {
         tasks.keys.toList(),
         noRepeatWindow: noRepeatWindow,
       );
-      final assignments = choreAssigner!.assignRoles(currentWeek);
+      final assignments = choreAssigner!.assignRoles(week);
 
       primaryRoles = active ? (assignments[username] ?? []) : [];
-      otherRoles =
-          members.map((m) => assignments[m] ?? <String>[]).toList();
+      otherRoles = members.map((m) => assignments[m] ?? <String>[]).toList();
     }
   }
 
@@ -177,20 +180,9 @@ class MemberManager with ChangeNotifier {
 
   Future<void> updateAlgorithm(AssignmentAlgorithm value) async {
     algorithm = value;
-    if (tasks.isNotEmpty && memberCount > 0) {
-      final allMembers = List<String>.from(members);
-      if (active && primaryIndex >= 0) {
-        allMembers.insert(primaryIndex, username);
-      }
-      choreAssigner = RoleAssigner.create(
-        algorithm,
-        allMembers,
-        tasks.keys.toList(),
-        noRepeatWindow: noRepeatWindow,
-      );
-    }
+    _recomputeAssignments(DateTime.now().weekOfYear);
     notifyListeners();
-    db.collection("wgs").doc(currentWgID).update({
+    await db.collection("wgs").doc(currentWgID).update({
       "algorithmType": value.toFirestoreString(),
     });
   }
@@ -198,11 +190,16 @@ class MemberManager with ChangeNotifier {
   Future<void> updateActive(bool value) async {
     active = value;
     notifyListeners();
-    db
+    await db
         .collection("wgs")
         .doc(currentWgID)
         .collection("members")
         .doc(userID)
         .update({"active": value});
+    // Re-fetch so memberCount, primaryIndex and role assignments reflect
+    // the new availability instead of staying stale until a manual refresh.
+    dataFuture = fetchWGData();
+    await dataFuture;
+    notifyListeners();
   }
 }

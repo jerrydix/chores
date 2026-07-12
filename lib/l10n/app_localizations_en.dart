@@ -289,4 +289,72 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get algo_random_desc =>
       'Randomly shuffled each week, balanced over time';
+
+  @override
+  String get no_tasks_yet => 'No tasks yet';
+
+  @override
+  String get add_tasks_hint => 'Add roles & chores in Settings';
+
+  @override
+  String get no_roles_yet => 'No roles yet';
+
+  @override
+  String get add_roles_hint => 'Tap + to add a role or chore';
+
+  @override
+  String get add_role => 'Add Role';
+
+  @override
+  String get add_chore => 'Add Chore';
+
+  @override
+  String add_chore_to(String role) {
+    return 'Add Chore to $role';
+  }
+
+  @override
+  String get role_name => 'Role Name';
+
+  @override
+  String get chore_name => 'Chore Name';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get delete_role => 'Delete Role';
+
+  @override
+  String delete_role_t(String role) {
+    return 'Delete \"$role\"?';
+  }
+
+  @override
+  String get delete_role_desc =>
+      'This will also delete all chores in this role.';
+
+  @override
+  String get delete_role_empty => 'This role has no chores.';
+
+  @override
+  String get no_chores_for_role => 'No chores for this role';
+
+  @override
+  String get pick_role_icon => 'Pick Role Icon';
+
+  @override
+  String get pick_icon => 'Pick an icon';
+
+  @override
+  String get select_role => 'Select Role';
+
+  @override
+  String get role_exists => 'A role with this name already exists.';
+
+  @override
+  String get chore_exists => 'This chore already exists in this role.';
 }

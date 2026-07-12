@@ -289,4 +289,72 @@ class AppLocalizationsEl extends AppLocalizations {
   @override
   String get algo_random_desc =>
       'Τυχαία κατανομή κάθε εβδομάδα, ισορροπημένη μακροπρόθεσμα';
+
+  @override
+  String get no_tasks_yet => 'Δεν υπάρχουν εργασίες ακόμα';
+
+  @override
+  String get add_tasks_hint => 'Προσθέστε ρόλους & εργασίες στις Ρυθμίσεις';
+
+  @override
+  String get no_roles_yet => 'Δεν υπάρχουν ρόλοι ακόμα';
+
+  @override
+  String get add_roles_hint => 'Πατήστε + για να προσθέσετε ρόλο ή εργασία';
+
+  @override
+  String get add_role => 'Προσθήκη ρόλου';
+
+  @override
+  String get add_chore => 'Προσθήκη εργασίας';
+
+  @override
+  String add_chore_to(String role) {
+    return 'Προσθήκη εργασίας στο $role';
+  }
+
+  @override
+  String get role_name => 'Όνομα ρόλου';
+
+  @override
+  String get chore_name => 'Όνομα εργασίας';
+
+  @override
+  String get add => 'Προσθήκη';
+
+  @override
+  String get delete => 'Διαγραφή';
+
+  @override
+  String get delete_role => 'Διαγραφή ρόλου';
+
+  @override
+  String delete_role_t(String role) {
+    return 'Διαγραφή «$role»;';
+  }
+
+  @override
+  String get delete_role_desc =>
+      'Θα διαγραφούν επίσης όλες οι εργασίες αυτού του ρόλου.';
+
+  @override
+  String get delete_role_empty => 'Αυτός ο ρόλος δεν έχει εργασίες.';
+
+  @override
+  String get no_chores_for_role => 'Καμία εργασία για αυτόν τον ρόλο';
+
+  @override
+  String get pick_role_icon => 'Επιλογή εικονιδίου ρόλου';
+
+  @override
+  String get pick_icon => 'Επιλογή εικονιδίου';
+
+  @override
+  String get select_role => 'Επιλογή ρόλου';
+
+  @override
+  String get role_exists => 'Υπάρχει ήδη ρόλος με αυτό το όνομα.';
+
+  @override
+  String get chore_exists => 'Αυτή η εργασία υπάρχει ήδη σε αυτόν τον ρόλο.';
 }

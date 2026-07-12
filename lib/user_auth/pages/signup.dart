@@ -6,6 +6,7 @@ import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:keybinder/keybinder.dart';
 import '../../l10n/app_localizations.dart';
 import '../../views/wg_selection.dart';
@@ -38,9 +39,35 @@ class _SignUpPageState extends State<SignUpPage> {
     _signUp();
   }
 
+  /// Shows the reason a social sign-in failed (unless the user just
+  /// canceled it) instead of failing silently.
+  void _showAuthError(Object e) {
+    if (e is GoogleSignInException &&
+        e.code == GoogleSignInExceptionCode.canceled) {
+      return;
+    }
+    if (e is FirebaseAuthException &&
+        (e.code == 'canceled' ||
+            e.code == 'user-cancelled' ||
+            e.code == 'web-context-canceled')) {
+      return;
+    }
+    Fluttertoast.showToast(
+      msg: e is FirebaseAuthException
+          ? (e.message ?? e.code)
+          : e is GoogleSignInException
+              ? "Google sign-in failed: ${e.description ?? e.code.name}"
+              : e.toString(),
+      textColor: Theme.of(context).colorScheme.error,
+      gravity: ToastGravity.CENTER,
+      toastLength: Toast.LENGTH_LONG,
+    );
+  }
+
 
   @override
   void dispose() {
+    Keybinder.remove(enterButton, onPressed);
     _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -234,7 +261,24 @@ class _SignUpPageState extends State<SignUpPage> {
     FirebaseAuth auth = FirebaseAuth.instance;
     FirebaseFirestore db = FirebaseFirestore.instance;
 
-    await AuthenticationProvider(auth).signInWithGoogle();
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    try {
+      await AuthenticationProvider(auth).signInWithGoogle();
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.pop(context);
+      _showAuthError(e);
+      return;
+    }
 
     if (!mounted) return null;
     User? user = auth.currentUser;
@@ -255,7 +299,7 @@ class _SignUpPageState extends State<SignUpPage> {
         currentWgID = snap["wg"]
       } else {
         db.collection("users").doc(auth.currentUser?.uid).set({
-          "username": user.displayName,
+          "username": AuthenticationProvider.usernameOf(user),
           "wg": -1,
         }),
         currentWgID = -1
@@ -263,11 +307,14 @@ class _SignUpPageState extends State<SignUpPage> {
     });
 
     if (!mounted) return null;
+    Navigator.pop(context);
+
     if (currentWgID == -1) {
       return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (context) => WGSelection(
-                  username: FirebaseAuth.instance.currentUser!.displayName!)
+                  username: AuthenticationProvider.usernameOf(
+                      FirebaseAuth.instance.currentUser!))
           ), (route) => false);
     } else {
       Navigator.of(context).pushAndRemoveUntil(
@@ -284,15 +331,6 @@ class _SignUpPageState extends State<SignUpPage> {
     FirebaseAuth auth = FirebaseAuth.instance;
     FirebaseFirestore db = FirebaseFirestore.instance;
 
-    GithubAuthProvider githubProvider = GithubAuthProvider();
-
-    try {
-      await auth.signInWithPopup(githubProvider);
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-
-    if (!mounted) return null;
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -303,6 +341,16 @@ class _SignUpPageState extends State<SignUpPage> {
       },
     );
 
+    try {
+      await AuthenticationProvider(auth).signInWithGitHub();
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.pop(context);
+      _showAuthError(e);
+      return;
+    }
+
+    if (!mounted) return null;
     User? user = auth.currentUser;
 
     if (user == null) {
@@ -321,7 +369,7 @@ class _SignUpPageState extends State<SignUpPage> {
         currentWgID = snap["wg"]
       } else {
         db.collection("users").doc(auth.currentUser?.uid).set({
-          "username": user.displayName,
+          "username": AuthenticationProvider.usernameOf(user),
           "wg": -1,
         }),
         currentWgID = -1
@@ -335,7 +383,8 @@ class _SignUpPageState extends State<SignUpPage> {
       return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (context) => WGSelection(
-                  username: FirebaseAuth.instance.currentUser!.displayName!)
+                  username: AuthenticationProvider.usernameOf(
+                      FirebaseAuth.instance.currentUser!))
           ), (route) => false);
     } else {
       Navigator.of(context).pushAndRemoveUntil(
