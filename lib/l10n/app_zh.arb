@@ -119,5 +119,8 @@
   "pick_icon": "选择图标",
   "select_role": "选择角色",
   "role_exists": "已存在同名角色。",
-  "chore_exists": "该角色下已存在此家务。"
+  "chore_exists": "该角色下已存在此家务。",
+  "edit_role": "编辑角色",
+  "edit_chore": "编辑家务",
+  "save": "保存"
 }

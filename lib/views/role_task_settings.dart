@@ -9,8 +9,8 @@ import '../l10n/app_localizations.dart';
 
 class TaskItem {
   final String id;
-  final IconData? iconData;
-  final String label;
+  IconData? iconData;
+  String label;
 
   TaskItem(this.label, this.iconData) : id = const Uuid().v4();
 }
@@ -199,7 +199,9 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
               setState(() => list.items.removeAt(i));
               _saveToFirestore();
             },
+            onTaskEdit: (i) => _editChore(roleIndex, i),
             onRoleDelete: () => _confirmDeleteRole(roleIndex),
+            onRoleEdit: () => _editRole(roleIndex),
             onAddChore: () => _openChoreDialogForList(roleIndex),
             onToggleExpand: () =>
                 setState(() => list.isExpanded = !list.isExpanded),
@@ -242,10 +244,22 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
     );
   }
 
-  bool _roleExists(String name) => lists.any((l) => l.title == name);
+  bool _roleExists(String name, {int? exceptIndex}) {
+    for (int i = 0; i < lists.length; i++) {
+      if (i == exceptIndex) continue;
+      if (lists[i].title == name) return true;
+    }
+    return false;
+  }
 
-  bool _choreExists(int listIndex, String name) =>
-      lists[listIndex].items.any((t) => t.label == name);
+  bool _choreExists(int listIndex, String name, {int? exceptTaskIndex}) {
+    final items = lists[listIndex].items;
+    for (int i = 0; i < items.length; i++) {
+      if (i == exceptTaskIndex) continue;
+      if (items[i].label == name) return true;
+    }
+    return false;
+  }
 
   void _showSnack(String message) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -355,6 +369,139 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
     }
   }
 
+  Future<void> _editRole(int roleIndex) async {
+    final loc = AppLocalizations.of(context)!;
+    final role = lists[roleIndex];
+    final controller = TextEditingController(text: role.title);
+    IconData? pickedIcon = role.iconData;
+
+    void submit(BuildContext ctx) {
+      final name = controller.text.trim();
+      if (name.isEmpty) return;
+      if (_roleExists(name, exceptIndex: roleIndex)) {
+        _showSnack(loc.role_exists);
+        return;
+      }
+      final oldTitle = role.title;
+      // Carry the completion states over to the new role key so a rename
+      // doesn't reset every chore's checkmark for the week.
+      if (name != oldTitle) {
+        final oldMap = MemberManager.instance.tasks[oldTitle];
+        if (oldMap != null) {
+          MemberManager.instance.tasks[name] = Map<String, bool>.from(oldMap);
+        }
+      }
+      setState(() {
+        role.title = name;
+        role.iconData = pickedIcon;
+      });
+      _saveToFirestore();
+      Navigator.of(ctx).pop();
+    }
+
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialog) => AlertDialog(
+          title: Text(loc.edit_role),
+          content: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  autofocus: true,
+                  decoration: InputDecoration(hintText: loc.role_name),
+                  onChanged: (_) => setDialog(() {}),
+                  onSubmitted: (_) => submit(ctx),
+                ),
+              ),
+              IconButton(
+                icon: Icon(pickedIcon ?? Icons.image_outlined),
+                onPressed: () async {
+                  final picked = await showMaterialIconPicker(
+                    ctx,
+                    title: loc.pick_role_icon,
+                  );
+                  if (picked != null) setDialog(() => pickedIcon = picked);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(loc.cancel),
+            ),
+            TextButton(
+              onPressed:
+                  controller.text.trim().isNotEmpty ? () => submit(ctx) : null,
+              child: Text(loc.save),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _editChore(int roleIndex, int taskIndex) async {
+    final loc = AppLocalizations.of(context)!;
+    final task = lists[roleIndex].items[taskIndex];
+    final controller = TextEditingController(text: task.label);
+    IconData? pickedIcon = task.iconData;
+
+    void submit(BuildContext ctx) {
+      final name = controller.text.trim();
+      if (name.isEmpty) return;
+      if (_choreExists(roleIndex, name, exceptTaskIndex: taskIndex)) {
+        _showSnack(loc.chore_exists);
+        return;
+      }
+      final roleTitle = lists[roleIndex].title;
+      final oldLabel = task.label;
+      // Preserve this chore's completion state across a rename.
+      if (name != oldLabel) {
+        final wasDone = MemberManager.instance.tasks[roleTitle]?[oldLabel];
+        if (wasDone != null) {
+          (MemberManager.instance.tasks[roleTitle] ??= {})[name] = wasDone;
+        }
+      }
+      setState(() {
+        task.label = name;
+        task.iconData = pickedIcon ?? Icons.task;
+      });
+      _saveToFirestore();
+      Navigator.of(ctx).pop();
+    }
+
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialog) => AlertDialog(
+          title: Text(loc.edit_chore),
+          content: _ChoreInputRow(
+            controller: controller,
+            iconData: pickedIcon,
+            autofocus: true,
+            onChanged: (_) => setDialog(() {}),
+            onIconPicked: (d) => setDialog(() => pickedIcon = d),
+            onSubmitted: (_) => submit(ctx),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(loc.cancel),
+            ),
+            TextButton(
+              onPressed:
+                  controller.text.trim().isNotEmpty ? () => submit(ctx) : null,
+              child: Text(loc.save),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _addChore(BuildContext ctx, int listIndex, String name,
       IconData? pickedIcon, AppLocalizations loc) {
     if (_choreExists(listIndex, name)) {
@@ -462,7 +609,9 @@ class _RoleCard extends StatelessWidget {
   final int roleIndex;
   final void Function(int oldIdx, int newIdx) onTaskReorder;
   final void Function(int taskIdx) onTaskDelete;
+  final void Function(int taskIdx) onTaskEdit;
   final VoidCallback onRoleDelete;
+  final VoidCallback onRoleEdit;
   final VoidCallback onAddChore;
   final VoidCallback onToggleExpand;
   final VoidCallback onIconTap;
@@ -473,7 +622,9 @@ class _RoleCard extends StatelessWidget {
     required this.roleIndex,
     required this.onTaskReorder,
     required this.onTaskDelete,
+    required this.onTaskEdit,
     required this.onRoleDelete,
+    required this.onRoleEdit,
     required this.onAddChore,
     required this.onToggleExpand,
     required this.onIconTap,
@@ -516,9 +667,13 @@ class _RoleCard extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: Text(
-                    list.title,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  child: GestureDetector(
+                    onTap: onRoleEdit,
+                    behavior: HitTestBehavior.opaque,
+                    child: Text(
+                      list.title,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
                   ),
                 ),
               ],
@@ -561,6 +716,7 @@ class _RoleCard extends StatelessWidget {
                     items: list.items,
                     onReorder: onTaskReorder,
                     onDelete: onTaskDelete,
+                    onEdit: onTaskEdit,
                   )
                 : const SizedBox.shrink(),
           ),
@@ -576,12 +732,14 @@ class _TaskList extends StatelessWidget {
   final List<TaskItem> items;
   final void Function(int oldIdx, int newIdx) onReorder;
   final void Function(int idx) onDelete;
+  final void Function(int idx) onEdit;
 
   const _TaskList({
     super.key,
     required this.items,
     required this.onReorder,
     required this.onDelete,
+    required this.onEdit,
   });
 
   @override
@@ -619,6 +777,7 @@ class _TaskList extends StatelessWidget {
           ),
           onDismissed: (_) => onDelete(i),
           child: ListTile(
+            onTap: () => onEdit(i),
             leading: item.iconData != null
                 ? Padding(
                     padding: const EdgeInsets.all(8),
@@ -647,12 +806,16 @@ class _ChoreInputRow extends StatelessWidget {
   final IconData? iconData;
   final ValueChanged<String> onChanged;
   final ValueChanged<IconData?> onIconPicked;
+  final ValueChanged<String>? onSubmitted;
+  final bool autofocus;
 
   const _ChoreInputRow({
     required this.controller,
     required this.iconData,
     required this.onChanged,
     required this.onIconPicked,
+    this.onSubmitted,
+    this.autofocus = false,
   });
 
   @override
@@ -662,9 +825,11 @@ class _ChoreInputRow extends StatelessWidget {
         Expanded(
           child: TextField(
             controller: controller,
+            autofocus: autofocus,
             decoration: InputDecoration(
                 hintText: AppLocalizations.of(context)!.chore_name),
             onChanged: onChanged,
+            onSubmitted: onSubmitted,
           ),
         ),
         IconButton(

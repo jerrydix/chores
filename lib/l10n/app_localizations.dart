@@ -781,6 +781,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This chore already exists in this role.'**
   String get chore_exists;
+
+  /// No description provided for @edit_role.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Role'**
+  String get edit_role;
+
+  /// No description provided for @edit_chore.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Chore'**
+  String get edit_chore;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
 }
 
 class _AppLocalizationsDelegate

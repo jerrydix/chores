@@ -357,4 +357,13 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get chore_exists => 'Αυτή η εργασία υπάρχει ήδη σε αυτόν τον ρόλο.';
+
+  @override
+  String get edit_role => 'Επεξεργασία ρόλου';
+
+  @override
+  String get edit_chore => 'Επεξεργασία εργασίας';
+
+  @override
+  String get save => 'Αποθήκευση';
 }

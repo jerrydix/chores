@@ -26,10 +26,16 @@ class _DashboardState extends State<Dashboard> {
         return FutureBuilder<void>(
           future: _manager.dataFuture,
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+            // Only block on the very first load (memberCount is -1 until the
+            // first fetch completes). On later refreshes keep the existing
+            // DashboardView mounted instead of flashing a spinner — swapping
+            // it out disposes it, and its dispose used to write stale data.
+            final firstLoad = _manager.memberCount == -1;
+            if (snapshot.connectionState == ConnectionState.waiting &&
+                firstLoad) {
               return const Center(child: CircularProgressIndicator());
             }
-            if (snapshot.hasError) {
+            if (snapshot.hasError && firstLoad) {
               return Center(child: Text('Error: ${snapshot.error}'));
             }
             return DashboardView(

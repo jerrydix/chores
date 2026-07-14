@@ -134,5 +134,8 @@
   "pick_icon": "Pick an icon",
   "select_role": "Select Role",
   "role_exists": "A role with this name already exists.",
-  "chore_exists": "This chore already exists in this role."
+  "chore_exists": "This chore already exists in this role.",
+  "edit_role": "Edit Role",
+  "edit_chore": "Edit Chore",
+  "save": "Save"
 }

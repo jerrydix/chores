@@ -350,4 +350,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chore_exists => '该角色下已存在此家务。';
+
+  @override
+  String get edit_role => '编辑角色';
+
+  @override
+  String get edit_chore => '编辑家务';
+
+  @override
+  String get save => '保存';
 }

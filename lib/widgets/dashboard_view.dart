@@ -355,7 +355,11 @@ class _DashboardViewState extends State<DashboardView> {
 
   @override
   void dispose() {
-    saveSelectionStateToDB();
+    // NOTE: deliberately no saveSelectionStateToDB() here. Every checkbox
+    // toggle already persists immediately, so a dispose-time write is
+    // redundant — and because this view is transiently disposed whenever
+    // MemberManager refreshes, that write would clobber a newer save (e.g.
+    // the last chore added in settings) with this view's stale task map.
     _allTasksDone.dispose();
     _primaryScrollController.dispose();
     super.dispose();

@@ -12,9 +12,17 @@ import 'data/userprefs.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Firebase must be ready before the first widget touches Auth/Firestore.
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } on FirebaseException catch (e) {
+    // On Android the native SDK already initialized [DEFAULT] from
+    // google-services.json; if our Dart options drift from that file this
+    // throws duplicate-app. The native app is valid — use it instead of
+    // dying before runApp (which shows only a grey screen).
+    if (e.code != 'duplicate-app') rethrow;
+  }
   // Enable the offline cache everywhere (opt-in on web) so repeat screen
   // loads read from the local cache instead of a network round-trip.
   FirebaseFirestore.instance.settings = const Settings(

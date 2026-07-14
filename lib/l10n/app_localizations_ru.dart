@@ -353,4 +353,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get chore_exists => 'Такое задание уже есть в этой роли.';
+
+  @override
+  String get edit_role => 'Изменить роль';
+
+  @override
+  String get edit_chore => 'Изменить задание';
+
+  @override
+  String get save => 'Сохранить';
 }

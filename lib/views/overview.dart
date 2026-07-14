@@ -26,15 +26,18 @@ class _HomePageState extends State<HomePage> {
           return FutureBuilder<void>(
               future: MemberManager.instance.dataFuture,
               builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return const Center(child: CircularProgressIndicator());
-                  default:
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
-                    return const Overview();
+                // Only show the spinner on the first load; on later refreshes
+                // keep the existing table mounted (avoids losing scroll
+                // position and rebuilding the whole grid on every save).
+                final firstLoad = MemberManager.instance.memberCount == -1;
+                if (snapshot.connectionState == ConnectionState.waiting &&
+                    firstLoad) {
+                  return const Center(child: CircularProgressIndicator());
                 }
+                if (snapshot.hasError && firstLoad) {
+                  return Text('Error: ${snapshot.error}');
+                }
+                return const Overview();
               });
         });
   }

@@ -358,4 +358,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get chore_exists => 'Diese Aufgabe existiert bereits in dieser Rolle.';
+
+  @override
+  String get edit_role => 'Rolle bearbeiten';
+
+  @override
+  String get edit_chore => 'Aufgabe bearbeiten';
+
+  @override
+  String get save => 'Speichern';
 }

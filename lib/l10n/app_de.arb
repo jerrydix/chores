@@ -121,5 +121,8 @@
   "pick_icon": "Icon auswählen",
   "select_role": "Rolle auswählen",
   "role_exists": "Eine Rolle mit diesem Namen existiert bereits.",
-  "chore_exists": "Diese Aufgabe existiert bereits in dieser Rolle."
+  "chore_exists": "Diese Aufgabe existiert bereits in dieser Rolle.",
+  "edit_role": "Rolle bearbeiten",
+  "edit_chore": "Aufgabe bearbeiten",
+  "save": "Speichern"
 }

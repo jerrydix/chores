@@ -54,7 +54,10 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: "AIzaSyA36ayUi6NE1N5Hmr78ZvrhoQozs4fyZx8",
+    // Must match android/app/google-services.json — the native SDK
+    // auto-initializes from that file, and a mismatch makes Dart-side
+    // Firebase.initializeApp throw [core/duplicate-app] at startup.
+    apiKey: "AIzaSyDeDBONwvtYihRxDP1Rjv0YGm5aDoLTLsE",
     appId: '1:173688729888:android:5b0273ab6579a100dee745',
     messagingSenderId: '173688729888',
     projectId: 'chores-4725c',
