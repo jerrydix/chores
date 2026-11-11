@@ -37,6 +37,8 @@
   "wg_name": "名称",
   "wg_use_template": "使用家务模板",
   "wg_exists": "该名称已被使用，请选择其他名称。",
+  "wg_full": "该合租组已满，无法加入。",
+  "wg_gone": "该合租组已不存在。",
 
   "garbage": "垃圾负责人",
   "g100plastic": "塑料垃圾",

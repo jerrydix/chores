@@ -7,7 +7,6 @@ import 'package:chores/data/userprefs.dart';
 import 'package:chores/utils/chore_assigner.dart';
 import 'package:chores/views/role_task_settings.dart';
 import 'package:chores/views/wg_selection.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +15,7 @@ import 'package:settings_ui/settings_ui.dart';
 import '../l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../main.dart';
+import '../data/wg_repository.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -417,8 +417,13 @@ class _SettingsState extends State<Settings> {
                 },
                 child: Text(AppLocalizations.of(context)!.cancel)),
             TextButton(
-                onPressed: () {
-                  AuthenticationProvider(FirebaseAuth.instance).signOut();
+                onPressed: () async {
+                  await AuthenticationProvider(FirebaseAuth.instance).signOut();
+                  // MemberManager is a singleton: without this the next
+                  // account to sign in on this device would keep the previous
+                  // user's cached WG and load their household.
+                  MemberManager.instance.reset();
+                  if (!context.mounted) return;
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
                         builder: (context) => const LoginPage(),
@@ -712,28 +717,18 @@ class _SettingsState extends State<Settings> {
                     },
                   );
 
-                  FirebaseFirestore db = FirebaseFirestore.instance;
                   MemberManager manager = MemberManager.instance;
-                  final wgRef = db.collection("wgs").doc(manager.currentWgID);
-                  await wgRef.collection("members").doc(manager.user?.uid).delete();
-                  await wgRef.update({
-                    "count": FieldValue.increment(-1),
-                  });
-                  await db.collection("users").doc(manager.user?.uid).update({
-                    "wg": -1,
-                  });
-
-                  // Delete the WG only when nobody is left at all. Checking
-                  // manager.memberCount would miss inactive members and
-                  // delete the WG out from under them.
-                  final wgDoc = await wgRef.get();
-                  final remaining = (wgDoc.data()?["count"] as int?) ?? 0;
-                  if (remaining <= 0) {
-                    await wgRef.delete();
+                  final uid = manager.user?.uid;
+                  if (uid != null) {
+                    // One transaction removes the member doc, frees its slot
+                    // and — when nobody is left — deletes the members
+                    // subcollection along with the WG itself.
+                    await WgRepository.leave(
+                        wgID: manager.currentWgID, uid: uid);
                   }
 
-                  // Reset cached WG state so the next fetch reloads cleanly.
-                  manager.currentWgID = "-1";
+                  // Drop every cached field so the next fetch reloads cleanly.
+                  manager.reset();
 
                   if (!context.mounted) return;
                   Navigator.pop(context);

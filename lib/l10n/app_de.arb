@@ -37,6 +37,8 @@
   "wg_name": "Name",
   "wg_use_template": "Aufgabenvorlage verwenden",
   "wg_exists": "Dieser Name ist bereits vergeben. Bitte wähle einen anderen.",
+  "wg_full": "Diese WG ist voll, du kannst nicht beitreten.",
+  "wg_gone": "Diese WG existiert nicht mehr.",
 
 
   "garbage": "Müllmeister",

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:chores/utils/icon_picker.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ class RoleTaskSettings extends StatefulWidget {
 class _RoleTaskSettingsState extends State<RoleTaskSettings> {
   final List<TaskList> lists = [];
   bool _loading = true;
+  Timer? _saveDebounce;
 
   @override
   void initState() {
@@ -94,7 +96,30 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
     });
   }
 
-  Future<void> _saveToFirestore() async {
+  /// Schedules a save.
+  ///
+  /// Every edit — including each step of a drag-reorder — used to write the
+  /// whole rolesConfig and then re-fetch the WG. Coalescing bursts into one
+  /// write keeps a reorder from firing a round-trip per drop.
+  void _saveToFirestore() {
+    _saveDebounce?.cancel();
+    _saveDebounce = Timer(const Duration(milliseconds: 400), () {
+      _saveDebounce = null;
+      _writeToFirestore();
+    });
+  }
+
+  @override
+  void dispose() {
+    // Leaving the screen must not drop an edit that is still pending.
+    if (_saveDebounce?.isActive ?? false) {
+      _saveDebounce!.cancel();
+      _writeToFirestore();
+    }
+    super.dispose();
+  }
+
+  Future<void> _writeToFirestore() async {
     final manager = MemberManager.instance;
     final wgID = manager.currentWgID;
     if (wgID == "-1") return;
@@ -123,17 +148,24 @@ class _RoleTaskSettingsState extends State<RoleTaskSettings> {
       };
     }
 
-    await FirebaseFirestore.instance.collection("wgs").doc(wgID).update({
-      "rolesConfig": rolesConfig,
-      "tasks": updatedTasks,
-    });
+    try {
+      await FirebaseFirestore.instance.collection("wgs").doc(wgID).update({
+        "rolesConfig": rolesConfig,
+        "tasks": updatedTasks,
+      });
 
-    // Re-fetch so all manager fields (taskIcons, roleIcons, primaryRoles, etc.)
-    // are consistent before listeners rebuild their UI.
-    final fut = manager.fetchWGData();
-    manager.dataFuture = fut;
-    await fut;
-    manager.refresh();
+      // Re-fetch so all manager fields (taskIcons, roleIcons, primaryRoles,
+      // etc.) are consistent before listeners rebuild their UI.
+      final fut = manager.fetchWGData();
+      manager.dataFuture = fut;
+      await fut;
+      manager.refresh();
+    } catch (e) {
+      // This runs from a debounce timer and from dispose(), where there is no
+      // caller left to receive the error — log rather than raise an
+      // unhandled async exception.
+      debugPrint('Saving roles failed: $e');
+    }
   }
 
   void _onRoleReorder(int oldIndex, int newIndex) {

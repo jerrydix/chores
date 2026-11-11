@@ -9,6 +9,30 @@ import 'package:week_of_year/date_week_extensions.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/chore_assigner.dart';
 
+/// Number of rows the year's table needs.
+///
+/// Most years have 52 ISO weeks. A year has 53 when 1 January falls on a
+/// Thursday, or on a Wednesday in a leap year — the two cases that leave
+/// enough days over for a final full week.
+/// See https://eduardklein.com/life/how-many-weeks-in-a-year/
+int weeksInYear(int year) {
+  final firstDay = DateTime(year, 1, 1).weekday;
+  final startsLong = firstDay == DateTime.thursday ||
+      (isLeapYear(year) && firstDay == DateTime.wednesday);
+  return startsLong ? 53 : 52;
+}
+
+/// Which row of the table represents "this week".
+///
+/// In late December the ISO week number wraps round to 1 because that week
+/// already belongs to the next year — the row to highlight is then the last
+/// one of this table, not row 1.
+int currentWeekRow(DateTime now, int numberOfWeeks) {
+  final week = now.weekOfYear;
+  if (week == 1 && now.month == DateTime.december) return numberOfWeeks;
+  return week;
+}
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -17,7 +41,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -37,11 +60,15 @@ class _HomePageState extends State<HomePage> {
                 if (snapshot.hasError && firstLoad) {
                   return Text('Error: ${snapshot.error}');
                 }
+                if (firstLoad) {
+                  // No WG data (e.g. the user just left one) — nothing to draw,
+                  // and the column sizing below has no member count to work with.
+                  return const SizedBox.shrink();
+                }
                 return const Overview();
               });
         });
   }
-
 }
 
 class Overview extends StatefulWidget {
@@ -56,26 +83,28 @@ class _OverviewState extends State<Overview> {
   late AutoScrollController verticalController;
   int scrollOffset = max(0, DateTime.now().weekOfYear - 2);
   double rowHeight = 50;
-  List<DataRow2> rows = [];
-  List<DataColumn2> columns = [];
   MemberManager manager = MemberManager.instance;
   String username = "-1";
+
+  /// week index (0-based) → member uid → roles, rebuilt only when the
+  /// underlying WG data changes rather than on every widget rebuild.
+  List<Map<String, List<String>>> _assignmentsByWeek = const [];
 
   @override
   void initState() {
     super.initState();
     manager.addListener(_onManagerChanged);
     username = manager.username;
-    horizontalController = AutoScrollController(
-      axis: Axis.horizontal
-    );
-    verticalController = AutoScrollController(
-      axis: Axis.vertical
-    );
+    horizontalController = AutoScrollController(axis: Axis.horizontal);
+    verticalController = AutoScrollController(axis: Axis.vertical);
+    _rebuildAssignments();
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToCurrentWeek());
   }
 
-  void _onManagerChanged() => setState(() {});
+  void _onManagerChanged() {
+    _rebuildAssignments();
+    setState(() {});
+  }
 
   @override
   void dispose() {
@@ -85,14 +114,47 @@ class _OverviewState extends State<Overview> {
     super.dispose();
   }
 
-  List<DataColumn2> _generateColumns() {
+  /// The uids shown as columns, in the same order as [_sortedNames].
+  List<String> get _sortedUids => [
+        if (manager.active && manager.userID != null) manager.userID!,
+        ...manager.memberUids,
+      ];
 
-    List<DataColumn2> columns = [];
-    List<String> sortedNames = [];
-    if (manager.active) {
-      sortedNames.add(manager.username);
+  /// The display names shown as column headers. Names are not unique, which
+  /// is exactly why the assignment itself is keyed by uid.
+  List<String> get _sortedNames => [
+        if (manager.active) manager.username,
+        ...manager.members,
+      ];
+
+  void _rebuildAssignments() {
+    final uids = _sortedUids;
+    final numberOfWeeks = weeksInYear(DateTime.now().year);
+
+    if (manager.tasks.isEmpty || uids.isEmpty) {
+      _assignmentsByWeek =
+          List.generate(numberOfWeeks, (_) => const <String, List<String>>{});
+      return;
     }
-    sortedNames.addAll(manager.members);
+
+    // A local assigner so the shared choreAssigner's state is not mutated.
+    final assigner = RoleAssigner.create(
+      manager.algorithm,
+      List<String>.from(uids),
+      manager.tasks.keys.toList(),
+      noRepeatWindow: manager.noRepeatWindow,
+    );
+    // Weeks are requested in order: RotatingAssigner replays incrementally
+    // forward, so the whole year costs one pass rather than one per row.
+    _assignmentsByWeek = [
+      for (int week = 1; week <= numberOfWeeks; week++)
+        assigner.assignRoles(week),
+    ];
+  }
+
+  List<DataColumn2> _generateColumns() {
+    final sortedNames = _sortedNames;
+    final columns = <DataColumn2>[];
 
     columns.add(DataColumn2(
         label: Container(
@@ -110,28 +172,22 @@ class _OverviewState extends State<Overview> {
                     style: const TextStyle(fontWeight: FontWeight.bold)))),
         size: ColumnSize.M));
 
-    List<ColumnSize> columnSizes = [];
-
-    switch (manager.memberCount) {
-      case 1: {
+    List<ColumnSize> columnSizes;
+    switch (sortedNames.length) {
+      case 1:
         columnSizes = [ColumnSize.L];
         break;
-      }
-      case 2: {
+      case 2:
         columnSizes = [ColumnSize.M, ColumnSize.M];
         break;
-      }
-      case 3: {
+      case 3:
         columnSizes = [ColumnSize.M, ColumnSize.M, ColumnSize.L];
         break;
-      }
-      case 4: {
+      case 4:
         columnSizes = [ColumnSize.L, ColumnSize.L, ColumnSize.L, ColumnSize.M];
         break;
-      }
-      default: {
-        columnSizes = List.generate(manager.memberCount, (_) => ColumnSize.M);
-      }
+      default:
+        columnSizes = List.generate(sortedNames.length, (_) => ColumnSize.M);
     }
 
     for (int i = 0; i < sortedNames.length; i++) {
@@ -143,84 +199,53 @@ class _OverviewState extends State<Overview> {
   }
 
   List<DataRow2> _generateRows() {
-    List<DataRow2> rows = [];
-    bool current = false;
-    bool wasCurrent = false;
-    int numberOfWeeks = 52;
-
-    //53 weeks edge cases https://eduardklein.com/life/how-many-weeks-in-a-year/
-    if (isLeapYear(DateTime.now().year) && DateTime(DateTime.now().year, 1, 1).weekday == DateTime.thursday || !isLeapYear(DateTime.now().year) && DateTime(DateTime.now().year, 1, 1).weekday == DateTime.wednesday) {
-      numberOfWeeks = 53;
-    }
-
-    // Build sortedNames once (same logic as _generateColumns)
-    final sortedNames = <String>[];
-    if (manager.active) sortedNames.add(manager.username);
-    sortedNames.addAll(manager.members);
-
-    // Create a fresh local assigner so the shared choreAssigner's state is not mutated
-    RoleAssigner? localAssigner;
-    if (manager.tasks.isNotEmpty && sortedNames.isNotEmpty) {
-      localAssigner = RoleAssigner.create(
-        manager.algorithm,
-        List<String>.from(sortedNames),
-        manager.tasks.keys.toList(),
-        noRepeatWindow: manager.noRepeatWindow,
-      );
-    }
+    final rows = <DataRow2>[];
+    final numberOfWeeks = weeksInYear(DateTime.now().year);
+    final currentRow = currentWeekRow(DateTime.now(), numberOfWeeks);
+    final uids = _sortedUids;
+    final dividerColor =
+        Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2);
 
     for (int i = 0; i < numberOfWeeks; i++) {
+      final weekNumber = i + 1;
+      final isCurrent = weekNumber == currentRow;
+      final isPast = weekNumber < currentRow;
+      final currentRoles =
+          i < _assignmentsByWeek.length ? _assignmentsByWeek[i] : const {};
 
-      if (DateTime.now().weekOfYear == i + 1 && DateTime.now().weekOfYear != 1 || DateTime.now().weekOfYear == i + 1 && DateTime.now().weekOfYear == 1 && DateTime.now().month != DateTime.december || DateTime.now().weekOfYear == 1 && DateTime.now().month == DateTime.december && numberOfWeeks == 53) {
-        current = true;
-        wasCurrent = true;
-      } else {
-        current = false;
-      }
-
-      final currentRoles = localAssigner?.assignRoles(i + 1) ?? {};
-
-      List<DataCell> cells = [];
+      final cells = <DataCell>[];
       cells.add(DataCell(
           Container(
               decoration: BoxDecoration(
-                  border: Border(
-                      right: BorderSide(
-                          width: 1,
-                          color: Theme
-                              .of(context)
-                              .colorScheme
-                              .onSurface
-                              .withValues(alpha: 0.2)))),
+                  border:
+                      Border(right: BorderSide(width: 1, color: dividerColor))),
               child: Center(
-                  child: Text((i + 1).toString(),
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold)))),
+                  child: Text(weekNumber.toString(),
+                      style: const TextStyle(fontWeight: FontWeight.bold)))),
           onTap: () {}));
 
-      for (final name in sortedNames) {
-        final roles = currentRoles[name] ?? [];
+      for (final uid in uids) {
+        final roles = currentRoles[uid] ?? const <String>[];
         final icons = roles
-            .map((role) =>
-                Icon(manager.roleIcons[role] ?? Icons.work_outline))
+            .map((role) => Icon(manager.roleIcons[role] ?? Icons.work_outline))
             .toList();
         cells.add(DataCell(
-          Center(child: Row(mainAxisAlignment: MainAxisAlignment.center, children: icons)),
+          Center(
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: icons)),
           onTap: () {},
         ));
       }
 
       rows.add(DataRow2(
-        color: (() {
-          if (current) {
-            return WidgetStateProperty.all(
-                Theme.of(context).colorScheme.primary.withValues(alpha: 0.15));
-          }
-          if (wasCurrent) {
-            return WidgetStateProperty.all(Theme.of(context).colorScheme.surface);
-          }
-          return WidgetStateProperty.all(Colors.grey.withValues(alpha: 0.05));
-        }()),
+        color: WidgetStateProperty.all(
+          isCurrent
+              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.15)
+              : isPast
+                  ? Colors.grey.withValues(alpha: 0.05)
+                  : Theme.of(context).colorScheme.surface,
+        ),
         specificRowHeight: rowHeight,
         cells: cells,
       ));
@@ -238,18 +263,19 @@ class _OverviewState extends State<Overview> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-        onRefresh: () async {
-      await MemberManager.instance.fetchWGData();
-      setState(() {});
-    },
-    child: DataTable2(
-      scrollController: verticalController,
-      horizontalScrollController: horizontalController,
-      fixedTopRows: 1,
-      columns: _generateColumns(),
-      rows: _generateRows(),
-      columnSpacing: 0,
-    ),
+      onRefresh: () async {
+        await MemberManager.instance.fetchWGData();
+        _rebuildAssignments();
+        setState(() {});
+      },
+      child: DataTable2(
+        scrollController: verticalController,
+        horizontalScrollController: horizontalController,
+        fixedTopRows: 1,
+        columns: _generateColumns(),
+        rows: _generateRows(),
+        columnSpacing: 0,
+      ),
     );
   }
 }

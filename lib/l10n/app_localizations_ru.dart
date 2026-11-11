@@ -124,6 +124,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get wg_exists => 'Это имя уже занято. Пожалуйста, выберите другое.';
 
   @override
+  String get wg_full => 'Эта группа заполнена, вы не можете присоединиться.';
+
+  @override
+  String get wg_gone => 'Эта группа больше не существует.';
+
+  @override
   String get garbage => 'Мусорщик';
 
   @override

@@ -332,6 +332,18 @@ abstract class AppLocalizations {
   /// **'This name is already taken. Please choose another one.'**
   String get wg_exists;
 
+  /// No description provided for @wg_full.
+  ///
+  /// In en, this message translates to:
+  /// **'This WG is full, you cannot join.'**
+  String get wg_full;
+
+  /// No description provided for @wg_gone.
+  ///
+  /// In en, this message translates to:
+  /// **'This WG no longer exists.'**
+  String get wg_gone;
+
   /// No description provided for @garbage.
   ///
   /// In en, this message translates to:

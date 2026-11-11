@@ -1,5 +1,4 @@
 import 'package:chores/user_auth/widgets/auth_button.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
@@ -12,6 +11,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:keybinder/keybinder.dart';
 import '../../l10n/app_localizations.dart';
 import '../../views/wg_selection.dart';
+import 'package:chores/data/user_repository.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -342,17 +342,11 @@ class _LoginPageState extends State<LoginPage> {
 
     Keybinder.remove(enterButton, onPressed);
 
-    dynamic currentWgID;
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .get()
-        .then((value) {
-      currentWgID = value["wg"];
-    });
+    final String? wgID =
+        await UserRepository.fetchWgId(FirebaseAuth.instance.currentUser!.uid);
 
     if (!mounted) return null;
-    if (currentWgID == -1) {
+    if (wgID == null) {
       return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (context) => WGSelection(
@@ -372,7 +366,6 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<dynamic> _signUpWithGoogle() async {
     FirebaseAuth auth = FirebaseAuth.instance;
-    FirebaseFirestore db = FirebaseFirestore.instance;
 
     showDialog(
       barrierDismissible: false,
@@ -407,28 +400,14 @@ class _LoginPageState extends State<LoginPage> {
       );
     }
 
-    dynamic currentWgID;
-    await db
-        .collection("users")
-        .doc(auth.currentUser?.uid)
-        .get()
-        .then((snap) => {
-              if (snap.exists)
-                {currentWgID = snap["wg"]}
-              else
-                {
-                  db.collection("users").doc(auth.currentUser?.uid).set({
-                    "username": AuthenticationProvider.usernameOf(user),
-                    "wg": -1,
-                  }),
-                  currentWgID = -1
-                }
-            });
+    // Creates users/{uid} on first OAuth sign-in. Awaited, so
+    // navigation can never outrun the write.
+    final String? wgID = await UserRepository.ensureUserDoc(user);
 
     if (!mounted) return null;
     Navigator.pop(context);
 
-    if (currentWgID == -1) {
+    if (wgID == null) {
       return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (context) => WGSelection(
@@ -448,7 +427,6 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<dynamic> _signUpWithGithub() async {
     FirebaseAuth auth = FirebaseAuth.instance;
-    FirebaseFirestore db = FirebaseFirestore.instance;
 
     showDialog(
       barrierDismissible: false,
@@ -483,28 +461,14 @@ class _LoginPageState extends State<LoginPage> {
       );
     }
 
-    dynamic currentWgID;
-    await db
-        .collection("users")
-        .doc(auth.currentUser?.uid)
-        .get()
-        .then((snap) => {
-              if (snap.exists)
-                {currentWgID = snap["wg"]}
-              else
-                {
-                  db.collection("users").doc(auth.currentUser?.uid).set({
-                    "username": AuthenticationProvider.usernameOf(user),
-                    "wg": -1,
-                  }),
-                  currentWgID = -1
-                }
-            });
+    // Creates users/{uid} on first OAuth sign-in. Awaited, so
+    // navigation can never outrun the write.
+    final String? wgID = await UserRepository.ensureUserDoc(user);
 
     if (!mounted) return null;
     Navigator.pop(context);
 
-    if (currentWgID == -1) {
+    if (wgID == null) {
       return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (context) => WGSelection(

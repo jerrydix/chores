@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/l10n/app_localizations.dart';
+import '../data/wg_repository.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 
 /// Default roles & chores seeded into a new WG when "use template" is checked.
@@ -213,10 +214,15 @@ class _WGSelectionState extends State<WGSelection> {
                     final wgRef = await db.collection("wgs").add({
                       "name": wgName,
                       "count": 1,
+                      // Member slots live on the WG doc so joins can allocate
+                      // one inside a transaction (see WgRepository.join).
+                      "memberIDs": [0],
+                      "maxMembers": kDefaultMaxWgMembers,
                       "cw": DateTime.now().weekOfYear,
                       "tasks": tasks,
                       "rolesConfig": rolesConfig,
                       "algorithmType": "rotating",
+                      "noRepeatWindow": 1,
                     });
 
                     // Key the member doc by uid so leaving the WG (which

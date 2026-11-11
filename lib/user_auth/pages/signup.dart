@@ -12,6 +12,7 @@ import '../../l10n/app_localizations.dart';
 import '../../views/wg_selection.dart';
 import '../../widgets/navigation_bar.dart';
 import '../widgets/auth_button.dart';
+import 'package:chores/data/user_repository.dart';
 
 
 
@@ -244,7 +245,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
     await db.collection("users").doc(auth.currentUser?.uid).set({
       "username": username,
-      "wg": -1,
+      "wg": UserRepository.noWgSentinel,
     });
 
     if (!mounted) return null;
@@ -259,7 +260,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future<dynamic> _signUpWithGoogle() async {
     FirebaseAuth auth = FirebaseAuth.instance;
-    FirebaseFirestore db = FirebaseFirestore.instance;
 
     showDialog(
       barrierDismissible: false,
@@ -293,23 +293,14 @@ class _SignUpPageState extends State<SignUpPage> {
       );
     }
 
-    dynamic currentWgID;
-    await db.collection("users").doc(auth.currentUser?.uid).get().then((snap) => {
-      if (snap.exists) {
-        currentWgID = snap["wg"]
-      } else {
-        db.collection("users").doc(auth.currentUser?.uid).set({
-          "username": AuthenticationProvider.usernameOf(user),
-          "wg": -1,
-        }),
-        currentWgID = -1
-      }
-    });
+    // Creates users/{uid} on first OAuth sign-in. Awaited, so
+    // navigation can never outrun the write.
+    final String? wgID = await UserRepository.ensureUserDoc(user);
 
     if (!mounted) return null;
     Navigator.pop(context);
 
-    if (currentWgID == -1) {
+    if (wgID == null) {
       return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (context) => WGSelection(
@@ -329,7 +320,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future<dynamic> _signUpWithGithub() async {
     FirebaseAuth auth = FirebaseAuth.instance;
-    FirebaseFirestore db = FirebaseFirestore.instance;
 
     showDialog(
       barrierDismissible: false,
@@ -363,23 +353,14 @@ class _SignUpPageState extends State<SignUpPage> {
       );
     }
 
-    dynamic currentWgID;
-    await db.collection("users").doc(auth.currentUser?.uid).get().then((snap) => {
-      if (snap.exists) {
-        currentWgID = snap["wg"]
-      } else {
-        db.collection("users").doc(auth.currentUser?.uid).set({
-          "username": AuthenticationProvider.usernameOf(user),
-          "wg": -1,
-        }),
-        currentWgID = -1
-      }
-    });
+    // Creates users/{uid} on first OAuth sign-in. Awaited, so
+    // navigation can never outrun the write.
+    final String? wgID = await UserRepository.ensureUserDoc(user);
 
     if (!mounted) return null;
     Navigator.pop(context);
 
-    if (currentWgID == -1) {
+    if (wgID == null) {
       return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (context) => WGSelection(

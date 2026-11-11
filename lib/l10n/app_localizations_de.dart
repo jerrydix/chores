@@ -125,6 +125,12 @@ class AppLocalizationsDe extends AppLocalizations {
       'Dieser Name ist bereits vergeben. Bitte wähle einen anderen.';
 
   @override
+  String get wg_full => 'Diese WG ist voll, du kannst nicht beitreten.';
+
+  @override
+  String get wg_gone => 'Diese WG existiert nicht mehr.';
+
+  @override
   String get garbage => 'Müllmeister';
 
   @override

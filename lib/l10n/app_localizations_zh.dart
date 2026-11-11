@@ -123,6 +123,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get wg_exists => '该名称已被使用，请选择其他名称。';
 
   @override
+  String get wg_full => '该合租组已满，无法加入。';
+
+  @override
+  String get wg_gone => '该合租组已不存在。';
+
+  @override
   String get garbage => '垃圾负责人';
 
   @override

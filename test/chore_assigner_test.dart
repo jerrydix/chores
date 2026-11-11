@@ -86,6 +86,34 @@ void main() {
     });
   });
 
+  group('member keys', () {
+    // MemberManager feeds the assigner uids, not display names. Two
+    // housemates can share a display name; keying by name collapsed them
+    // into one map entry, so both were shown the same roles and the
+    // fairness counter treated them as a single person.
+    test('housemates with the same display name stay independent', () {
+      final uids = ["uid-a", "uid-b", "uid-c"];
+      final roles = ["Kitchen", "Bathroom", "Trash"];
+      final assignments =
+          RotatingAssigner(uids, roles, 1).assignRoles(5);
+
+      expect(assignments.keys, hasLength(3));
+      final everyRole = assignments.values.expand((r) => r).toList();
+      expect(everyRole..sort(), equals(List.of(roles)..sort()));
+      // Nobody covers for somebody else: three roles across three people.
+      expect(assignments.values.where((r) => r.isEmpty), isEmpty);
+    });
+
+    test('duplicate keys would collapse - why uids are used', () {
+      // Guards the reason for the uid switch: identical keys cannot be told
+      // apart, whatever the algorithm.
+      final collapsed =
+          RotatingAssigner(["Alex", "Alex", "Ben"], ["A", "B", "C"], 1)
+              .assignRoles(5);
+      expect(collapsed.keys, hasLength(2));
+    });
+  });
+
   group('FixedAssigner', () {
     test('same assignment every week', () {
       final assigner = FixedAssigner(List.of(members), List.of(roles));

@@ -74,8 +74,8 @@ class _DashboardViewState extends State<DashboardView> {
         ? MediaQuery.of(context).size.height -
             MediaQuery.of(context).padding.top -
             MediaQuery.of(context).padding.bottom -
-            nav_bar.getPaddings()
-        : nav_bar.bodyHeight;
+            nav_bar.navBarChromeHeight()
+        : nav_bar.NavBarMetrics.of(context);
     double primaryHeightMultiplier =
         otherRoles.isNotEmpty ? (8 / 10) : 1;
 

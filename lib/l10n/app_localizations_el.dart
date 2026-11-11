@@ -126,6 +126,13 @@ class AppLocalizationsEl extends AppLocalizations {
       'Αυτό το όνομα χρησιμοποιείται ήδη. Παρακαλώ επιλέξτε άλλο.';
 
   @override
+  String get wg_full =>
+      'Αυτή η ομάδα είναι γεμάτη, δεν μπορείτε να συμμετάσχετε.';
+
+  @override
+  String get wg_gone => 'Αυτή η ομάδα δεν υπάρχει πλέον.';
+
+  @override
   String get garbage => 'Μάστρος σκουπιδιών';
 
   @override

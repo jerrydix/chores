@@ -4,8 +4,8 @@ class UserPreferences {
   static SharedPreferences? _prefs;
   static Future init() async => _prefs = await SharedPreferences.getInstance();
 
-  static Future setTheme(int languageIndex) async =>
-      await _prefs?.setInt('theme', languageIndex);
+  static Future setTheme(int themeIndex) async =>
+      await _prefs?.setInt('theme', themeIndex);
 
   static int getTheme() => _prefs?.getInt('theme') ?? 0;
 
@@ -19,8 +19,8 @@ class UserPreferences {
 
   static bool getNotificationsBool() => _prefs?.getBool('notOn') ?? false;
 
-  static Future setNotificationInterval(int languageIndex) async =>
-      await _prefs?.setInt('notInterval', languageIndex);
+  static Future setNotificationInterval(int intervalIndex) async =>
+      await _prefs?.setInt('notInterval', intervalIndex);
 
   static int getNotificationInterval() => _prefs?.getInt('notInterval') ?? 0;
 }

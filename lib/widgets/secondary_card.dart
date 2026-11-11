@@ -45,7 +45,7 @@ class _SecondaryCardState extends State<SecondaryCard> {
 
   List<Widget> createSecondaryCards(SecondaryCardData data) {
 
-    double actualHeight = kIsWeb ? MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom - nav_bar.getPaddings() : nav_bar.bodyHeight;
+    double actualHeight = kIsWeb ? MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom - nav_bar.navBarChromeHeight() : nav_bar.NavBarMetrics.of(context);
     List<Widget> result = [];
 
     for (int i = 0; i < data.titles.length; i++) {

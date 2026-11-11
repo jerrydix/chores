@@ -37,6 +37,8 @@
   "wg_name": "Name",
   "wg_use_template": "Use chores template",
   "wg_exists": "This name is already taken. Please choose another one.",
+  "wg_full": "This WG is full, you cannot join.",
+  "wg_gone": "This WG no longer exists.",
 
   "garbage": "Garbage Master",
   "g100plastic": "Plastic waste",

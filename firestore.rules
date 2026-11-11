@@ -1,0 +1,74 @@
+rules_version = '2';
+
+// Chores — Firestore security rules.
+//
+// Data model:
+//   users/{uid}                     -> { username, wg }
+//   wgs/{wgId}                      -> { name, count, memberIDs, maxMembers,
+//                                        cw, tasks, rolesConfig,
+//                                        algorithmType, noRepeatWindow }
+//   wgs/{wgId}/members/{uid}        -> { uid, memberID, username, active }
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function isMember(wgId) {
+      return signedIn() && exists(
+        /databases/$(database)/documents/wgs/$(wgId)/members/$(request.auth.uid)
+      );
+    }
+
+    // Fields a user who is not yet a member may touch on the WG document.
+    // Joining is a transaction: it claims a member slot and writes the member
+    // document at the same time, and rules evaluate each write against the
+    // pre-transaction state — so isMember() is still false here.
+    function onlyChangesMembership() {
+      return request.resource.data.diff(resource.data)
+        .affectedKeys().hasOnly(['count', 'memberIDs']);
+    }
+
+    // A user's own profile document. Nobody else can read it: it holds the
+    // household they belong to.
+    match /users/{uid} {
+      allow read, write: if isSelf(uid);
+    }
+
+    match /wgs/{wgId} {
+      // The WG picker lists every household with its name and free slots, so
+      // any signed-in user may read this document. It deliberately holds no
+      // personal data — members live in the subcollection below.
+      allow read: if signedIn();
+      allow create: if signedIn();
+
+      // Chores, roles and the week counter are members-only. The one
+      // exception is a joining user claiming a slot.
+      allow update: if isMember(wgId)
+                    || (signedIn() && onlyChangesMembership());
+
+      // Removing the household is part of the last member leaving.
+      allow delete: if isMember(wgId);
+
+      match /members/{memberId} {
+        // Members of a household can see each other; outsiders cannot.
+        allow read: if isMember(wgId) || isSelf(memberId);
+
+        // You may only add yourself, and only as an active member.
+        allow create: if isSelf(memberId)
+                      && request.resource.data.uid == request.auth.uid;
+
+        // You may edit your own membership (the active toggle). A member can
+        // delete another's document only as part of tearing down the empty
+        // household on the way out.
+        allow update: if isSelf(memberId);
+        allow delete: if isSelf(memberId) || isMember(wgId);
+      }
+    }
+  }
+}
