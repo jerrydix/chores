@@ -7,7 +7,9 @@ import 'package:quiver/time.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 import '../l10n/app_localizations.dart';
+import '../utils/breakpoints.dart';
 import '../utils/chore_assigner.dart';
+import '../widgets/navigation_bar.dart';
 
 /// Number of rows the year's table needs.
 ///
@@ -82,7 +84,9 @@ class _OverviewState extends State<Overview> {
   late AutoScrollController horizontalController;
   late AutoScrollController verticalController;
   int scrollOffset = max(0, DateTime.now().weekOfYear - 2);
-  double rowHeight = 50;
+  static const double _compactRowHeight = 50;
+  static const double _expandedRowHeight = 58;
+  double rowHeight = _compactRowHeight;
   MemberManager manager = MemberManager.instance;
   String username = "-1";
 
@@ -152,6 +156,31 @@ class _OverviewState extends State<Overview> {
     ];
   }
 
+  /// Relative widths for the member columns.
+  ///
+  /// On a phone these keep the hand-tuned proportions the layout was built
+  /// with. From the medium width class up — which is what a tablet or an
+  /// unfolded foldable gets, since Android 17 ignores this app's portrait
+  /// request there — every member gets an equal share, because a rota grid
+  /// has no reason to favour one column once there is room for all of them.
+  List<ColumnSize> _columnSizes(int memberColumns) {
+    if (!NavBarMetrics.sizeOf(context).isCompact) {
+      return List.generate(memberColumns, (_) => ColumnSize.M);
+    }
+    switch (memberColumns) {
+      case 1:
+        return [ColumnSize.L];
+      case 2:
+        return [ColumnSize.M, ColumnSize.M];
+      case 3:
+        return [ColumnSize.M, ColumnSize.M, ColumnSize.L];
+      case 4:
+        return [ColumnSize.L, ColumnSize.L, ColumnSize.L, ColumnSize.M];
+      default:
+        return List.generate(memberColumns, (_) => ColumnSize.M);
+    }
+  }
+
   List<DataColumn2> _generateColumns() {
     final sortedNames = _sortedNames;
     final columns = <DataColumn2>[];
@@ -172,23 +201,7 @@ class _OverviewState extends State<Overview> {
                     style: const TextStyle(fontWeight: FontWeight.bold)))),
         size: ColumnSize.M));
 
-    List<ColumnSize> columnSizes;
-    switch (sortedNames.length) {
-      case 1:
-        columnSizes = [ColumnSize.L];
-        break;
-      case 2:
-        columnSizes = [ColumnSize.M, ColumnSize.M];
-        break;
-      case 3:
-        columnSizes = [ColumnSize.M, ColumnSize.M, ColumnSize.L];
-        break;
-      case 4:
-        columnSizes = [ColumnSize.L, ColumnSize.L, ColumnSize.L, ColumnSize.M];
-        break;
-      default:
-        columnSizes = List.generate(sortedNames.length, (_) => ColumnSize.M);
-    }
+    final columnSizes = _columnSizes(sortedNames.length);
 
     for (int i = 0; i < sortedNames.length; i++) {
       columns.add(DataColumn2(
@@ -262,6 +275,15 @@ class _OverviewState extends State<Overview> {
 
   @override
   Widget build(BuildContext context) {
+    final windowSize = NavBarMetrics.sizeOf(context);
+    rowHeight = windowSize == WindowSize.expanded
+        ? _expandedRowHeight
+        : _compactRowHeight;
+    // Room for the week column plus a readable column per member; below that
+    // the table scrolls sideways instead of squeezing names and icons into
+    // unreadable slivers.
+    final minWidth = 72.0 + 96.0 * _sortedNames.length;
+
     return RefreshIndicator(
       onRefresh: () async {
         await MemberManager.instance.fetchWGData();
@@ -272,6 +294,7 @@ class _OverviewState extends State<Overview> {
         scrollController: verticalController,
         horizontalScrollController: horizontalController,
         fixedTopRows: 1,
+        minWidth: minWidth,
         columns: _generateColumns(),
         rows: _generateRows(),
         columnSpacing: 0,

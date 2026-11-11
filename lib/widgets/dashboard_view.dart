@@ -70,12 +70,12 @@ class _DashboardViewState extends State<DashboardView> {
 
   @override
   Widget build(BuildContext context) {
-    double actualHeight = kIsWeb
-        ? MediaQuery.of(context).size.height -
-            MediaQuery.of(context).padding.top -
-            MediaQuery.of(context).padding.bottom -
-            nav_bar.navBarChromeHeight()
-        : nav_bar.NavBarMetrics.of(context);
+    // The measured body height is authoritative on every platform, and it
+    // already accounts for the app bar, whichever navigation the window size
+    // calls for, and the system insets under edge-to-edge. The old web branch
+    // guessed at the same number by subtracting a fixed chrome height, which
+    // over-subtracts once a navigation rail replaces the bottom bar.
+    double actualHeight = nav_bar.NavBarMetrics.heightOf(context);
     double primaryHeightMultiplier =
         otherRoles.isNotEmpty ? (8 / 10) : 1;
 

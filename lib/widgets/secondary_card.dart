@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
-import 'package:flutter/foundation.dart';
 import 'checklist.dart';
 import 'navigation_bar.dart' as nav_bar;
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
@@ -45,7 +44,7 @@ class _SecondaryCardState extends State<SecondaryCard> {
 
   List<Widget> createSecondaryCards(SecondaryCardData data) {
 
-    double actualHeight = kIsWeb ? MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom - nav_bar.navBarChromeHeight() : nav_bar.NavBarMetrics.of(context);
+    double actualHeight = nav_bar.NavBarMetrics.heightOf(context);
     List<Widget> result = [];
 
     for (int i = 0; i < data.titles.length; i++) {

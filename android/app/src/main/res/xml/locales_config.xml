@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Languages this app ships, so Android can offer a per-app language picker in
+  system Settings (App info > Language, API 33+).
+
+  Precedence: a language chosen inside the app is stored in SharedPreferences
+  and wins, because MyAppState passes it to MaterialApp explicitly. When no
+  in-app choice has been made (UserPreferences.getLanguage() == -1), the app
+  passes no locale and follows the platform - which is what the per-app
+  setting changes. Keep this list in step with lib/l10n/app_*.arb.
+-->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="en"/>
+    <locale android:name="de"/>
+    <locale android:name="ru"/>
+    <locale android:name="zh"/>
+    <locale android:name="el"/>
+</locale-config>
