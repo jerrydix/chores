@@ -25,13 +25,32 @@ service cloud.firestore {
       );
     }
 
-    // Fields a user who is not yet a member may touch on the WG document.
+    // What a user who is not yet a member may do to the WG document.
+    //
     // Joining is a transaction: it claims a member slot and writes the member
     // document at the same time, and rules evaluate each write against the
-    // pre-transaction state — so isMember() is still false here.
-    function onlyChangesMembership() {
-      return request.resource.data.diff(resource.data)
-        .affectedKeys().hasOnly(['count', 'memberIDs']);
+    // pre-transaction state — so isMember() is still false here, and the
+    // join needs its own narrow allowance.
+    //
+    // Narrow means: touch only count and memberIDs, keep every slot that is
+    // already taken, add exactly one, stay within maxMembers, and keep count
+    // equal to the slot list. Without those clauses any signed-in user could
+    // empty another household's slot list or inflate its count.
+    function claimsOwnSlot() {
+      let before = resource.data;
+      let after = request.resource.data;
+      let max = before.get('maxMembers', 4);
+      // WGs created before memberIDs existed are seeded from their member
+      // docs on the first join, so that one write may set the whole list.
+      let seeding = !('memberIDs' in before);
+      return after.diff(before).affectedKeys().hasOnly(['count', 'memberIDs'])
+        && after.memberIDs is list
+        && after.memberIDs.size() <= max
+        && after.count == after.memberIDs.size()
+        && (seeding || (
+             after.memberIDs.size() == before.memberIDs.size() + 1
+             && after.memberIDs.hasAll(before.memberIDs)
+           ));
     }
 
     // A user's own profile document. Nobody else can read it: it holds the
@@ -50,7 +69,7 @@ service cloud.firestore {
       // Chores, roles and the week counter are members-only. The one
       // exception is a joining user claiming a slot.
       allow update: if isMember(wgId)
-                    || (signedIn() && onlyChangesMembership());
+                    || (signedIn() && claimsOwnSlot());
 
       // Removing the household is part of the last member leaving.
       allow delete: if isMember(wgId);

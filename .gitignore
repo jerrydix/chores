@@ -50,3 +50,7 @@ app.*.map.json
 
 # Claude Code scratch worktrees
 .claude/worktrees/
+
+# Firestore rules test harness
+firestore-tests/node_modules/
+firestore-tests/package-lock.json
