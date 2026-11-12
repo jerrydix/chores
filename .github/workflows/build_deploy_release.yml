@@ -12,20 +12,24 @@ env:
   ANDROID_API_KEY: ${{ secrets.ANDROID_API_KEY }}
   IOS_API_KEY: ${{ secrets.IOS_API_KEY }}
 
-jobs:
-  build_deploy_release:
-    defaults:
-      run:
-        shell: bash
+defaults:
+  run:
+    shell: bash
 
+jobs:
+  # Android and web are separate jobs on purpose: a patch failure used to take
+  # the web deploy down with it, which is why the hosted app sat four months
+  # behind main while the patch step was red.
+  patch_android:
+    name: 🐦 Patch Android
     runs-on: ubuntu-latest
 
     steps:
       - name: 📚 Git Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: 📚 Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: "temurin"
           java-version: "21"
@@ -34,6 +38,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
+          flutter-version: "3.41.9"
 
       - name: 📚 Flutter Pub Get
         run: flutter pub get
@@ -47,7 +52,10 @@ jobs:
         id: shorebird-patch
         uses: shorebirdtech/shorebird-patch@v0
         with:
-          args: --track=stable --allow-native-diffs -- --no-tree-shake-icons
+          # Pinning the release skips the extra build shorebird otherwise runs
+          # just to guess which release to patch (452s in run #132, on whatever
+          # Flutter is newest that day). Bump this when you cut a new release.
+          args: --release-version=2.3.0+6 --track=stable --allow-native-diffs -- --no-tree-shake-icons
           platform: android
 
       - name: 📝 Output Patch Version
@@ -63,10 +71,28 @@ jobs:
       #name: Chores v0.1.${{ github.run_number }}
       #token: ${{ secrets.TOKEN }}
 
+  deploy_web:
+    name: 🌐 Deploy Web
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v5
+
+      - name: 📚 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: "3.41.9"
+
+      - name: 📚 Flutter Pub Get
+        run: flutter pub get
+
       - name: 📚 Build Web Version
         run: flutter build web --wasm --no-tree-shake-icons
 
       - name: 🚀 Deploy to Firebase Hosting
+        if: github.event_name == 'push'
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
