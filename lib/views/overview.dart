@@ -223,8 +223,15 @@ class _OverviewState extends State<Overview> {
       final weekNumber = i + 1;
       final isCurrent = weekNumber == currentRow;
       final isPast = weekNumber < currentRow;
-      final currentRoles =
-          i < _assignmentsByWeek.length ? _assignmentsByWeek[i] : const {};
+      // The fallback has to carry the real type: a bare `const {}` is a
+      // Map<dynamic, dynamic>, which drags the whole ternary to dynamic and
+      // turns the icon map() below into a dynamic call that yields
+      // List<dynamic> — "List<dynamic> is not a subtype of List<Widget>" the
+      // moment Row tries to render it.
+      final Map<String, List<String>> currentRoles =
+          i < _assignmentsByWeek.length
+              ? _assignmentsByWeek[i]
+              : const <String, List<String>>{};
 
       final cells = <DataCell>[];
       cells.add(DataCell(

@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:chores/user_auth/widgets/form_container.dart';
 import 'package:chores/user_auth/pages/signup.dart';
 import 'package:chores/data/providers/authentication_provider.dart';
-import 'package:chores/widgets/navigation_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:keybinder/keybinder.dart';
 import '../../l10n/app_localizations.dart';
-import '../../views/wg_selection.dart';
 import 'package:chores/data/user_repository.dart';
 
 class LoginPage extends StatefulWidget {
@@ -287,11 +285,13 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     InkWell(
                         onTap: () {
-                          Navigator.pushAndRemoveUntil(
+                          // Push, never wipe: Wrapper owns the root
+                          // route and does all post-auth routing, so
+                          // removing it leaves nothing to route with.
+                          Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const SignUpPage()),
-                              (route) => false);
+                                  builder: (context) => const SignUpPage()));
                         },
                         borderRadius: BorderRadius.circular(8),
                         child: Text(
@@ -314,6 +314,13 @@ class _LoginPageState extends State<LoginPage> {
     String email = _emailController.text;
     String password = _passwordController.text;
 
+    // Captured before the await. A successful sign-in makes Wrapper swap this
+    // page out for its own loader, so this State can be unmounted by the time
+    // the spinner has to come down — and a `mounted` guard would then skip the
+    // pop, stranding the dialog above the next screen.
+    final NavigatorState navigator = Navigator.of(context);
+    final Color errorColor = Theme.of(context).colorScheme.error;
+
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -327,45 +334,34 @@ class _LoginPageState extends State<LoginPage> {
     String? message = await AuthenticationProvider(FirebaseAuth.instance)
         .signIn(email: email, password: password);
 
-    if (!mounted) return null;
     if (message != null) {
-      Navigator.pop(context);
+      // Failure: drop the spinner only, so the user can correct and retry.
+      if (navigator.canPop()) navigator.pop();
       return Fluttertoast.showToast(
         msg: message,
-        textColor: Theme.of(context).colorScheme.error,
+        textColor: errorColor,
         gravity: ToastGravity.CENTER,
         toastLength: Toast.LENGTH_SHORT,
       );
     }
 
-    Navigator.pop(context);
-
-    Keybinder.remove(enterButton, onPressed);
-
-    final String? wgID =
-        await UserRepository.fetchWgId(FirebaseAuth.instance.currentUser!.uid);
-
-    if (!mounted) return null;
-    if (wgID == null) {
-      return Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-              builder: (context) => WGSelection(
-                  username: AuthenticationProvider.usernameOf(
-                      FirebaseAuth.instance.currentUser!))),
-          (route) => false);
-    } else {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) => const NavBar(),
-          ),
-          (route) => false);
-    }
+    // Unwind to the root route, where Wrapper lives: it has already seen the
+    // new auth state and renders WGSelection or NavBar. This takes the spinner
+    // dialog with it, and is a no-op when this page is Wrapper's own child.
+    navigator.popUntil((route) => route.isFirst);
 
     return null;
   }
 
   Future<dynamic> _signUpWithGoogle() async {
     FirebaseAuth auth = FirebaseAuth.instance;
+
+    // Captured before the await. A successful sign-in makes Wrapper swap this
+    // page out for its own loader, so this State can be unmounted by the time
+    // the spinner has to come down — and a `mounted` guard would then skip the
+    // pop, stranding the dialog above the next screen.
+    final NavigatorState navigator = Navigator.of(context);
+    final Color errorColor = Theme.of(context).colorScheme.error;
 
     showDialog(
       barrierDismissible: false,
@@ -380,53 +376,47 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await AuthenticationProvider(auth).signInWithGoogle();
     } catch (e) {
+      if (navigator.canPop()) navigator.pop();
       if (!mounted) return;
-      Navigator.pop(context);
       _showAuthError(e);
       return;
     }
 
-    if (!mounted) return null;
-    User? user = auth.currentUser;
+    final User? user = auth.currentUser;
 
     if (user == null) {
-      Navigator.pop(context);
+      if (navigator.canPop()) navigator.pop();
       return Fluttertoast.showToast(
         msg:
             "Error signing in with Google. The email may already be linked to another account.",
-        textColor: Theme.of(context).colorScheme.error,
+        textColor: errorColor,
         gravity: ToastGravity.CENTER,
         toastLength: Toast.LENGTH_LONG,
       );
     }
 
-    // Creates users/{uid} on first OAuth sign-in. Awaited, so
-    // navigation can never outrun the write.
-    final String? wgID = await UserRepository.ensureUserDoc(user);
+    // Creates users/{uid} on first OAuth sign-in. Deliberately not behind a
+    // `mounted` check: Wrapper routes on this document, so it has to be
+    // written even when this page is already gone.
+    await UserRepository.ensureUserDoc(user);
 
-    if (!mounted) return null;
-    Navigator.pop(context);
-
-    if (wgID == null) {
-      return Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-              builder: (context) => WGSelection(
-                  username: AuthenticationProvider.usernameOf(
-                      FirebaseAuth.instance.currentUser!))),
-          (route) => false);
-    } else {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) => const NavBar(),
-          ),
-          (route) => false);
-    }
+    // Unwind to the root route, where Wrapper lives: it has already seen the
+    // new auth state and renders WGSelection or NavBar. This takes the spinner
+    // dialog with it, and is a no-op when this page is Wrapper's own child.
+    navigator.popUntil((route) => route.isFirst);
 
     return null;
   }
 
   Future<dynamic> _signUpWithGithub() async {
     FirebaseAuth auth = FirebaseAuth.instance;
+
+    // Captured before the await. A successful sign-in makes Wrapper swap this
+    // page out for its own loader, so this State can be unmounted by the time
+    // the spinner has to come down — and a `mounted` guard would then skip the
+    // pop, stranding the dialog above the next screen.
+    final NavigatorState navigator = Navigator.of(context);
+    final Color errorColor = Theme.of(context).colorScheme.error;
 
     showDialog(
       barrierDismissible: false,
@@ -441,47 +431,34 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await AuthenticationProvider(auth).signInWithGitHub();
     } catch (e) {
+      if (navigator.canPop()) navigator.pop();
       if (!mounted) return;
-      Navigator.pop(context);
       _showAuthError(e);
       return;
     }
 
-    if (!mounted) return null;
-    User? user = auth.currentUser;
+    final User? user = auth.currentUser;
 
     if (user == null) {
-      Navigator.pop(context);
+      if (navigator.canPop()) navigator.pop();
       return Fluttertoast.showToast(
         msg:
             "Error signing in with GitHub. The email may already be linked to another account.",
-        textColor: Theme.of(context).colorScheme.error,
+        textColor: errorColor,
         gravity: ToastGravity.CENTER,
         toastLength: Toast.LENGTH_LONG,
       );
     }
 
-    // Creates users/{uid} on first OAuth sign-in. Awaited, so
-    // navigation can never outrun the write.
-    final String? wgID = await UserRepository.ensureUserDoc(user);
+    // Creates users/{uid} on first OAuth sign-in. Deliberately not behind a
+    // `mounted` check: Wrapper routes on this document, so it has to be
+    // written even when this page is already gone.
+    await UserRepository.ensureUserDoc(user);
 
-    if (!mounted) return null;
-    Navigator.pop(context);
-
-    if (wgID == null) {
-      return Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-              builder: (context) => WGSelection(
-                  username: AuthenticationProvider.usernameOf(
-                      FirebaseAuth.instance.currentUser!))),
-          (route) => false);
-    } else {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) => const NavBar(),
-          ),
-          (route) => false);
-    }
+    // Unwind to the root route, where Wrapper lives: it has already seen the
+    // new auth state and renders WGSelection or NavBar. This takes the spinner
+    // dialog with it, and is a no-op when this page is Wrapper's own child.
+    navigator.popUntil((route) => route.isFirst);
 
     return null;
   }

@@ -1,7 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:chores/member_manager.dart';
 import 'package:chores/data/providers/authentication_provider.dart';
-import 'package:chores/user_auth/pages/login.dart';
 import 'package:chores/utils/notification_list.dart';
 import 'package:chores/data/userprefs.dart';
 import 'package:chores/utils/chore_assigner.dart';
@@ -418,17 +417,16 @@ class _SettingsState extends State<Settings> {
                 child: Text(AppLocalizations.of(context)!.cancel)),
             TextButton(
                 onPressed: () async {
+                  // Unwind to the root route instead of pushing a login
+                  // page over everything: Wrapper lives there and shows the
+                  // login page itself once the session is gone. This closes
+                  // the confirmation dialog on the way.
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                   await AuthenticationProvider(FirebaseAuth.instance).signOut();
                   // MemberManager is a singleton: without this the next
                   // account to sign in on this device would keep the previous
                   // user's cached WG and load their household.
                   MemberManager.instance.reset();
-                  if (!context.mounted) return;
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (context) => const LoginPage(),
-                      ), (route) => false
-                  );
                 },
                 child: Text(AppLocalizations.of(context)!.confirm)),
           ],
@@ -733,12 +731,14 @@ class _SettingsState extends State<Settings> {
                   if (!context.mounted) return;
                   Navigator.pop(context);
 
+                  // Keep the root route: Wrapper has to stay mounted or
+                  // the next sign-out has nothing to route with.
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
                         builder: (context) => WGSelection(
                             username: AuthenticationProvider.usernameOf(
                                 FirebaseAuth.instance.currentUser!)),
-                      ), (route) => false
+                      ), (route) => route.isFirst
                   );
                 },
                 child: Text(AppLocalizations.of(context)!.confirm)),
