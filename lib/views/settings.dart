@@ -5,7 +5,6 @@ import 'package:chores/utils/notification_list.dart';
 import 'package:chores/data/userprefs.dart';
 import 'package:chores/utils/chore_assigner.dart';
 import 'package:chores/views/role_task_settings.dart';
-import 'package:chores/views/wg_selection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -729,17 +728,9 @@ class _SettingsState extends State<Settings> {
                   manager.reset();
 
                   if (!context.mounted) return;
+                  // Wrapper watches users/{uid}: clearing the WG id there
+                  // routes back to WGSelection without a push.
                   Navigator.pop(context);
-
-                  // Keep the root route: Wrapper has to stay mounted or
-                  // the next sign-out has nothing to route with.
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (context) => WGSelection(
-                            username: AuthenticationProvider.usernameOf(
-                                FirebaseAuth.instance.currentUser!)),
-                      ), (route) => route.isFirst
-                  );
                 },
                 child: Text(AppLocalizations.of(context)!.confirm)),
           ],

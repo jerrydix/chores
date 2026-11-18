@@ -1,7 +1,6 @@
 
 import 'package:chores/data/providers/authentication_provider.dart';
 import 'package:chores/member_manager.dart';
-import 'package:chores/widgets/navigation_bar.dart';
 import 'package:chores/widgets/wg_list_tile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -239,14 +238,9 @@ class _WGSelectionState extends State<WGSelection> {
                     });
 
                     if (!context.mounted) return;
+                    // Close the dialog and stop there: Wrapper sees the new WG
+                    // id in users/{uid} and routes to NavBar itself.
                     Navigator.pop(context);
-                    // Keep the root route: Wrapper has to stay mounted
-                    // or signing out later has nothing to route with.
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (context) => const NavBar(),
-                      ), (route) => route.isFirst
-                    );
                   },
                   child: Text(AppLocalizations.of(context)!.confirm)),
             ],

@@ -4,7 +4,6 @@ import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
 import '../data/wg_repository.dart';
 import '../l10n/app_localizations.dart';
-import 'navigation_bar.dart';
 
 class WGListTile extends StatefulWidget {
   final String name;
@@ -57,11 +56,8 @@ class _WGListTileState extends State<WGListTile> {
       return;
     }
 
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (context) => const NavBar(),
-        ),
-        (route) => false);
+    // Nothing to navigate: Wrapper watches users/{uid} and replaces
+    // WGSelection with NavBar as soon as the join lands in the document.
   }
 
   @override

@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:chores/widgets/navigation_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:chores/main.dart';
@@ -55,9 +54,10 @@ class NotificationService {
     debugPrint("notification created");
     final payload = receivedNotification.payload ?? {};
     if (payload["navigate"] == "true") {
-      MyApp.navigatorKey.currentState?.push(MaterialPageRoute(
-        builder: (_) => const NavBar(),
-      ));
+      // Unwind to the root route, which is Wrapper: it already shows the
+      // right screen for this account. Pushing another NavBar would stack a
+      // second copy on top of the live one.
+      MyApp.navigatorKey.currentState?.popUntil((route) => route.isFirst);
     }
   }
 

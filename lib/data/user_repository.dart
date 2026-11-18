@@ -30,6 +30,17 @@ class UserRepository {
     return null; // ints (the -1 sentinel) mean "no WG"
   }
 
+  /// What routing needs from `users/{uid}`: whether the document exists yet
+  /// and which WG it points at.
+  ///
+  /// This is a record rather than a plain `String?` because AsyncSnapshot
+  /// treats a null value as "no data yet" — a `Stream<String?>` would leave
+  /// everyone without a WG watching a spinner forever.
+  static Stream<({bool exists, String? wgId})> watchWgState(String uid) =>
+      _db.collection('users').doc(uid).snapshots().map(
+            (doc) => (exists: doc.exists, wgId: parseWgId(doc.data()?['wg'])),
+          );
+
   /// Reads the current WG id for [uid], or null when there is none.
   static Future<String?> fetchWgId(String uid) async {
     final doc = await _db.collection('users').doc(uid).get();

@@ -19,7 +19,7 @@ class Wrapper extends StatefulWidget {
 class _WrapperState extends State<Wrapper> {
   User? user;
   String? _loadedForUid;
-  Future<String?>? _wgFuture;
+  Stream<({bool exists, String? wgId})>? _wgStream;
   StreamSubscription<User?>? _authSubscription;
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -48,7 +48,7 @@ class _WrapperState extends State<Wrapper> {
     }
     setState(() {
       user = event;
-      _wgFuture = null;
+      _wgStream = null;
       _loadedForUid = null;
     });
   }
@@ -60,33 +60,32 @@ class _WrapperState extends State<Wrapper> {
       return const LoginPage();
     }
 
-    // Memoize per uid so a rebuild doesn't kick off a fresh Firestore fetch,
-    // while a different account still gets its own lookup.
-    if (_wgFuture == null || _loadedForUid != currentUser.uid) {
+    // Memoized per uid: building the stream inside build() would resubscribe
+    // on every rebuild, while a different account still gets its own listener.
+    if (_wgStream == null || _loadedForUid != currentUser.uid) {
       _loadedForUid = currentUser.uid;
-      _wgFuture = UserRepository.fetchWgId(currentUser.uid);
+      _wgStream = UserRepository.watchWgState(currentUser.uid);
     }
 
-    return FutureBuilder<String?>(
-        future: _wgFuture,
-        builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
-            default:
-              if (snapshot.hasError) {
-                return Scaffold(
-                  body: Center(child: Text('Error: ${snapshot.error}')),
-                );
-              }
-              if (snapshot.data == null) {
-                return WGSelection(
-                    username: AuthenticationProvider.usernameOf(currentUser));
-              }
-              return const NavBar();
+    return StreamBuilder<({bool exists, String? wgId})>(
+        stream: _wgStream,
+        builder: (BuildContext context,
+            AsyncSnapshot<({bool exists, String? wgId})> snapshot) {
+          if (snapshot.hasError) {
+            return Scaffold(
+              body: Center(child: Text('Error: ${snapshot.error}')),
+            );
           }
+          if (!snapshot.hasData) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+          if (snapshot.requireData.wgId == null) {
+            return WGSelection(
+                username: AuthenticationProvider.usernameOf(currentUser));
+          }
+          return const NavBar();
         });
   }
 }
